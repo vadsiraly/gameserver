@@ -1,0 +1,48 @@
+[
+  {
+    "Id": 0,
+    "Name": "Lyra",
+    "Health": 150.0,
+    "Mana": 100.0,
+    "Armor": 0.0,
+    "Resistance": 15.0,
+    "Speed": 100.0,
+    "CriticalChance": 0.25,
+    "CriticalMultiplier": 1.1,
+    "Abilities": [
+      {
+        "Name": "Phantom Strike",
+        "Damage": {
+          "Type": 0,
+          "Amount": 10.0
+        }
+      },
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "Id": 0,
+    "Name": "Toxin",
+    "Health": 110.0,
+    "Mana": 100.0,
+    "Armor": 30.0,
+    "Resistance": 0.0,
+    "Speed": 80.0,
+    "CriticalChance": 0.1,
+    "CriticalMultiplier": 1.5,
+    "Abilities": [
+      {
+        "Name": "Phantom Strike",
+        "Damage": {
+          "Type": 1,
+          "Amount": 15.0
+        }
+      },
+      null,
+      null,
+      null
+    ]
+  }
+]

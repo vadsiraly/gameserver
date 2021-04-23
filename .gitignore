@@ -1,0 +1,4 @@
+﻿GameServer/bin
+GameServer/obj
+*.user
+.vs
