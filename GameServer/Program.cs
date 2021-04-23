@@ -1,6 +1,7 @@
 ﻿using GameServer.Model.BaseTypes;
 using GameServer.Services;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.IO;
 using System.Linq;
@@ -12,11 +13,11 @@ namespace GameServer
     class Program
     {
         /*
-            var json = JsonConvert.SerializeObject(new Unit[] { new Lyra(), new Toxin() }, new JsonSerializerSettings()
-            {
-                Formatting = Formatting.Indented,
-                TypeNameHandling = TypeNameHandling.All
-            });
+            var json = JsonConvert.SerializeObject(
+                    new Unit[] { unitManager.Get("Lyra"), unitManager.Get("Toxin") },
+                    Formatting.Indented, 
+                    new[] { new StringEnumConverter() } 
+                );
             File.WriteAllText("out.txt", json);
 
             return;
@@ -27,25 +28,26 @@ namespace GameServer
 
             int attackersWon = 0;
             int defendersWon = 0;
-            int matchCount = 100000;
+            int matchCount = 10000;
+            var seedGenerator = new Random();
             for (int j = 0; j < matchCount; j++)
             {
-                var seed = new Random().Next(0, 1000000);
-                Console.WriteLine($"Match {j+1}/{matchCount} ({seed})");
+                var seed = seedGenerator.Next(0, 1000000);
+                Console.WriteLine($"Match {j + 1}/{matchCount} ({seed})");
                 var random = new Random(seed);
 
-                var attacker = new Unit[6];
-                var defender = new Unit[6];
+                var attacker = new Team();
+                var defender = new Team();
 
                 for (int i = 0; i < 6; i++)
                 {
                     if (random.Next(2) % 2 == 0)
                     {
-                        attacker[i] = unitManager.Get("Lyra");
+                        attacker.Units[i] = unitManager.Get("Lyra");
                     }
                     else
                     {
-                        attacker[i] = unitManager.Get("Toxin");
+                        attacker.Units[i] = unitManager.Get("Toxin");
                     }
                 }
 
@@ -53,34 +55,16 @@ namespace GameServer
                 {
                     if (random.Next(2) % 2 == 0)
                     {
-                        defender[i] = unitManager.Get("Lyra");
+                        defender.Units[i] = unitManager.Get("Lyra");
                     }
                     else
                     {
-                        defender[i] = unitManager.Get("Toxin");
+                        defender.Units[i] = unitManager.Get("Toxin");
                     }
                 }
 
-                while (!(attacker.All(x => x.IsDead()) || defender.All(x => x.IsDead())))
-                {
-                    foreach (var current in attacker.Union(defender).OrderBy(x => x.Speed))
-                    {
-                        if (!attacker.Any(x => !x.IsDead()) || !defender.Any(x => !x.IsDead())) break;
-
-                        if (attacker.Contains(current))
-                        {
-                            var target = defender.Where(x => !x.IsDead()).ToArray()[random.Next(0, defender.Count(x => !x.IsDead()))];
-                            current.Abilities[0].Use(current, target, random);
-                        }
-                        else
-                        {
-                            var target = attacker.Where(x => !x.IsDead()).ToArray()[random.Next(0, attacker.Count(x => !x.IsDead()))];
-                            current.Abilities[0].Use(current, target, random);
-                        }
-                    }
-                }
-
-                if (!attacker.Any(x => !x.IsDead()))
+                var outcome = new Battle(attacker, defender).Fight(seed);
+                if (outcome == Outcome.Win)
                 {
                     attackersWon++;
                 }
@@ -90,8 +74,8 @@ namespace GameServer
                 }
             }
 
-            Console.WriteLine($"Attackers won {attackersWon}/1000");
-            Console.WriteLine($"Defenders won {defendersWon}/1000");
+            Console.WriteLine($"Attackers won {attackersWon}/{matchCount}");
+            Console.WriteLine($"Defenders won {defendersWon}/{matchCount}");
         }
     }
 }

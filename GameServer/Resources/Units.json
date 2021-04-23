@@ -13,7 +13,7 @@
       {
         "Name": "Phantom Strike",
         "Damage": {
-          "Type": 0,
+          "Type": "Physical",
           "Amount": 10.0
         }
       },
@@ -36,7 +36,7 @@
       {
         "Name": "Phantom Strike",
         "Damage": {
-          "Type": 1,
+          "Type": "Magical",
           "Amount": 15.0
         }
       },
