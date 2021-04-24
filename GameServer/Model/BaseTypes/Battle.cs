@@ -45,7 +45,7 @@ namespace GameServer.Model.BaseTypes
             {
                 foreach(var current in AllUnits)
                 {
-                    current.ProcessBeforeRoundEffects(random);
+                    current.BeginRound(random);
                 }
 
                 foreach (var current in AllUnits.OrderBy(x => x.Speed).ToArray().Shuffle())
@@ -69,7 +69,7 @@ namespace GameServer.Model.BaseTypes
 
                 foreach (var current in AllUnits)
                 {
-                    current.ProcessAfterRoundEffects(random);
+                    current.EndRound(random);
                 }
 
                 ++rounds;

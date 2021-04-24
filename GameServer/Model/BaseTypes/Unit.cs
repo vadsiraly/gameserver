@@ -10,29 +10,63 @@ namespace GameServer.Model.BaseTypes
 {
     public class Unit
     {
+        private double damage;
+        private double armor;
+        private double resistance;
+        private double speed;
+        private double criticalChance;
+        private double criticalMultiplier;
+        private double mana;
+        private double health;
+
         [JsonIgnore]
         public Team Team { get; set; }
 
+        // properties
         public int Id { get; set; }
         public string Name { get; set; }
-        public double Health { get; set; }
-        public double Mana { get; set; }
-        public double Damage { get; set; }
-        public double Armor { get; set; }
-        public double Resistance { get; set; }
-        public double Speed { get; set; }
-        public double CriticalChance { get; set; }
-        public double CriticalMultiplier { get; set; }
+        public double Health { get => ApplyPersistentEffects(health, EffectTargetAttribute.Health); set => health = value; }
+        public double Mana { get => ApplyPersistentEffects(mana, EffectTargetAttribute.Mana); set => mana = value; }
+        public double Damage { get => ApplyPersistentEffects(damage, EffectTargetAttribute.Damage); set => damage = value; }
+        public double Armor { get => ApplyPersistentEffects(armor, EffectTargetAttribute.Armor); set => armor = value; }
+        public double Resistance { get => ApplyPersistentEffects(resistance, EffectTargetAttribute.Resistance); set => resistance = value; }
+        public double Speed { get => ApplyPersistentEffects(speed, EffectTargetAttribute.Speed); set => speed = value; }
+        public double CriticalChance { get => ApplyPersistentEffects(criticalChance, EffectTargetAttribute.CriticalChance); set => criticalChance = value; }
+        public double CriticalMultiplier { get => ApplyPersistentEffects(criticalMultiplier, EffectTargetAttribute.CriticalMultiplier); set => criticalMultiplier = value; }
         public bool IsDead() => Health <= 0;
         public Ability[] Abilities { get; set; } = new Ability[4];
 
+        // effects
+        public List<(Unit Source, Effect Effect)> PermanentEffects { get; set; } = new List<(Unit Source, Effect Effect)>();
+        public List<(Unit Source, Effect Effect, int Duration)> PersistentEffects { get; set; } = new List<(Unit Source, Effect Effect, int Duration)>();
         public List<(Unit Source, Effect Effect, int Duration)> BeforeRoundEffects { get; set; } = new List<(Unit Source, Effect Effect, int Duration)>();
         public List<(Unit Source, Effect Effect, int Duration)> AfterRoundEffects { get; set; } = new List<(Unit Source, Effect Effect, int Duration)>();
         public List<(Unit Source, Effect Effect, int Delay, int Duration)> DelayedEffects { get; set; } = new List<(Unit Source, Effect Effect, int Delay, int Duration)>();
 
+        //stats
+        public void BeginRound(Random random)
+        {
+            ProcessBeforeRoundEffects(random);
+        }
+
+        public void EndRound(Random random)
+        {
+            ProcessAfterRoundEffects(random);
+            ProcessPersistentEffects(random);
+        }
+
+        public void ProcessPersistentEffects(Random random)
+        {
+            for (int i = 0; i < PersistentEffects.Count; i++)
+            {
+                PersistentEffects[i] = (PersistentEffects[i].Source, PersistentEffects[i].Effect, PersistentEffects[i].Duration - 1);
+            }
+            PersistentEffects.RemoveAll(x => x.Duration == 0);
+        }
+
         public void ProcessBeforeRoundEffects(Random random)
         {
-            for(int i = 0; i< BeforeRoundEffects.Count; i++)
+            for (int i = 0; i < BeforeRoundEffects.Count; i++)
             {
                 BeforeRoundEffects[i].Effect.Apply(BeforeRoundEffects[i].Source, this, random);
                 BeforeRoundEffects[i] = (BeforeRoundEffects[i].Source, BeforeRoundEffects[i].Effect, BeforeRoundEffects[i].Duration - 1);
@@ -52,14 +86,38 @@ namespace GameServer.Model.BaseTypes
             AfterRoundEffects.RemoveAll(x => x.Duration == 0);
         }
 
+        private double ApplyPersistentEffects(double value, EffectTargetAttribute attribute)
+        {
+            foreach(var persistentEffect in PersistentEffects)
+            {
+                if (persistentEffect.Effect.TargetAttribute == attribute)
+                {
+                    if (persistentEffect.Effect.BasedOnSelfDamage)
+                    {
+                        value += persistentEffect.Source.Damage * persistentEffect.Effect.DamageMultiplier * (persistentEffect.Effect.Positive ? 1 : -1);
+                    }
+                    else
+                    {
+                        value *= persistentEffect.Effect.Percentage;
+                    }
+                }
+            }
+
+            return value;
+        }
+
         public void ApplyEffect(Unit source, List<Effect> effects, Random random)
         {
             foreach (var effect in effects)
             {
                 switch (effect.Schedule)
                 {
-                    case EffectSchedule.Instant:
+                    case EffectSchedule.Permanent:
+                        PermanentEffects.Add((source, effect));
                         effect.Apply(source, this, random);
+                        break;
+                    case EffectSchedule.Persistent:
+                        PersistentEffects.Add((source, effect, effect.Duration));
                         break;
                     case EffectSchedule.BeforeRound:
                         BeforeRoundEffects.Add((source, effect, effect.Duration));

@@ -24,4 +24,16 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Concepts\Mist\" />
+    <Folder Include="Concepts\Mermaid\" />
+    <Folder Include="Concepts\Landshark\" />
+    <Folder Include="Concepts\Lycangirl\" />
+    <Folder Include="Concepts\DeceisedDruid\" />
+    <Folder Include="Concepts\QT751\" />
+    <Folder Include="Concepts\QT17\" />
+    <Folder Include="Concepts\PlagueDoctor\" />
+    <Folder Include="Concepts\Outcast\" />
+  </ItemGroup>
+
 </Project>

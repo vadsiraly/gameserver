@@ -16,13 +16,15 @@
         "Effects": [
           {
             "Target": "RandomEnemy",
-            "Schedule": "Instant",
+            "Schedule": "Permanent",
             "TargetAttribute": "Health",
             "Delay": 0,
             "Duration": 1,
             "Positive": false,
             "CanCrit": true,
             "Type": "Physical",
+            "Percentage": 1.0,
+            "BasedOnSelfDamage": true,
             "DamageMultiplier": 1.0
           }
         ]
@@ -49,14 +51,51 @@
         "Effects": [
           {
             "Target": "RandomEnemy",
-            "Schedule": "Instant",
+            "Schedule": "Permanent",
             "TargetAttribute": "Health",
             "Delay": 0,
             "Duration": 1,
             "Positive": false,
             "CanCrit": true,
             "Type": "Magical",
+            "Percentage": 1.0,
+            "BasedOnSelfDamage": true,
             "DamageMultiplier": 1.0
+          }
+        ]
+      },
+      null,
+      null,
+      null
+    ]
+  },
+  {
+    "Id": 2,
+    "Name": "Gulp",
+    "Health": 30.0,
+    "Mana": 100.0,
+    "Damage": 15.0,
+    "Armor": 80.0,
+    "Resistance": 0.0,
+    "Speed": 150.0,
+    "CriticalChance": 0.1,
+    "CriticalMultiplier": 1.5,
+    "Abilities": [
+      {
+        "Name": "Devour weapons",
+        "Effects": [
+          {
+            "Target": "RandomEnemy",
+            "Schedule": "Persistent",
+            "TargetAttribute": "Damage",
+            "Delay": 0,
+            "Duration": 1,
+            "Positive": false,
+            "CanCrit": false,
+            "Type": "Pure",
+            "Percentage": 0.0,
+            "BasedOnSelfDamage": false,
+            "DamageMultiplier": 0.0
           }
         ]
       },

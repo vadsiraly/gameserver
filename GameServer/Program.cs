@@ -42,25 +42,39 @@ namespace GameServer
 
                 for (int i = 0; i < 6; i++)
                 {
-                    if (random.Next(2) % 2 == 0)
+                    var remainder = random.Next(1, 4) % 3;
+                    switch (remainder)
                     {
-                        attacker.Add(unitManager.Get("Lyra"));
-                    }
-                    else
-                    {
-                        attacker.Add(unitManager.Get("Toxin"));
+                        case 0:
+                            attacker.Add(unitManager.Get("Lyra"));
+                            break;
+                        case 1:
+                            attacker.Add(unitManager.Get("Toxin"));
+                            break;
+                        case 2:
+                            attacker.Add(unitManager.Get("Gulp"));
+                            break;
+                        default:
+                            break;
                     }
                 }
 
                 for (int i = 0; i < 6; i++)
                 {
-                    if (random.Next(2) % 2 == 0)
+                    var remainder = random.Next(1, 4) % 3;
+                    switch (remainder)
                     {
-                        defender.Add(unitManager.Get("Lyra"));
-                    }
-                    else
-                    {
-                        defender.Add(unitManager.Get("Toxin"));
+                        case 0:
+                            defender.Add(unitManager.Get("Lyra"));
+                            break;
+                        case 1:
+                            defender.Add(unitManager.Get("Toxin"));
+                            break;
+                        case 2:
+                            defender.Add(unitManager.Get("Gulp"));
+                            break;
+                        default:
+                            break;
                     }
                 }
 
