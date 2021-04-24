@@ -1,5 +1,4 @@
-﻿using GameServer.Enumerations.Damage;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,6 +6,13 @@ using System.Threading.Tasks;
 
 namespace GameServer.Model.BaseTypes
 {
+    public enum DamageType
+    {
+        Physical,
+        Magical,
+        Pure
+    }
+
     public class Damage
     {
         public DamageType Type { get; set; }

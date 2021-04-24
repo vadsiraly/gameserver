@@ -1,5 +1,4 @@
-﻿using GameServer.Enumerations.Damage;
-using GameServer.Model.BaseTypes;
+﻿using GameServer.Model.BaseTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
