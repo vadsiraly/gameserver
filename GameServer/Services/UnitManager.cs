@@ -1,4 +1,5 @@
-﻿using GameServer.Model.BaseTypes;
+﻿using GameServer.Model;
+using GameServer.Model.BaseTypes;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,11 @@ namespace GameServer.Services
 {
     public class UnitManager
     {
-        private readonly Unit[] _units;
+        private readonly List<Unit> _units;
 
         public UnitManager()
         {
-            _units = JsonConvert.DeserializeObject<Unit[]>(Resources.Units);
+            _units = JsonConvert.DeserializeObject<List<Unit>>(Resources.Units);
         }
 
         public Unit Get(string name)

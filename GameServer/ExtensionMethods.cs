@@ -8,10 +8,10 @@ namespace GameServer
 {
     public static class MyExtensions
     {
-        public static T[] Shuffle<T>(this T[] array)
+        public static IList<T> Shuffle<T>(this IList<T> array)
         {
             var random = new Random();
-            int n = array.Length;
+            int n = array.Count;
             while (n > 1)
             {
                 n--;

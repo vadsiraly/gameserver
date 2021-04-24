@@ -9,6 +9,7 @@ namespace GameServer.Enumerations.Damage
     public enum DamageType
     {
         Physical,
-        Magical
+        Magical,
+        Pure
     }
 }

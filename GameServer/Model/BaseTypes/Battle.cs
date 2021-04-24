@@ -18,6 +18,15 @@ namespace GameServer.Model.BaseTypes
     {
         public Team Attacker { get; set; }
         public Team Defender { get; set; }
+        public List<Unit> AllUnits
+        {
+            get
+            {
+                return Attacker.Units.Union(Defender.Units).ToList();
+            }
+        }
+
+        public int RoundLimit { get; set; } = 200;
 
         public Battle(Team attacker, Team defender)
         {
@@ -31,9 +40,15 @@ namespace GameServer.Model.BaseTypes
 
             var allAttackersDead = false;
             var allDefendersDead = false;
-            while (!allAttackersDead && !allDefendersDead)
+            var rounds = 0;
+            while (!allAttackersDead && !allDefendersDead && rounds < RoundLimit)
             {
-                foreach (var current in Attacker.Units.Union(Defender.Units).OrderBy(x => x.Speed).ToArray().Shuffle())
+                foreach(var current in AllUnits)
+                {
+                    current.ProcessBeforeRoundEffects(random);
+                }
+
+                foreach (var current in AllUnits.OrderBy(x => x.Speed).ToArray().Shuffle())
                 {
                     if (Attacker.Units.Contains(current))
                     {
@@ -55,6 +70,13 @@ namespace GameServer.Model.BaseTypes
                     if (allDefendersDead && !allAttackersDead) return Outcome.Win;
                     if (allAttackersDead && allDefendersDead) return Outcome.Tie;
                 }
+
+                foreach (var current in AllUnits)
+                {
+                    current.ProcessAfterRoundEffects(random);
+                }
+
+                ++rounds;
             }
 
             return Outcome.Inconclusive;

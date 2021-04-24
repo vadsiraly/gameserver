@@ -19,5 +19,25 @@ namespace GameServer.Model.BaseTypes
                 Type = damage.Type 
             };
         }
+
+        public static Damage Calculate(Damage damage, Unit target)
+        {
+            var reducedDamage = new Damage { Amount = damage.Amount, Type = damage.Type };
+            switch (damage.Type)
+            {
+                case DamageType.Physical:
+                    reducedDamage.Amount = damage.Amount * (1 - target.Armor / 100);
+                    break;
+                case DamageType.Magical:
+                    reducedDamage.Amount = damage.Amount * (1 - target.Resistance / 100);
+                    break;
+                case DamageType.Pure:
+                    break;
+                default:
+                    break;
+            }
+
+            return reducedDamage;
+        }
     }
 }

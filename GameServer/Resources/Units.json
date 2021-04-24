@@ -4,6 +4,7 @@
     "Name": "Lyra",
     "Health": 150.0,
     "Mana": 100.0,
+    "Damage": 10.0,
     "Armor": 0.0,
     "Resistance": 15.0,
     "Speed": 100.0,
@@ -12,10 +13,18 @@
     "Abilities": [
       {
         "Name": "Phantom Strike",
-        "Damage": {
-          "Type": "Physical",
-          "Amount": 10.0
-        }
+        "Effects": [
+          {
+            "Schedule": "Instant",
+            "TargetAttribute": "Health",
+            "Delay": 0,
+            "Duration": 1,
+            "Positive": false,
+            "CanCrit": true,
+            "Type": "Physical",
+            "DamageMultiplier": 1.0
+          }
+        ]
       },
       null,
       null,
@@ -23,10 +32,11 @@
     ]
   },
   {
-    "Id": 0,
+    "Id": 1,
     "Name": "Toxin",
     "Health": 110.0,
     "Mana": 100.0,
+    "Damage": 15.0,
     "Armor": 30.0,
     "Resistance": 0.0,
     "Speed": 80.0,
@@ -34,11 +44,19 @@
     "CriticalMultiplier": 1.5,
     "Abilities": [
       {
-        "Name": "Phantom Strike",
-        "Damage": {
-          "Type": "Magical",
-          "Amount": 15.0
-        }
+        "Name": "Toxic Spit",
+        "Effects": [
+          {
+            "Schedule": "Instant",
+            "TargetAttribute": "Health",
+            "Delay": 0,
+            "Duration": 1,
+            "Positive": false,
+            "CanCrit": true,
+            "Type": "Magical",
+            "DamageMultiplier": 1.0
+          }
+        ]
       },
       null,
       null,
