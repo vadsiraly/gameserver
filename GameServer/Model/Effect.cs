@@ -29,31 +29,38 @@ namespace GameServer.Model
         Speed
     }
 
+    public enum EffectValueType
+    {
+        Value,
+        Percentage,
+        BasedOnSelfDamage
+    }
+
     public class Effect
     {
         public EffectSchedule Schedule { get; set; } = EffectSchedule.Permanent;
         public EffectTargetAttribute TargetAttribute { get; set; }
+
         public int Delay { get; set; } = 0;
         public int Duration { get; set; } = 1;
         public bool Positive { get; set; } = false;
         public bool CanCrit { get; set; } = false;
         public DamageType Type { get; set; }
-        public double Percentage { get; set; } = 1;
-        public bool BasedOnSelfDamage { get; set; } = false;
+
+        public EffectValueType ValueType { get; set; } = EffectValueType.Value;
         public double DamageMultiplier { get; set; } = 1;
+        public double Percentage { get; set; } = 1;
+        public double Value { get; set; } = 0;
 
         public void Apply(Unit source, Unit target, Random random)
         {
-            var damage = Damage.Calculate(new Damage { Amount = source.Damage * DamageMultiplier, Type = Type }, target);
-            if (!Positive)
-            {
-                damage.Amount *= -1;
-            }
+            var damage = new Damage { Amount = source.Damage * DamageMultiplier * (Positive ? 1 : -1), Type = Type };
 
             switch (TargetAttribute)
             {
                 case EffectTargetAttribute.Health:
-                    target.Health += damage.Amount;
+                    var reducedDamage = Positive ? damage.Amount : Damage.Calculate(damage, target).Amount;
+                    target.Health += reducedDamage;
                     break;
                 case EffectTargetAttribute.Mana:
                     target.Mana += damage.Amount;

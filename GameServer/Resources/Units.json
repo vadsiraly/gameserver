@@ -13,9 +13,9 @@
     "Abilities": [
       {
         "Name": "Phantom Strike",
+        "Target": "RandomEnemy",
         "Effects": [
           {
-            "Target": "RandomEnemy",
             "Schedule": "Permanent",
             "TargetAttribute": "Health",
             "Delay": 0,
@@ -23,8 +23,9 @@
             "Positive": false,
             "CanCrit": true,
             "Type": "Physical",
+            "ValueType": "BasedOnSelfDamage",
+            "Value": 0,
             "Percentage": 1.0,
-            "BasedOnSelfDamage": true,
             "DamageMultiplier": 1.0
           }
         ]
@@ -48,9 +49,9 @@
     "Abilities": [
       {
         "Name": "Toxic Spit",
+        "Target": "RandomEnemy",
         "Effects": [
           {
-            "Target": "RandomEnemy",
             "Schedule": "Permanent",
             "TargetAttribute": "Health",
             "Delay": 0,
@@ -58,8 +59,9 @@
             "Positive": false,
             "CanCrit": true,
             "Type": "Magical",
+            "ValueType": "BasedOnSelfDamage",
+            "Value": 0,
             "Percentage": 1.0,
-            "BasedOnSelfDamage": true,
             "DamageMultiplier": 1.0
           }
         ]
@@ -83,9 +85,9 @@
     "Abilities": [
       {
         "Name": "Devour weapons",
+        "Target": "RandomEnemy",
         "Effects": [
           {
-            "Target": "RandomEnemy",
             "Schedule": "Persistent",
             "TargetAttribute": "Damage",
             "Delay": 0,
@@ -93,8 +95,9 @@
             "Positive": false,
             "CanCrit": false,
             "Type": "Pure",
+            "ValueType": "Percentage",
+            "Value": 0,
             "Percentage": 0.0,
-            "BasedOnSelfDamage": false,
             "DamageMultiplier": 0.0
           }
         ]

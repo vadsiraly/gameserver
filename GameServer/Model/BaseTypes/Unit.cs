@@ -92,13 +92,47 @@ namespace GameServer.Model.BaseTypes
             {
                 if (persistentEffect.Effect.TargetAttribute == attribute)
                 {
-                    if (persistentEffect.Effect.BasedOnSelfDamage)
+                    switch (persistentEffect.Effect.ValueType)
                     {
-                        value += persistentEffect.Source.Damage * persistentEffect.Effect.DamageMultiplier * (persistentEffect.Effect.Positive ? 1 : -1);
-                    }
-                    else
-                    {
-                        value *= persistentEffect.Effect.Percentage;
+                        case EffectValueType.Value:
+                            if (persistentEffect.Effect.TargetAttribute == EffectTargetAttribute.Health && !persistentEffect.Effect.Positive)
+                            {
+                                var reducedDamage = BaseTypes.Damage.Calculate(
+                                    new Damage
+                                    {
+                                        Amount = persistentEffect.Effect.Value * (persistentEffect.Effect.Positive ? 1 : -1),
+                                        Type = persistentEffect.Effect.Type
+                                    },
+                                    this);
+                                value += reducedDamage.Amount;
+                            }
+                            else
+                            {
+                                value += persistentEffect.Effect.Value * (persistentEffect.Effect.Positive ? 1 : -1);
+                            }
+                            break;
+                        case EffectValueType.Percentage:
+                            value *= persistentEffect.Effect.Percentage;
+                            break;
+                        case EffectValueType.BasedOnSelfDamage:
+                            if (persistentEffect.Effect.TargetAttribute == EffectTargetAttribute.Health && !persistentEffect.Effect.Positive)
+                            {
+                                var reducedDamage = BaseTypes.Damage.Calculate(
+                                    new Damage
+                                    {
+                                        Amount = persistentEffect.Source.Damage * persistentEffect.Effect.DamageMultiplier * (persistentEffect.Effect.Positive ? 1 : -1),
+                                        Type = persistentEffect.Effect.Type
+                                    },
+                                    this);
+                                value += reducedDamage.Amount;
+                            }
+                            else
+                            {
+                                value += persistentEffect.Source.Damage * persistentEffect.Effect.DamageMultiplier * (persistentEffect.Effect.Positive ? 1 : -1);
+                            }
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
