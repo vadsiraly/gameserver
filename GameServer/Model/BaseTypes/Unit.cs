@@ -1,4 +1,5 @@
 ﻿using GameServer.Enumerations.Damage;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,9 @@ namespace GameServer.Model.BaseTypes
 {
     public class Unit
     {
+        [JsonIgnore]
+        public Team Team { get; set; }
+
         public int Id { get; set; }
         public string Name { get; set; }
         public double Health { get; set; }

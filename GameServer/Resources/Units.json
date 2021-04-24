@@ -15,6 +15,7 @@
         "Name": "Phantom Strike",
         "Effects": [
           {
+            "Target": "RandomEnemy",
             "Schedule": "Instant",
             "TargetAttribute": "Health",
             "Delay": 0,
@@ -47,6 +48,7 @@
         "Name": "Toxic Spit",
         "Effects": [
           {
+            "Target": "RandomEnemy",
             "Schedule": "Instant",
             "TargetAttribute": "Health",
             "Delay": 0,

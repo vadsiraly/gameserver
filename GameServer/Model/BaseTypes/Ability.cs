@@ -11,7 +11,7 @@ namespace GameServer.Model.BaseTypes
         public string Name { get; set; }
         public List<Effect> Effects { get; set; }
 
-        public void Use(Unit source, Unit target, Random random)
+        public void Use(Unit source, Team target, Random random)
         {
             target.ApplyEffect(source, Effects, random);
         }

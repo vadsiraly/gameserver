@@ -44,11 +44,11 @@ namespace GameServer
                 {
                     if (random.Next(2) % 2 == 0)
                     {
-                        attacker.Units[i] = unitManager.Get("Lyra");
+                        attacker.Add(unitManager.Get("Lyra"));
                     }
                     else
                     {
-                        attacker.Units[i] = unitManager.Get("Toxin");
+                        attacker.Add(unitManager.Get("Toxin"));
                     }
                 }
 
@@ -56,11 +56,11 @@ namespace GameServer
                 {
                     if (random.Next(2) % 2 == 0)
                     {
-                        defender.Units[i] = unitManager.Get("Lyra");
+                        defender.Add(unitManager.Get("Lyra"));
                     }
                     else
                     {
-                        defender.Units[i] = unitManager.Get("Toxin");
+                        defender.Add(unitManager.Get("Toxin"));
                     }
                 }
 

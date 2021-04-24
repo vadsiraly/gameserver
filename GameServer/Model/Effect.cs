@@ -28,8 +28,18 @@ namespace GameServer.Model
         Speed
     }
 
+    public enum EffectTarget
+    {
+        RandomFriendly,
+        RandomEnemy,
+        AllEnemy,
+        AllFriendly
+    }
+
     public class Effect
     {
+        public EffectTarget Target { get; set; }
+        //public int TargetCount { get; set; } = 1;
         public EffectSchedule Schedule { get; set; } = EffectSchedule.Instant;
         public EffectTargetAttribute TargetAttribute { get; set; }
         public int Delay { get; set; } = 0;

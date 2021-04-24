@@ -52,15 +52,11 @@ namespace GameServer.Model.BaseTypes
                 {
                     if (Attacker.Units.Contains(current))
                     {
-                        var aliveDefenders = Defender.Units.Where(x => !x.IsDead()).ToArray();
-                        var target = aliveDefenders[random.Next(0, Defender.Units.Count(x => !x.IsDead()))];
-                        current.Abilities[0].Use(current, target, random);
+                        current.Abilities[0].Use(current, Defender, random);
                     }
                     else
                     {
-                        var aliveAttackers = Attacker.Units.Where(x => !x.IsDead()).ToArray();
-                        var target = aliveAttackers[random.Next(0, Attacker.Units.Count(x => !x.IsDead()))];
-                        current.Abilities[0].Use(current, target, random);
+                        current.Abilities[0].Use(current, Attacker, random);
                     }
 
                     allAttackersDead = Attacker.Units.All(x => x.IsDead());
