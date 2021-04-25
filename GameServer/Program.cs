@@ -21,7 +21,7 @@ namespace GameServer
             int defendersWon = 0;
             int tie = 0;
             int inconclusive = 0;
-            int matchCount = 10;
+            int matchCount = 1;
             var seedGenerator = new Random();
             for (int j = 0; j < matchCount; j++)
             {
@@ -112,12 +112,12 @@ namespace GameServer
                 Console.WriteLine("Attackers:");
                 foreach(var unit in attacker.Units)
                 {
-                    Console.WriteLine($"{unit.Name}\n\tDamage done: {unit.DamageDone}\n\tHealing done: {unit.HealingDone}");
+                    Console.WriteLine($"{unit.Name}\n\tDamage done: {Math.Abs(unit.DamageDone)}\n\tHealing done: {unit.HealingDone}");
                 }
                 Console.WriteLine("Defenders:");
                 foreach (var unit in defender.Units)
                 {
-                    Console.WriteLine($"{unit.Name}\n\tDamage done: {unit.DamageDone}\n\tHealing done: {unit.HealingDone}");
+                    Console.WriteLine($"{unit.Name}\n\tDamage done: {Math.Abs(unit.DamageDone)}\n\tHealing done: {unit.HealingDone}");
                 }
             }
 

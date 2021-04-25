@@ -38,13 +38,44 @@ namespace GameServer.Model.BaseTypes
         public double CriticalChance { get => ApplyPersistentEffects(criticalChance, EffectTargetAttribute.CriticalChance); set => criticalChance = value; }
         public double CriticalMultiplier { get => ApplyPersistentEffects(criticalMultiplier, EffectTargetAttribute.CriticalMultiplier); set => criticalMultiplier = value; }
         public Ability[] Abilities { get; set; } = new Ability[4];
+        public Ability BasicAttack { 
+            get
+            {
+                // yuck!
+                return new Ability()
+                {
+                    Name = "Basic attack",
+                    ManaCost = 0,
+                    Cooldown = 0,
+                    EffectGroups = new List<EffectGroup>
+                    {
+                        new EffectGroup
+                        {
+                            Target = EffectGroupTarget.RandomEnemy,
+                            Effects = new List<Effect>
+                            {
+                                new Effect
+                                {
+                                    Schedule = EffectSchedule.Permanent,
+                                    TargetAttribute = EffectTargetAttribute.Health,
+                                    CanCrit = true,
+                                    Type = DamageType.Physical,
+                                    ValueType = EffectValueType.Value,
+                                    Value = Damage,
+                                }
+                            }
+                        }
+                    }
+                };
+            }
+        }
 
         // effects
-        public List<(Unit Source, Effect Effect)> PermanentEffects { get; set; } = new List<(Unit Source, Effect Effect)>();
-        public List<(Unit Source, Effect Effect, int Delay)> DelayedEffects { get; set; } = new List<(Unit Source, Effect Effect, int Delay)>();
-        public List<(Unit Source, Effect Effect, int Duration)> PersistentEffects { get; set; } = new List<(Unit Source, Effect Effect, int Duration)>();
-        public List<(Unit Source, Effect Effect, int Duration)> BeforeRoundEffects { get; set; } = new List<(Unit Source, Effect Effect, int Duration)>();
-        public List<(Unit Source, Effect Effect, int Duration)> AfterRoundEffects { get; set; } = new List<(Unit Source, Effect Effect, int Duration)>();
+        public List<(Unit Source, Ability SourceAbility, Effect Effect)> PermanentEffects { get; set; } = new List<(Unit Source, Ability SourceAbility, Effect Effect)>();
+        public List<(Unit Source, Ability SourceAbility, Effect Effect, int Delay)> DelayedEffects { get; set; } = new List<(Unit Source, Ability SourceAbility, Effect Effect, int Delay)>();
+        public List<(Unit Source, Ability SourceAbility, Effect Effect, int Duration)> PersistentEffects { get; set; } = new List<(Unit Source, Ability SourceAbility, Effect Effect, int Duration)>();
+        public List<(Unit Source, Ability SourceAbility, Effect Effect, int Duration)> BeforeRoundEffects { get; set; } = new List<(Unit Source, Ability SourceAbility, Effect Effect, int Duration)>();
+        public List<(Unit Source, Ability SourceAbility, Effect Effect, int Duration)> AfterRoundEffects { get; set; } = new List<(Unit Source, Ability SourceAbility, Effect Effect, int Duration)>();
 
         //stats
         [JsonIgnore]
@@ -70,7 +101,7 @@ namespace GameServer.Model.BaseTypes
         {
             for (int i = 0; i < DelayedEffects.Count; i++)
             {
-                DelayedEffects[i] = (DelayedEffects[i].Source, DelayedEffects[i].Effect, DelayedEffects[i].Delay - 1);
+                DelayedEffects[i] = (DelayedEffects[i].Source, DelayedEffects[i].SourceAbility, DelayedEffects[i].Effect, DelayedEffects[i].Delay - 1);
                 if (DelayedEffects[i].Delay == 0)
                 {
                     DelayedEffects[i].Effect.Apply(DelayedEffects[i].Source, this, random);
@@ -95,7 +126,7 @@ namespace GameServer.Model.BaseTypes
         {
             for (int i = 0; i < PersistentEffects.Count; i++)
             {
-                PersistentEffects[i] = (PersistentEffects[i].Source, PersistentEffects[i].Effect, PersistentEffects[i].Duration - 1);
+                PersistentEffects[i] = (PersistentEffects[i].Source, PersistentEffects[i].SourceAbility, PersistentEffects[i].Effect, PersistentEffects[i].Duration - 1);
             }
             PersistentEffects.RemoveAll(x => x.Duration == 0);
         }
@@ -105,7 +136,7 @@ namespace GameServer.Model.BaseTypes
             for (int i = 0; i < BeforeRoundEffects.Count; i++)
             {
                 BeforeRoundEffects[i].Effect.Apply(BeforeRoundEffects[i].Source, this, random);
-                BeforeRoundEffects[i] = (BeforeRoundEffects[i].Source, BeforeRoundEffects[i].Effect, BeforeRoundEffects[i].Duration - 1);
+                BeforeRoundEffects[i] = (BeforeRoundEffects[i].Source, BeforeRoundEffects[i].SourceAbility, BeforeRoundEffects[i].Effect, BeforeRoundEffects[i].Duration - 1);
             }
 
             BeforeRoundEffects.RemoveAll(x => x.Duration == 0);
@@ -116,7 +147,7 @@ namespace GameServer.Model.BaseTypes
             for (int i = 0; i < AfterRoundEffects.Count; i++)
             {
                 AfterRoundEffects[i].Effect.Apply(AfterRoundEffects[i].Source, this, random);
-                AfterRoundEffects[i] = (AfterRoundEffects[i].Source, AfterRoundEffects[i].Effect, AfterRoundEffects[i].Duration - 1);
+                AfterRoundEffects[i] = (AfterRoundEffects[i].Source, AfterRoundEffects[i].SourceAbility, AfterRoundEffects[i].Effect, AfterRoundEffects[i].Duration - 1);
             }
 
             AfterRoundEffects.RemoveAll(x => x.Duration == 0);
@@ -159,27 +190,27 @@ namespace GameServer.Model.BaseTypes
             return value;
         }
 
-        public void ApplyEffect(Unit source, List<Effect> effects, Random random)
+        public void ApplyEffect(Unit source, Ability sourceAbility, List<Effect> effects, Random random)
         {
             foreach (var effect in effects)
             {
                 switch (effect.Schedule)
                 {
                     case EffectSchedule.Permanent:
-                        PermanentEffects.Add((source, effect));
+                        PermanentEffects.Add((source, sourceAbility, effect));
                         effect.Apply(source, this, random);
                         break;
                     case EffectSchedule.Persistent:
-                        PersistentEffects.Add((source, effect, effect.Duration));
+                        PersistentEffects.Add((source, sourceAbility, effect, effect.Duration));
                         break;
                     case EffectSchedule.BeforeRound:
-                        BeforeRoundEffects.Add((source, effect, effect.Duration));
+                        BeforeRoundEffects.Add((source, sourceAbility, effect, effect.Duration));
                         break;
                     case EffectSchedule.AfterRound:
-                        AfterRoundEffects.Add((source, effect, effect.Duration));
+                        AfterRoundEffects.Add((source, sourceAbility, effect, effect.Duration));
                         break;
                     case EffectSchedule.Delayed:
-                        DelayedEffects.Add((source, effect, effect.Delay));
+                        DelayedEffects.Add((source, sourceAbility, effect, effect.Delay));
                         break;
                     default:
                         break;

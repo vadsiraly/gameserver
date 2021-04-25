@@ -60,6 +60,7 @@ namespace GameServer.Model
                     {
                         var previousMaxHealth = target.MaxHealth;
                         var value = ApplyEffect(source, target, target.MaxHealth);
+                        target.MaxHealth = value;
 
                         var difference = value - previousMaxHealth;
                         if (difference > 0)
@@ -77,6 +78,7 @@ namespace GameServer.Model
                     {
                         var previousMaxMana = target.MaxMana;
                         var value = ApplyEffect(source, target, target.MaxMana);
+                        target.MaxMana = value;
 
                         var difference = value - previousMaxMana;
                         if (difference > 0)
