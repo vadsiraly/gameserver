@@ -18,6 +18,8 @@ namespace GameServer.Model
 
     public enum EffectTargetAttribute
     {
+        MaxHealth,
+        MaxMana,
         Health,
         Mana,
         Armor,
@@ -57,34 +59,149 @@ namespace GameServer.Model
 
             switch (TargetAttribute)
             {
+                case EffectTargetAttribute.MaxHealth:
+                    {
+                        var previousMaxHealth = target.MaxHealth;
+                        var value = ApplyEffect(source, target, target.MaxHealth);
+
+                        var difference = value - previousMaxHealth;
+                        if (difference > 0)
+                        {
+                            target.Health += difference;
+                        }
+
+                        if (target.Health > target.MaxHealth)
+                        {
+                            target.Health = target.MaxHealth;
+                        }
+                    }
+                    break;
+                case EffectTargetAttribute.MaxMana:
+                    {
+                        var previousMaxMana = target.MaxMana;
+                        var value = ApplyEffect(source, target, target.MaxMana);
+
+                        var difference = value - previousMaxMana;
+                        if (difference > 0)
+                        {
+                            target.Mana += difference;
+                        }
+
+                        if (target.Mana > target.MaxMana)
+                        {
+                            target.Mana = target.MaxMana;
+                        }
+                    }
+                    break;
                 case EffectTargetAttribute.Health:
-                    var reducedDamage = Positive ? damage.Amount : Damage.Calculate(damage, target).Amount;
-                    target.Health += reducedDamage;
+                    {
+                        var value = ApplyEffect(source, target, target.Health);
+                        target.Health = value;
+                    }
                     break;
                 case EffectTargetAttribute.Mana:
-                    target.Mana += damage.Amount;
+                    {
+                        var value = ApplyEffect(source, target, target.Mana);
+                        target.Mana = value;
+                    }
                     break;
                 case EffectTargetAttribute.Armor:
-                    target.Armor += damage.Amount;
+                    {
+                        var value = ApplyEffect(source, target, target.Armor);
+                        target.Armor = value;
+                    }
                     break;
                 case EffectTargetAttribute.Resistance:
-                    target.Resistance += damage.Amount;
+                    {
+                        var value = ApplyEffect(source, target, target.Resistance);
+                        target.Resistance = value;
+                    }
                     break;
                 case EffectTargetAttribute.Damage:
-                    target.Damage += damage.Amount;
+                    {
+                        var value = ApplyEffect(source, target, target.Damage);
+                        target.Damage = value;
+                    }
                     break;
                 case EffectTargetAttribute.CriticalChance:
-                    target.CriticalChance += damage.Amount;
+                    {
+                        var value = ApplyEffect(source, target, target.CriticalChance);
+                        target.CriticalChance = value;
+                    }
                     break;
                 case EffectTargetAttribute.CriticalMultiplier:
-                    target.CriticalMultiplier += damage.Amount;
+                    {
+                        var value = ApplyEffect(source, target, target.CriticalMultiplier);
+                        target.CriticalMultiplier = value;
+                    }
                     break;
                 case EffectTargetAttribute.Speed:
-                    target.Speed += damage.Amount;
+                    {
+                        var value = ApplyEffect(source, target, target.Speed);
+                        target.Speed = value;
+                    }
                     break;
                 default:
                     break;
             }
+        }
+
+        private double Limit(double value, double minValue, double maxValue)
+        {
+            if (value > maxValue) return maxValue;
+            if (value < minValue) return minValue;
+            return value;
+        }
+
+        private double ApplyEffect(Unit source, Unit target, double value)
+        {
+            switch (ValueType)
+            {
+                case EffectValueType.Value:
+                    if (TargetAttribute == EffectTargetAttribute.Health && !Positive)
+                    {
+                        var reducedDamage = Damage.Calculate(
+                            new Damage
+                            {
+                                Amount = Value * (Positive ? 1 : -1),
+                                Type = Type
+                            },
+                            target);
+
+                        
+                         value = Limit(value + reducedDamage.Amount, 0, target.MaxHealth);
+                    }
+                    else
+                    {
+                        value = Limit(value + Value * (Positive ? 1 : -1), 0, target.MaxHealth);
+                    }
+                    break;
+                case EffectValueType.Percentage:
+                    value *= Percentage;
+                    break;
+                case EffectValueType.BasedOnSelfDamage:
+                    if (TargetAttribute == EffectTargetAttribute.Health && !Positive)
+                    {
+                        var reducedDamage = Damage.Calculate(
+                            new Damage
+                            {
+                                Amount = source.Damage * DamageMultiplier * (Positive ? 1 : -1),
+                                Type = Type
+                            },
+                            target);
+
+                        value = Limit(value + reducedDamage.Amount, 0, target.MaxHealth);
+                    }
+                    else
+                    {
+                        value = Limit(value + source.Damage * DamageMultiplier * (Positive ? 1 : -1), 0, target.MaxHealth);
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            return value;
         }
     }
 }

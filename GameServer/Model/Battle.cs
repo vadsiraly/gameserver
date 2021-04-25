@@ -52,11 +52,17 @@ namespace GameServer.Model.BaseTypes
                 {
                     if (Attacker.Units.Contains(current))
                     {
-                        current.Abilities[0].Use(current, Defender, random);
+                        if (current.Abilities[0].ActiveCooldown == 0)
+                        {
+                            current.Abilities[0].Use(current, Defender, random);
+                        }
                     }
                     else
                     {
-                        current.Abilities[0].Use(current, Attacker, random);
+                        if (current.Abilities[0].ActiveCooldown == 0)
+                        {
+                            current.Abilities[0].Use(current, Attacker, random);
+                        }
                     }
 
                     allAttackersDead = Attacker.Units.All(x => x.IsDead);

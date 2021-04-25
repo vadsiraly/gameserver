@@ -29,7 +29,9 @@ namespace GameServer
 
             int attackersWon = 0;
             int defendersWon = 0;
-            int matchCount = 10000;
+            int tie = 0;
+            int inconclusive = 0;
+            int matchCount = 1000;
             var seedGenerator = new Random();
             for (int j = 0; j < matchCount; j++)
             {
@@ -40,9 +42,9 @@ namespace GameServer
                 var attacker = new Team();
                 var defender = new Team();
 
-                for (int i = 0; i < 6; i++)
+                while (attacker.Units.Count != 6)
                 {
-                    var remainder = random.Next(1, 4) % 3;
+                    var remainder = random.Next(1, 7) % 6;
                     switch (remainder)
                     {
                         case 0:
@@ -54,14 +56,23 @@ namespace GameServer
                         case 2:
                             attacker.Add(unitManager.Get("Gulp"));
                             break;
+                        case 3:
+                            attacker.Add(unitManager.Get("Mermaid"));
+                            break;
+                        case 4:
+                            attacker.Add(unitManager.Get("Plague Doctor"));
+                            break;
+                        case 5:
+                            attacker.Add(unitManager.Get("Secretive Girl"));
+                            break;
                         default:
                             break;
                     }
                 }
 
-                for (int i = 0; i < 6; i++)
+                while(defender.Units.Count != 6)
                 {
-                    var remainder = random.Next(1, 4) % 3;
+                    var remainder = random.Next(1, 7) % 6;
                     switch (remainder)
                     {
                         case 0:
@@ -73,6 +84,15 @@ namespace GameServer
                         case 2:
                             defender.Add(unitManager.Get("Gulp"));
                             break;
+                        case 3:
+                            defender.Add(unitManager.Get("Mermaid"));
+                            break;
+                        case 4:
+                            defender.Add(unitManager.Get("Plague Doctor"));
+                            break;
+                        case 5:
+                            defender.Add(unitManager.Get("Secretive Girl"));
+                            break;
                         default:
                             break;
                     }
@@ -83,14 +103,24 @@ namespace GameServer
                 {
                     attackersWon++;
                 }
-                else
+                else if (outcome == Outcome.Loss)
                 {
                     defendersWon++;
+                }
+                else if (outcome == Outcome.Tie)
+                {
+                    tie++;
+                }
+                else if (outcome == Outcome.Inconclusive)
+                {
+                    inconclusive++;
                 }
             }
 
             Console.WriteLine($"Attackers won {attackersWon}/{matchCount}");
             Console.WriteLine($"Defenders won {defendersWon}/{matchCount}");
+            Console.WriteLine($"Tie {tie}/{matchCount}");
+            Console.WriteLine($"Inconclusive {inconclusive}/{matchCount}");
         }
     }
 }

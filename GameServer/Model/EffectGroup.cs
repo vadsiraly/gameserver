@@ -8,6 +8,7 @@ namespace GameServer.Model
 {
     public enum EffectGroupTarget
     {
+        Self,
         RandomFriendly,
         RandomEnemy,
         AllEnemy,
@@ -16,7 +17,7 @@ namespace GameServer.Model
 
     public class EffectGroup
     {
-        public EffectGroupTarget Target = EffectGroupTarget.RandomEnemy;
+        public EffectGroupTarget Target { get; set; } = EffectGroupTarget.RandomEnemy;
         public int TargetCount { get; set; } = 1;
         public List<Effect> Effects { get; set; } = new List<Effect>();
     }

@@ -27,6 +27,8 @@ namespace GameServer.Model.BaseTypes
         // properties
         public int Id { get; set; }
         public string Name { get; set; }
+        public double MaxHealth { get; set; }
+        public double MaxMana { get; set; }
         public double Health { get => ApplyPersistentEffects(health, EffectTargetAttribute.Health); set => health = value; }
         public double Mana { get => ApplyPersistentEffects(mana, EffectTargetAttribute.Mana); set => mana = value; }
         public double Damage { get => ApplyPersistentEffects(damage, EffectTargetAttribute.Damage); set => damage = value; }
@@ -39,10 +41,10 @@ namespace GameServer.Model.BaseTypes
 
         // effects
         public List<(Unit Source, Effect Effect)> PermanentEffects { get; set; } = new List<(Unit Source, Effect Effect)>();
+        public List<(Unit Source, Effect Effect, int Delay)> DelayedEffects { get; set; } = new List<(Unit Source, Effect Effect, int Delay)>();
         public List<(Unit Source, Effect Effect, int Duration)> PersistentEffects { get; set; } = new List<(Unit Source, Effect Effect, int Duration)>();
         public List<(Unit Source, Effect Effect, int Duration)> BeforeRoundEffects { get; set; } = new List<(Unit Source, Effect Effect, int Duration)>();
         public List<(Unit Source, Effect Effect, int Duration)> AfterRoundEffects { get; set; } = new List<(Unit Source, Effect Effect, int Duration)>();
-        public List<(Unit Source, Effect Effect, int Delay, int Duration)> DelayedEffects { get; set; } = new List<(Unit Source, Effect Effect, int Delay, int Duration)>();
 
         //stats
         public void BeginRound(Random random)
@@ -52,8 +54,35 @@ namespace GameServer.Model.BaseTypes
 
         public void EndRound(Random random)
         {
+            ProcesDelayedEffects(random);
             ProcessAfterRoundEffects(random);
             ProcessPersistentEffects(random);
+            DecreaseCooldowns();
+        }
+
+        public void ProcesDelayedEffects(Random random)
+        {
+            for (int i = 0; i < DelayedEffects.Count; i++)
+            {
+                DelayedEffects[i] = (DelayedEffects[i].Source, DelayedEffects[i].Effect, DelayedEffects[i].Delay - 1);
+                if (DelayedEffects[i].Delay == 0)
+                {
+                    DelayedEffects[i].Effect.Apply(DelayedEffects[i].Source, this, random);
+                }
+            }
+
+            DelayedEffects.RemoveAll(x => x.Delay == 0);
+        }
+
+        public void DecreaseCooldowns()
+        {
+            foreach (var ability in Abilities.Where(x => x != null))
+            {
+                if (ability.ActiveCooldown > 0)
+                {
+                    ability.ActiveCooldown--;
+                }
+            }
         }
 
         public void ProcessPersistentEffects(Random random)
@@ -161,7 +190,7 @@ namespace GameServer.Model.BaseTypes
                         AfterRoundEffects.Add((source, effect, effect.Duration));
                         break;
                     case EffectSchedule.Delayed:
-                        DelayedEffects.Add((source, effect, effect.Delay, effect.Duration));
+                        DelayedEffects.Add((source, effect, effect.Delay));
                         break;
                     default:
                         break;
