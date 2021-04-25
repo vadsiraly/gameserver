@@ -12,7 +12,7 @@ namespace GameServer.Model.BaseTypes
 
         public Unit GetRandomAliveUnit(Random random)
         {
-            return Units.GetRandomElement(random, x => !x.IsDead());
+            return Units.GetRandomElement(random, x => !x.IsDead);
         }
 
         public void Add(Unit u)

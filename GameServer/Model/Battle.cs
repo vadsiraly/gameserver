@@ -59,8 +59,8 @@ namespace GameServer.Model.BaseTypes
                         current.Abilities[0].Use(current, Attacker, random);
                     }
 
-                    allAttackersDead = Attacker.Units.All(x => x.IsDead());
-                    allDefendersDead = Defender.Units.All(x => x.IsDead());
+                    allAttackersDead = Attacker.Units.All(x => x.IsDead);
+                    allDefendersDead = Defender.Units.All(x => x.IsDead);
 
                     if (allAttackersDead && !allDefendersDead) return Outcome.Loss;
                     if (allDefendersDead && !allAttackersDead) return Outcome.Win;

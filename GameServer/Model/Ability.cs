@@ -6,47 +6,38 @@ using System.Threading.Tasks;
 
 namespace GameServer.Model.BaseTypes
 {
-    public enum AbilityTarget
-    {
-        RandomFriendly,
-        RandomEnemy,
-        AllEnemy,
-        AllFriendly
-    }
     public class Ability
     {
         public string Name { get; set; }
-        public AbilityTarget Target { get; set; }
-        //public int TargetCount { get; set; } = 1;
-        public List<Effect> Effects { get; set; }
+        public List<EffectGroup> EffectGroups { get; set; }
 
         public void Use(Unit source, Team target, Random random)
         {
-            switch (Target)
+            foreach (var effectGroup in EffectGroups)
             {
-                case AbilityTarget.RandomFriendly:
-                    source.Team.GetRandomAliveUnit(random).ApplyEffect(source, Effects, random);
-                    break;
-                case AbilityTarget.RandomEnemy:
-                    foreach (var effect in Effects)
-                    {
-                        target.GetRandomAliveUnit(random).ApplyEffect(source, Effects, random);
-                    }
-                    break;
-                case AbilityTarget.AllEnemy:
-                    foreach (var enemy in target.Units)
-                    {
-                        enemy.ApplyEffect(source, Effects, random);
-                    }
-                    break;
-                case AbilityTarget.AllFriendly:
-                    foreach (var friendly in source.Team.Units)
-                    {
-                        friendly.ApplyEffect(source, Effects, random);
-                    }
-                    break;
-                default:
-                    break;
+                switch (effectGroup.Target)
+                {
+                    case EffectGroupTarget.RandomFriendly:
+                        source.Team.GetRandomAliveUnit(random).ApplyEffect(source, effectGroup.Effects, random);
+                        break;
+                    case EffectGroupTarget.RandomEnemy:
+                        target.GetRandomAliveUnit(random).ApplyEffect(source, effectGroup.Effects, random);
+                        break;
+                    case EffectGroupTarget.AllEnemy:
+                        foreach (var enemy in target.Units)
+                        {
+                            enemy.ApplyEffect(source, effectGroup.Effects, random);
+                        }
+                        break;
+                    case EffectGroupTarget.AllFriendly:
+                        foreach (var friendly in source.Team.Units)
+                        {
+                            friendly.ApplyEffect(source, effectGroup.Effects, random);
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }

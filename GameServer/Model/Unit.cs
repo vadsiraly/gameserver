@@ -21,6 +21,9 @@ namespace GameServer.Model.BaseTypes
         [JsonIgnore]
         public Team Team { get; set; }
 
+        [JsonIgnore]
+        public bool IsDead => Health <= 0;
+
         // properties
         public int Id { get; set; }
         public string Name { get; set; }
@@ -32,7 +35,6 @@ namespace GameServer.Model.BaseTypes
         public double Speed { get => ApplyPersistentEffects(speed, EffectTargetAttribute.Speed); set => speed = value; }
         public double CriticalChance { get => ApplyPersistentEffects(criticalChance, EffectTargetAttribute.CriticalChance); set => criticalChance = value; }
         public double CriticalMultiplier { get => ApplyPersistentEffects(criticalMultiplier, EffectTargetAttribute.CriticalMultiplier); set => criticalMultiplier = value; }
-        public bool IsDead() => Health <= 0;
         public Ability[] Abilities { get; set; } = new Ability[4];
 
         // effects

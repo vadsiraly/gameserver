@@ -13,20 +13,24 @@
     "Abilities": [
       {
         "Name": "Phantom Strike",
-        "Target": "RandomEnemy",
-        "Effects": [
+        "EffectGroups": [
           {
-            "Schedule": "Permanent",
-            "TargetAttribute": "Health",
-            "Delay": 0,
-            "Duration": 1,
-            "Positive": false,
-            "CanCrit": true,
-            "Type": "Physical",
-            "ValueType": "BasedOnSelfDamage",
-            "Value": 0,
-            "Percentage": 1.0,
-            "DamageMultiplier": 1.0
+            "Target": "RandomEnemy",
+            "Effects": [
+              {
+                "Schedule": "Permanent",
+                "TargetAttribute": "Health",
+                "Delay": 0,
+                "Duration": 1,
+                "Positive": false,
+                "CanCrit": true,
+                "Type": "Physical",
+                "ValueType": "BasedOnSelfDamage",
+                "Value": 0,
+                "Percentage": 1.0,
+                "DamageMultiplier": 1.0
+              }
+            ]
           }
         ]
       },
@@ -49,20 +53,24 @@
     "Abilities": [
       {
         "Name": "Toxic Spit",
-        "Target": "RandomEnemy",
-        "Effects": [
+        "EffectGroups": [
           {
-            "Schedule": "Permanent",
-            "TargetAttribute": "Health",
-            "Delay": 0,
-            "Duration": 1,
-            "Positive": false,
-            "CanCrit": true,
-            "Type": "Magical",
-            "ValueType": "BasedOnSelfDamage",
-            "Value": 0,
-            "Percentage": 1.0,
-            "DamageMultiplier": 1.0
+            "Target": "RandomEnemy",
+            "Effects": [
+              {
+                "Schedule": "Permanent",
+                "TargetAttribute": "Health",
+                "Delay": 0,
+                "Duration": 1,
+                "Positive": false,
+                "CanCrit": true,
+                "Type": "Magical",
+                "ValueType": "BasedOnSelfDamage",
+                "Value": 0,
+                "Percentage": 1.0,
+                "DamageMultiplier": 1.0
+              }
+            ]
           }
         ]
       },
@@ -85,20 +93,24 @@
     "Abilities": [
       {
         "Name": "Devour weapons",
-        "Target": "RandomEnemy",
-        "Effects": [
+        "EffectGroups": [
           {
-            "Schedule": "Persistent",
-            "TargetAttribute": "Damage",
-            "Delay": 0,
-            "Duration": 1,
-            "Positive": false,
-            "CanCrit": false,
-            "Type": "Pure",
-            "ValueType": "Percentage",
-            "Value": 0,
-            "Percentage": 0.0,
-            "DamageMultiplier": 0.0
+            "Target": "RandomEnemy",
+            "Effects": [
+              {
+                "Schedule": "Persistent",
+                "TargetAttribute": "Damage",
+                "Delay": 0,
+                "Duration": 1,
+                "Positive": false,
+                "CanCrit": false,
+                "Type": "Pure",
+                "ValueType": "Percentage",
+                "Value": 0,
+                "Percentage": 0.0,
+                "DamageMultiplier": 0.0
+              }
+            ]
           }
         ]
       },
