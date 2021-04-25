@@ -33,8 +33,7 @@ namespace GameServer.Model
     public enum EffectValueType
     {
         Value,
-        Percentage,
-        BasedOnSelfDamage
+        Percentage
     }
 
     public class Effect
@@ -144,11 +143,11 @@ namespace GameServer.Model
             }
         }
 
-        private double Limit(double value, double minValue, double maxValue)
+        private double Limit(double baseValue, double addition, double minValue, double maxValue)
         {
-            if (value > maxValue) return maxValue;
-            if (value < minValue) return minValue;
-            return value;
+            if (baseValue + addition > maxValue) return maxValue - baseValue;
+            if (baseValue + addition < minValue) return -baseValue;
+            return addition;
         }
 
         private double ApplyEffect(Unit source, Unit target, double value)
@@ -156,43 +155,38 @@ namespace GameServer.Model
             switch (ValueType)
             {
                 case EffectValueType.Value:
-                    if (TargetAttribute == EffectTargetAttribute.Health && !Positive)
+                    if (TargetAttribute == EffectTargetAttribute.Health)
                     {
-                        var reducedDamage = Damage.Calculate(
-                            new Damage
-                            {
-                                Amount = Value * (Positive ? 1 : -1),
-                                Type = Type
-                            },
-                            target);
+                        if (!Positive)
+                        {
+                            var reducedDamage = Damage.Calculate(
+                                new Damage
+                                {
+                                    Amount = Value * (Positive ? 1 : -1),
+                                    Type = Type
+                                },
+                                target);
 
-                         value = Limit(value + reducedDamage.Amount, 0, target.MaxHealth);
+                            var damage = Limit(value, reducedDamage.Amount, 0, target.MaxHealth);
+                            value += damage;
+
+                            source.DamageDone += damage;
+                        }
+                        else
+                        {
+                            var damage = Limit(value, Value * (Positive ? 1 : -1), 0, target.MaxHealth);
+                            value += damage;
+
+                            source.HealingDone += damage;
+                        }
                     }
                     else
                     {
-                        value = value + Value * (Positive ? 1 : -1);
+                        value += Value * (Positive ? 1 : -1);
                     }
                     break;
                 case EffectValueType.Percentage:
                     value *= Percentage;
-                    break;
-                case EffectValueType.BasedOnSelfDamage:
-                    if (TargetAttribute == EffectTargetAttribute.Health && !Positive)
-                    {
-                        var reducedDamage = Damage.Calculate(
-                            new Damage
-                            {
-                                Amount = source.Damage * DamageMultiplier * (Positive ? 1 : -1),
-                                Type = Type
-                            },
-                            target);
-
-                        value = Limit(value + reducedDamage.Amount, 0, target.MaxHealth);
-                    }
-                    else
-                    {
-                        value = value + source.Damage * DamageMultiplier * (Positive ? 1 : -1);
-                    }
                     break;
                 default:
                     break;

@@ -47,6 +47,12 @@ namespace GameServer.Model.BaseTypes
         public List<(Unit Source, Effect Effect, int Duration)> AfterRoundEffects { get; set; } = new List<(Unit Source, Effect Effect, int Duration)>();
 
         //stats
+        [JsonIgnore]
+        public double DamageDone { get; set; }
+
+        [JsonIgnore]
+        public double HealingDone { get; set; }
+
         public void BeginRound(Random random)
         {
             ProcessBeforeRoundEffects(random);
@@ -143,23 +149,6 @@ namespace GameServer.Model.BaseTypes
                             break;
                         case EffectValueType.Percentage:
                             value *= persistentEffect.Effect.Percentage;
-                            break;
-                        case EffectValueType.BasedOnSelfDamage:
-                            if (persistentEffect.Effect.TargetAttribute == EffectTargetAttribute.Health && !persistentEffect.Effect.Positive)
-                            {
-                                var reducedDamage = BaseTypes.Damage.Calculate(
-                                    new Damage
-                                    {
-                                        Amount = persistentEffect.Source.Damage * persistentEffect.Effect.DamageMultiplier * (persistentEffect.Effect.Positive ? 1 : -1),
-                                        Type = persistentEffect.Effect.Type
-                                    },
-                                    this);
-                                value += reducedDamage.Amount;
-                            }
-                            else
-                            {
-                                value += persistentEffect.Source.Damage * persistentEffect.Effect.DamageMultiplier * (persistentEffect.Effect.Positive ? 1 : -1);
-                            }
                             break;
                         default:
                             break;

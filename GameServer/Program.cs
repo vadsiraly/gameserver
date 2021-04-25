@@ -13,16 +13,6 @@ namespace GameServer
 {
     class Program
     {
-        /*
-            var json = JsonConvert.SerializeObject(
-                    new Unit[] { unitManager.Get("Lyra"), unitManager.Get("Toxin") },
-                    Formatting.Indented, 
-                    new[] { new StringEnumConverter() } 
-                );
-            File.WriteAllText("out.txt", json);
-
-            return;
-        */
         static void Main(string[] args)
         {
             var unitManager = new UnitManager();
@@ -31,7 +21,7 @@ namespace GameServer
             int defendersWon = 0;
             int tie = 0;
             int inconclusive = 0;
-            int matchCount = 1000;
+            int matchCount = 10;
             var seedGenerator = new Random();
             for (int j = 0; j < matchCount; j++)
             {
@@ -98,7 +88,8 @@ namespace GameServer
                     }
                 }
 
-                var outcome = new Battle(attacker, defender).Fight(seed);
+                var battle = new Battle(attacker, defender);
+                var outcome = battle.Fight(seed);
                 if (outcome == Outcome.Win)
                 {
                     attackersWon++;
@@ -114,6 +105,19 @@ namespace GameServer
                 else if (outcome == Outcome.Inconclusive)
                 {
                     inconclusive++;
+                }
+
+                Console.WriteLine("Result:");
+                Console.WriteLine($"Rounds: {battle.Rounds}");
+                Console.WriteLine("Attackers:");
+                foreach(var unit in attacker.Units)
+                {
+                    Console.WriteLine($"{unit.Name}\n\tDamage done: {unit.DamageDone}\n\tHealing done: {unit.HealingDone}");
+                }
+                Console.WriteLine("Defenders:");
+                foreach (var unit in defender.Units)
+                {
+                    Console.WriteLine($"{unit.Name}\n\tDamage done: {unit.DamageDone}\n\tHealing done: {unit.HealingDone}");
                 }
             }
 

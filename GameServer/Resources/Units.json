@@ -28,8 +28,8 @@
                 "Positive": false,
                 "CanCrit": true,
                 "Type": "Physical",
-                "ValueType": "BasedOnSelfDamage",
-                "Value": 0,
+                "ValueType": "Value",
+                "Value": 10,
                 "Percentage": 1.0,
                 "DamageMultiplier": 1.0
               }
@@ -71,8 +71,8 @@
                 "Positive": false,
                 "CanCrit": true,
                 "Type": "Magical",
-                "ValueType": "BasedOnSelfDamage",
-                "Value": 0,
+                "ValueType": "Value",
+                "Value": 15,
                 "Percentage": 1.0,
                 "DamageMultiplier": 1.0
               }
@@ -156,7 +156,7 @@
     "CriticalMultiplier": 1.2,
     "Abilities": [
       {
-        "Name": "Blessing of the sea",
+        "Name": "Blessing of the Sea",
         "Cooldown": 1,
         "EffectGroups": [
           {
@@ -250,7 +250,7 @@
                 "CanCrit": false,
                 "Type": "Magical",
                 "ValueType": "Value",
-                "Value": 15,
+                "Value": 5,
                 "Percentage": 0.0,
                 "DamageMultiplier": 0.0
               }

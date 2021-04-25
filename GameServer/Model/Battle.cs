@@ -18,6 +18,7 @@ namespace GameServer.Model.BaseTypes
     {
         public Team Attacker { get; set; }
         public Team Defender { get; set; }
+        public int Rounds { get; set; } = 0;
         public List<Unit> AllUnits
         {
             get
@@ -40,8 +41,7 @@ namespace GameServer.Model.BaseTypes
 
             var allAttackersDead = false;
             var allDefendersDead = false;
-            var rounds = 0;
-            while (!allAttackersDead && !allDefendersDead && rounds < RoundLimit)
+            while (!allAttackersDead && !allDefendersDead && Rounds < RoundLimit)
             {
                 foreach(var current in AllUnits)
                 {
@@ -78,7 +78,7 @@ namespace GameServer.Model.BaseTypes
                     current.EndRound(random);
                 }
 
-                ++rounds;
+                ++Rounds;
             }
 
             return Outcome.Inconclusive;
