@@ -107,7 +107,7 @@ namespace GameServer.Model.BaseTypes
 
         public void ProcessAfterRoundEffects(Random random)
         {
-            for (int i = 0; i < BeforeRoundEffects.Count; i++)
+            for (int i = 0; i < AfterRoundEffects.Count; i++)
             {
                 AfterRoundEffects[i].Effect.Apply(AfterRoundEffects[i].Source, this, random);
                 AfterRoundEffects[i] = (AfterRoundEffects[i].Source, AfterRoundEffects[i].Effect, AfterRoundEffects[i].Duration - 1);

@@ -27,6 +27,9 @@ namespace GameServer
         public static T GetRandomElement<T>(this IList<T> list, Random random, Func<T, bool> predicate)
         {
             var filteredList = list.Where(x => predicate(x)).ToList();
+
+            if (filteredList.Count == 0) return default(T);
+
             int index = random.Next(filteredList.Count);
             return filteredList[index];
         }

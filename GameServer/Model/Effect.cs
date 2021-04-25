@@ -55,8 +55,6 @@ namespace GameServer.Model
 
         public void Apply(Unit source, Unit target, Random random)
         {
-            var damage = new Damage { Amount = source.Damage * DamageMultiplier * (Positive ? 1 : -1), Type = Type };
-
             switch (TargetAttribute)
             {
                 case EffectTargetAttribute.MaxHealth:
@@ -168,12 +166,11 @@ namespace GameServer.Model
                             },
                             target);
 
-                        
                          value = Limit(value + reducedDamage.Amount, 0, target.MaxHealth);
                     }
                     else
                     {
-                        value = Limit(value + Value * (Positive ? 1 : -1), 0, target.MaxHealth);
+                        value = value + Value * (Positive ? 1 : -1);
                     }
                     break;
                 case EffectValueType.Percentage:
@@ -194,7 +191,7 @@ namespace GameServer.Model
                     }
                     else
                     {
-                        value = Limit(value + source.Damage * DamageMultiplier * (Positive ? 1 : -1), 0, target.MaxHealth);
+                        value = value + source.Damage * DamageMultiplier * (Positive ? 1 : -1);
                     }
                     break;
                 default:

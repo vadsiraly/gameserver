@@ -25,10 +25,10 @@ namespace GameServer.Model.BaseTypes
                         source.ApplyEffect(source, effectGroup.Effects, random);
                         break;
                     case EffectGroupTarget.RandomFriendly:
-                        source.Team.GetRandomAliveUnit(random).ApplyEffect(source, effectGroup.Effects, random);
+                        source.Team.GetRandomAliveUnit(random)?.ApplyEffect(source, effectGroup.Effects, random);
                         break;
                     case EffectGroupTarget.RandomEnemy:
-                        target.GetRandomAliveUnit(random).ApplyEffect(source, effectGroup.Effects, random);
+                        target.GetRandomAliveUnit(random)?.ApplyEffect(source, effectGroup.Effects, random);
                         break;
                     case EffectGroupTarget.AllEnemy:
                         foreach (var enemy in target.Units)

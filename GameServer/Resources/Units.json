@@ -116,6 +116,19 @@
                 "Type": "Pure",
                 "ValueType": "Percentage",
                 "Value": 0,
+                "Percentage": 0.25,
+                "DamageMultiplier": 0.0
+              },
+              {
+                "Schedule": "Permanent",
+                "TargetAttribute": "Health",
+                "Delay": 0,
+                "Duration": 1,
+                "Positive": false,
+                "CanCrit": true,
+                "Type": "Physical",
+                "ValueType": "Value",
+                "Value": 10,
                 "Percentage": 0.0,
                 "DamageMultiplier": 0.0
               }
@@ -151,14 +164,14 @@
             "Effects": [
               {
                 "Schedule": "Permanent",
-                "TargetAttribute": "Damage",
+                "TargetAttribute": "Health",
                 "Delay": 0,
                 "Duration": 1,
                 "Positive": true,
                 "CanCrit": true,
                 "Type": "Pure",
                 "ValueType": "Value",
-                "Value": 20,
+                "Value": 10,
                 "Percentage": 0.0,
                 "DamageMultiplier": 0.0
               }
@@ -176,7 +189,7 @@
                 "CanCrit": false,
                 "Type": "Pure",
                 "ValueType": "Value",
-                "Value": 15,
+                "Value": 5,
                 "Percentage": 0.0,
                 "DamageMultiplier": 0.0
               }
@@ -205,21 +218,21 @@
     "Abilities": [
       {
         "Name": "Reaper's Scythe",
-        "Cooldown": 2,
+        "Cooldown": 4,
         "EffectGroups": [
           {
             "Target": "RandomEnemy",
             "Effects": [
               {
                 "Schedule": "Permanent",
-                "TargetAttribute": "Damage",
+                "TargetAttribute": "Health",
                 "Delay": 0,
                 "Duration": 1,
                 "Positive": false,
                 "CanCrit": true,
                 "Type": "Physical",
                 "ValueType": "Value",
-                "Value": 5,
+                "Value": 15,
                 "Percentage": 0.0,
                 "DamageMultiplier": 0.0
               }
@@ -230,14 +243,14 @@
             "Effects": [
               {
                 "Schedule": "AfterRound",
-                "TargetAttribute": "Damage",
+                "TargetAttribute": "Health",
                 "Delay": 0,
-                "Duration": 1,
+                "Duration": 4,
                 "Positive": false,
                 "CanCrit": false,
                 "Type": "Magical",
                 "ValueType": "Value",
-                "Value": 5,
+                "Value": 15,
                 "Percentage": 0.0,
                 "DamageMultiplier": 0.0
               }
