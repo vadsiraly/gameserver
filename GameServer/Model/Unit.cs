@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using GameServer.Services;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,73 +10,119 @@ namespace GameServer.Model.BaseTypes
 {
     public class Unit
     {
-        private double damage;
-        private double armor;
-        private double resistance;
-        private double speed;
-        private double criticalChance;
-        private double criticalMultiplier;
-        private double mana;
-        private double health;
+        private double _baseHealth;
+        private double _baseMana;
+        private double _baseMaxHealth;
 
-        [JsonIgnore]
-        public Team Team { get; set; }
+        public int Id { get; private set; }
+        public string Name { get; private set; }
+        private double BaseMaxMana { get; set; }
+        private double BaseDamage { get; set; }
+        private double BaseArmor { get; set; }
+        private double BaseResistance { get; set; }
+        private double BaseSpeed { get; set; }
+        private double BaseCriticalChance { get; set; }
+        private double BaseCriticalMultiplier { get; set; }
 
-        [JsonIgnore]
-        public bool IsDead => Health <= 0;
-
-        // properties
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public double MaxHealth { get; set; }
-        public double MaxMana { get; set; }
-        public double Health { get => ApplyPersistentEffects(health, EffectTargetAttribute.Health); set => health = value; }
-        public double Mana { get => ApplyPersistentEffects(mana, EffectTargetAttribute.Mana); set => mana = value; }
-        public double Damage { get => ApplyPersistentEffects(damage, EffectTargetAttribute.Damage); set => damage = value; }
-        public double Armor { get => ApplyPersistentEffects(armor, EffectTargetAttribute.Armor); set => armor = value; }
-        public double Resistance { get => ApplyPersistentEffects(resistance, EffectTargetAttribute.Resistance); set => resistance = value; }
-        public double Speed { get => ApplyPersistentEffects(speed, EffectTargetAttribute.Speed); set => speed = value; }
-        public double CriticalChance { get => ApplyPersistentEffects(criticalChance, EffectTargetAttribute.CriticalChance); set => criticalChance = value; }
-        public double CriticalMultiplier { get => ApplyPersistentEffects(criticalMultiplier, EffectTargetAttribute.CriticalMultiplier); set => criticalMultiplier = value; }
-        public Ability[] Abilities { get; set; } = new Ability[4];
-        public Ability BasicAttack { 
-            get
+        private double BaseHealth
+        { 
+            get => _baseHealth; 
+            set
             {
-                // yuck!
-                return new Ability()
+                if (value > MaxHealth)
                 {
-                    Name = "Basic attack",
-                    ManaCost = 0,
-                    Cooldown = 0,
-                    EffectGroups = new List<EffectGroup>
-                    {
-                        new EffectGroup
-                        {
-                            Target = EffectGroupTarget.RandomEnemy,
-                            Effects = new List<Effect>
-                            {
-                                new Effect
-                                {
-                                    Schedule = EffectSchedule.Permanent,
-                                    TargetAttribute = EffectTargetAttribute.Health,
-                                    CanCrit = true,
-                                    Type = DamageType.Physical,
-                                    ValueType = EffectValueType.Value,
-                                    Value = Damage,
-                                }
-                            }
-                        }
-                    }
-                };
+                    _baseHealth = MaxHealth;
+                } 
+                else if (value < 0)
+                {
+                    _baseHealth = 0;
+                }
+                else
+                {
+                    _baseHealth = value;
+                }
             }
         }
 
+        private double BaseMana
+        {
+            get => _baseMana;
+            set
+            {
+                if (value > MaxMana)
+                {
+                    _baseMana = MaxMana;
+                }
+                else if (value < 0)
+                {
+                    _baseMana = 0;
+                }
+                else
+                {
+                    _baseMana = value;
+                }
+            }
+        }
+
+        private double BaseMaxHealth
+        {
+            get => _baseMaxHealth;
+            set
+            {
+                if (value < 1)
+                {
+                    _baseMaxHealth = 1;
+                }
+                else
+                {
+                    _baseMaxHealth = value;
+                }
+            }
+        }
+
+        [JsonConstructor]
+        public Unit(int id, string name, double baseHealth, double baseMana, double baseMaxHealth, double baseMaxMana, double baseDamage, double baseArmor, double baseResistance, double baseSpeed, double baseCriticalChance, double baseCriticalMultiplier, List<string> abilities)
+        {
+            Id = id;
+            Name = name;
+            BaseMaxHealth = baseMaxHealth;
+            BaseMaxMana = baseMaxMana;
+            BaseHealth = baseHealth;
+            BaseMana = baseMana;
+            BaseDamage = baseDamage;
+            BaseArmor = baseArmor;
+            BaseResistance = baseResistance;
+            BaseSpeed = baseSpeed;
+            BaseCriticalChance = baseCriticalChance;
+            BaseCriticalMultiplier = baseCriticalMultiplier;
+
+            var abilityFactory = new AbilityFactory();
+            foreach (var ability in abilities)
+            {
+                Abilities.Add(abilityFactory.GetByReference(ability));
+            }
+        }
+
+        public Team Team { get; set; }
+
+        public bool IsDead => Health <= 0;
+
+        // properties
+        public double MaxHealth => ApplyPersistentEffects(BaseMaxHealth, EffectTargetAttribute.MaxHealth);
+        public double MaxMana => ApplyPersistentEffects(BaseMaxMana, EffectTargetAttribute.MaxMana);
+        public double Health => ApplyPersistentEffects(BaseHealth, EffectTargetAttribute.Health);
+        public double Mana => ApplyPersistentEffects(BaseMana, EffectTargetAttribute.Mana);
+        public double Damage => ApplyPersistentEffects(BaseDamage, EffectTargetAttribute.Damage);
+        public double Armor => ApplyPersistentEffects(BaseArmor, EffectTargetAttribute.Armor);
+        public double Resistance => ApplyPersistentEffects(BaseResistance, EffectTargetAttribute.Resistance);
+        public double Speed => ApplyPersistentEffects(BaseSpeed, EffectTargetAttribute.Speed);
+        public double CriticalChance => ApplyPersistentEffects(BaseCriticalChance, EffectTargetAttribute.CriticalChance);
+        public double CriticalMultiplier => ApplyPersistentEffects(BaseCriticalMultiplier, EffectTargetAttribute.CriticalMultiplier);
+        public List<Ability> Abilities { get; set; } = new List<Ability>();
+
         // effects
-        public List<(Unit Source, Ability SourceAbility, Effect Effect)> PermanentEffects { get; set; } = new List<(Unit Source, Ability SourceAbility, Effect Effect)>();
-        public List<(Unit Source, Ability SourceAbility, Effect Effect, int Delay)> DelayedEffects { get; set; } = new List<(Unit Source, Ability SourceAbility, Effect Effect, int Delay)>();
-        public List<(Unit Source, Ability SourceAbility, Effect Effect, int Duration)> PersistentEffects { get; set; } = new List<(Unit Source, Ability SourceAbility, Effect Effect, int Duration)>();
-        public List<(Unit Source, Ability SourceAbility, Effect Effect, int Duration)> BeforeRoundEffects { get; set; } = new List<(Unit Source, Ability SourceAbility, Effect Effect, int Duration)>();
-        public List<(Unit Source, Ability SourceAbility, Effect Effect, int Duration)> AfterRoundEffects { get; set; } = new List<(Unit Source, Ability SourceAbility, Effect Effect, int Duration)>();
+        public List<(Unit Source, Ability SourceAbility, Effect Effect)> AppliedEffects { get; set; } = new List<(Unit Source, Ability SourceAbility, Effect Effect)>();
+        public List<(Unit Source, Ability SourceAbility, Effect Effect)> Effects { get; set; } = new List<(Unit Source, Ability SourceAbility, Effect Effect)>();
 
         //stats
         [JsonIgnore]
@@ -91,24 +138,28 @@ namespace GameServer.Model.BaseTypes
 
         public void EndRound(Random random)
         {
-            ProcesDelayedEffects(random);
+            ProcessDelayedEffects(random);
             ProcessAfterRoundEffects(random);
             ProcessPersistentEffects(random);
             DecreaseCooldowns();
+
+            Effects.RemoveAll(x => x.Effect.Delay == 0 || x.Effect.Duration == 0);
         }
 
-        public void ProcesDelayedEffects(Random random)
+        public void ProcessDelayedEffects(Random random)
         {
-            for (int i = 0; i < DelayedEffects.Count; i++)
+            var delayedEffect = Effects.Where(x => x.Effect.Schedule == EffectSchedule.Delayed).ToList();
+            foreach(var effect in delayedEffect)
             {
-                DelayedEffects[i] = (DelayedEffects[i].Source, DelayedEffects[i].SourceAbility, DelayedEffects[i].Effect, DelayedEffects[i].Delay - 1);
-                if (DelayedEffects[i].Delay == 0)
+                if (effect.Effect.Delay == 0)
                 {
-                    DelayedEffects[i].Effect.Apply(DelayedEffects[i].Source, this, random);
+                    ApplyEffect(effect);
+
+                    Effects.Remove(effect);
+                    AppliedEffects.Add(effect);
                 }
             }
 
-            DelayedEffects.RemoveAll(x => x.Delay == 0);
         }
 
         public void DecreaseCooldowns()
@@ -124,62 +175,66 @@ namespace GameServer.Model.BaseTypes
 
         public void ProcessPersistentEffects(Random random)
         {
-            for (int i = 0; i < PersistentEffects.Count; i++)
+            var persistentEffects = Effects.Where(x => x.Effect.Schedule == EffectSchedule.Persistent).ToList();
+            foreach(var effect in persistentEffects)
             {
-                PersistentEffects[i] = (PersistentEffects[i].Source, PersistentEffects[i].SourceAbility, PersistentEffects[i].Effect, PersistentEffects[i].Duration - 1);
+                ApplyEffect(effect);
+
+                effect.Effect.Duration -= 1;
+                if (effect.Effect.Duration == 0)
+                {
+                    Effects.Remove(effect);
+                    AppliedEffects.Add(effect);
+                }
             }
-            PersistentEffects.RemoveAll(x => x.Duration == 0);
         }
 
         public void ProcessBeforeRoundEffects(Random random)
         {
-            for (int i = 0; i < BeforeRoundEffects.Count; i++)
+            var beforeRoundEffects = Effects.Where(x => x.Effect.Schedule == EffectSchedule.BeforeRound).ToList();
+            foreach(var effect in beforeRoundEffects)
             {
-                BeforeRoundEffects[i].Effect.Apply(BeforeRoundEffects[i].Source, this, random);
-                BeforeRoundEffects[i] = (BeforeRoundEffects[i].Source, BeforeRoundEffects[i].SourceAbility, BeforeRoundEffects[i].Effect, BeforeRoundEffects[i].Duration - 1);
-            }
+                ApplyEffect(effect);
 
-            BeforeRoundEffects.RemoveAll(x => x.Duration == 0);
+                effect.Effect.Duration -= 1;
+                if (effect.Effect.Duration == 0)
+                {
+                    Effects.Remove(effect);
+                    AppliedEffects.Add(effect);
+                }
+            }
         }
 
         public void ProcessAfterRoundEffects(Random random)
         {
-            for (int i = 0; i < AfterRoundEffects.Count; i++)
+            var afterRoundEffects = Effects.Where(x => x.Effect.Schedule == EffectSchedule.AfterRound).ToList();
+            foreach (var effect in afterRoundEffects)
             {
-                AfterRoundEffects[i].Effect.Apply(AfterRoundEffects[i].Source, this, random);
-                AfterRoundEffects[i] = (AfterRoundEffects[i].Source, AfterRoundEffects[i].SourceAbility, AfterRoundEffects[i].Effect, AfterRoundEffects[i].Duration - 1);
-            }
+                ApplyEffect(effect);
 
-            AfterRoundEffects.RemoveAll(x => x.Duration == 0);
+                effect.Effect.Duration -= 1;
+                if (effect.Effect.Duration == 0)
+                {
+                    Effects.Remove(effect);
+                    AppliedEffects.Add(effect);
+                }
+            }
         }
 
         private double ApplyPersistentEffects(double value, EffectTargetAttribute attribute)
         {
-            foreach(var persistentEffect in PersistentEffects)
+            var persistentEffects = Effects.Where(x => x.Effect.Schedule == EffectSchedule.Persistent);
+            foreach (var effect in persistentEffects)
             {
-                if (persistentEffect.Effect.TargetAttribute == attribute)
+                if (effect.Effect.TargetAttribute == attribute)
                 {
-                    switch (persistentEffect.Effect.ValueType)
+                    switch (effect.Effect.ValueType)
                     {
                         case EffectValueType.Value:
-                            if (persistentEffect.Effect.TargetAttribute == EffectTargetAttribute.Health && !persistentEffect.Effect.Positive)
-                            {
-                                var reducedDamage = BaseTypes.Damage.Calculate(
-                                    new Damage
-                                    {
-                                        Amount = persistentEffect.Effect.Value * (persistentEffect.Effect.Positive ? 1 : -1),
-                                        Type = persistentEffect.Effect.Type
-                                    },
-                                    this);
-                                value += reducedDamage.Amount;
-                            }
-                            else
-                            {
-                                value += persistentEffect.Effect.Value * (persistentEffect.Effect.Positive ? 1 : -1);
-                            }
+                            value += FinalizeAmount(effect.Effect);
                             break;
                         case EffectValueType.Percentage:
-                            value *= persistentEffect.Effect.Percentage;
+                            value *= effect.Effect.Percentage;
                             break;
                         default:
                             break;
@@ -190,27 +245,133 @@ namespace GameServer.Model.BaseTypes
             return value;
         }
 
-        public void ApplyEffect(Unit source, Ability sourceAbility, List<Effect> effects, Random random)
+        private double ApplyDamage((Unit Source, Ability SourceAbility, Effect Effect) effect, double value)
+        {
+            var result = value;
+            switch (effect.Effect.ValueType)
+            {
+                case EffectValueType.Value:
+                    {
+                        var actualDamage = FinalizeAmount(effect.Effect);
+                        result += actualDamage;
+                    }
+                    break;
+                case EffectValueType.Percentage:
+                    {
+                        var actualDamage = result * effect.Effect.Percentage;
+                        result = actualDamage;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            return result;
+        }
+
+        private void ApplyEffect((Unit Source, Ability SourceAbility, Effect Effect) effect)
+        {
+            switch (effect.Effect.TargetAttribute)
+            {
+                case EffectTargetAttribute.MaxHealth:
+                    BaseMaxHealth = ApplyDamage(effect, BaseMaxHealth);
+                    break;
+                case EffectTargetAttribute.MaxMana:
+                    BaseMaxMana = ApplyDamage(effect, BaseMaxMana);
+                    break;
+                case EffectTargetAttribute.Health:
+                    BaseHealth = ApplyDamage(effect, BaseHealth);
+                    break;
+                case EffectTargetAttribute.Mana:
+                    BaseMana = ApplyDamage(effect, BaseMana);
+                    break;
+                case EffectTargetAttribute.Armor:
+                    BaseArmor = ApplyDamage(effect, BaseArmor);
+                    break;
+                case EffectTargetAttribute.Resistance:
+                    BaseResistance = ApplyDamage(effect, BaseResistance);
+                    break;
+                case EffectTargetAttribute.Damage:
+                    BaseDamage = ApplyDamage(effect, BaseDamage);
+                    break;
+                case EffectTargetAttribute.CriticalChance:
+                    BaseCriticalChance = ApplyDamage(effect, BaseCriticalChance);
+                    break;
+                case EffectTargetAttribute.CriticalMultiplier:
+                    BaseCriticalMultiplier = ApplyDamage(effect, BaseCriticalMultiplier);
+                    break;
+                case EffectTargetAttribute.Speed:
+                    BaseSpeed = ApplyDamage(effect, BaseSpeed);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private double FinalizeAmount(Effect effect)
+        {
+            var amount = effect.Value * (effect.Positive ? 1 : -1);
+            switch (effect.TargetAttribute)
+            {
+                case EffectTargetAttribute.Health:
+                    if (amount >= 0)
+                    {
+                        return amount;
+                    }
+
+                    var reducedDamage = amount;
+                    switch (effect.DamageType)
+                    {
+                        case DamageType.Physical:
+                            reducedDamage = amount * (1 - Armor / 100);
+                            break;
+                        case DamageType.Magical:
+                            reducedDamage = amount * (1 - Resistance / 100);
+                            break;
+                        case DamageType.Pure:
+                            break;
+                        default:
+                            break;
+                    }
+
+                    return reducedDamage;
+
+                case EffectTargetAttribute.MaxHealth:
+                case EffectTargetAttribute.MaxMana:
+                case EffectTargetAttribute.Mana:
+                case EffectTargetAttribute.Armor:
+                case EffectTargetAttribute.Resistance:
+                case EffectTargetAttribute.Damage:
+                case EffectTargetAttribute.CriticalChance:
+                case EffectTargetAttribute.CriticalMultiplier:
+                case EffectTargetAttribute.Speed:
+                default:
+                    return amount;
+            }
+        }
+
+        public void AddEffect(Unit source, Ability sourceAbility, List<Effect> effects, Random random)
         {
             foreach (var effect in effects)
             {
                 switch (effect.Schedule)
                 {
                     case EffectSchedule.Permanent:
-                        PermanentEffects.Add((source, sourceAbility, effect));
-                        effect.Apply(source, this, random);
+                        var appliedEffect = (source, sourceAbility, effect.Clone());
+                        AppliedEffects.Add(appliedEffect);
+                        ApplyEffect(appliedEffect);
                         break;
                     case EffectSchedule.Persistent:
-                        PersistentEffects.Add((source, sourceAbility, effect, effect.Duration));
+                        Effects.Add((source, sourceAbility, effect.Clone()));
                         break;
                     case EffectSchedule.BeforeRound:
-                        BeforeRoundEffects.Add((source, sourceAbility, effect, effect.Duration));
+                        Effects.Add((source, sourceAbility, effect.Clone()));
                         break;
                     case EffectSchedule.AfterRound:
-                        AfterRoundEffects.Add((source, sourceAbility, effect, effect.Duration));
+                        Effects.Add((source, sourceAbility, effect.Clone()));
                         break;
                     case EffectSchedule.Delayed:
-                        DelayedEffects.Add((source, sourceAbility, effect, effect.Delay));
+                        Effects.Add((source, sourceAbility, effect.Clone()));
                         break;
                     default:
                         break;

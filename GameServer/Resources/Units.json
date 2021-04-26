@@ -2,360 +2,109 @@
   {
     "Id": 0,
     "Name": "Lyra",
-    "MaxHealth": 150.0,
-    "MaxMana": 100.0,
-    "Health": 150.0,
-    "Mana": 0.0,
-    "Damage": 10.0,
-    "Armor": 0.0,
-    "Resistance": 15.0,
-    "Speed": 100.0,
-    "CriticalChance": 0.25,
-    "CriticalMultiplier": 1.1,
+    "BaseMaxHealth": 150.0,
+    "BaseMaxMana": 100.0,
+    "BaseHealth": 150.0,
+    "BaseMana": 0.0,
+    "BaseDamage": 10.0,
+    "BaseArmor": 0.0,
+    "BaseResistance": 15.0,
+    "BaseSpeed": 100.0,
+    "BaseCriticalChance": 0.25,
+    "BaseCriticalMultiplier": 1.1,
     "Abilities": [
-      {
-        "Name": "Phantom Strike",
-        "Cooldown": 1,
-        "EffectGroups": [
-          {
-            "Target": "RandomEnemy",
-            "Effects": [
-              {
-                "Schedule": "Permanent",
-                "TargetAttribute": "Health",
-                "Delay": 0,
-                "Duration": 1,
-                "Positive": false,
-                "CanCrit": true,
-                "Type": "Physical",
-                "ValueType": "Value",
-                "Value": 10,
-                "Percentage": 1.0,
-                "DamageMultiplier": 1.0
-              }
-            ]
-          }
-        ]
-      },
-      null,
-      null,
-      null
+      "basic_attack",
+      "lyra_phantom_strike"
     ]
   },
   {
     "Id": 1,
     "Name": "Toxin",
-    "MaxHealth": 110.0,
-    "MaxMana": 100.0,
-    "Health": 110.0,
-    "Mana": 0.0,
-    "Damage": 15.0,
-    "Armor": 30.0,
-    "Resistance": 0.0,
-    "Speed": 80.0,
-    "CriticalChance": 0.1,
-    "CriticalMultiplier": 1.5,
+    "BaseMaxHealth": 110.0,
+    "BaseMaxMana": 100.0,
+    "BaseHealth": 110.0,
+    "BaseMana": 0.0,
+    "BaseDamage": 15.0,
+    "BaseArmor": 30.0,
+    "BaseResistance": 0.0,
+    "BaseSpeed": 80.0,
+    "BaseCriticalChance": 0.1,
+    "BaseCriticalMultiplier": 1.5,
     "Abilities": [
-      {
-        "Name": "Toxic Spit",
-        "Cooldown": 1,
-        "EffectGroups": [
-          {
-            "Target": "RandomEnemy",
-            "Effects": [
-              {
-                "Schedule": "Permanent",
-                "TargetAttribute": "Health",
-                "Delay": 0,
-                "Duration": 1,
-                "Positive": false,
-                "CanCrit": true,
-                "Type": "Magical",
-                "ValueType": "Value",
-                "Value": 15,
-                "Percentage": 1.0,
-                "DamageMultiplier": 1.0
-              }
-            ]
-          }
-        ]
-      },
-      null,
-      null,
-      null
+      "basic_attack",
+      "toxin_toxic_spit"
     ]
   },
   {
     "Id": 2,
     "Name": "Gulp",
-    "MaxHealth": 30.0,
-    "MaxMana": 100.0,
-    "Health": 30.0,
-    "Mana": 0.0,
-    "Damage": 15.0,
-    "Armor": 80.0,
-    "Resistance": 0.0,
-    "Speed": 150.0,
-    "CriticalChance": 0.1,
-    "CriticalMultiplier": 1.5,
+    "BaseMaxHealth": 30.0,
+    "BaseMaxMana": 100.0,
+    "BaseHealth": 30.0,
+    "BaseMana": 0.0,
+    "BaseDamage": 15.0,
+    "BaseArmor": 80.0,
+    "BaseResistance": 0.0,
+    "BaseSpeed": 150.0,
+    "BaseCriticalChance": 0.1,
+    "BaseCriticalMultiplier": 1.5,
     "Abilities": [
-      {
-        "Name": "Devour weapons",
-        "Cooldown": 1,
-        "EffectGroups": [
-          {
-            "Target": "RandomEnemy",
-            "Effects": [
-              {
-                "Schedule": "Persistent",
-                "TargetAttribute": "Damage",
-                "Delay": 0,
-                "Duration": 1,
-                "Positive": false,
-                "CanCrit": false,
-                "Type": "Pure",
-                "ValueType": "Percentage",
-                "Value": 0,
-                "Percentage": 0.25,
-                "DamageMultiplier": 0.0
-              },
-              {
-                "Schedule": "Permanent",
-                "TargetAttribute": "Health",
-                "Delay": 0,
-                "Duration": 1,
-                "Positive": false,
-                "CanCrit": true,
-                "Type": "Physical",
-                "ValueType": "Value",
-                "Value": 10,
-                "Percentage": 0.0,
-                "DamageMultiplier": 0.0
-              }
-            ]
-          }
-        ]
-      },
-      null,
-      null,
-      null
+      "basic_attack",
+      "gulp_devour_weapons"
     ]
   },
   {
     "Id": 3,
     "Name": "Mermaid",
-    "MaxHealth": 80.0,
-    "MaxMana": 100.0,
-    "Health": 80.0,
-    "Mana": 0.0,
-    "Damage": 10.0,
-    "Armor": 10.0,
-    "Resistance": 10.0,
-    "Speed": 110.0,
-    "CriticalChance": 0.3,
-    "CriticalMultiplier": 1.2,
+    "BaseMaxHealth": 80.0,
+    "BaseMaxMana": 100.0,
+    "BaseHealth": 80.0,
+    "BaseMana": 0.0,
+    "BaseDamage": 10.0,
+    "BaseArmor": 10.0,
+    "BaseResistance": 10.0,
+    "BaseSpeed": 110.0,
+    "BaseCriticalChance": 0.3,
+    "BaseCriticalMultiplier": 1.2,
     "Abilities": [
-      {
-        "Name": "Blessing of the Sea",
-        "Cooldown": 1,
-        "EffectGroups": [
-          {
-            "Target": "RandomFriendly",
-            "Effects": [
-              {
-                "Schedule": "Permanent",
-                "TargetAttribute": "Health",
-                "Delay": 0,
-                "Duration": 1,
-                "Positive": true,
-                "CanCrit": true,
-                "Type": "Pure",
-                "ValueType": "Value",
-                "Value": 10,
-                "Percentage": 0.0,
-                "DamageMultiplier": 0.0
-              }
-            ]
-          },
-          {
-            "Target": "RandomFriendly",
-            "Effects": [
-              {
-                "Schedule": "Persistent",
-                "TargetAttribute": "Armor",
-                "Delay": 0,
-                "Duration": 2,
-                "Positive": true,
-                "CanCrit": false,
-                "Type": "Pure",
-                "ValueType": "Value",
-                "Value": 5,
-                "Percentage": 0.0,
-                "DamageMultiplier": 0.0
-              }
-            ]
-          }
-        ]
-      },
-      null,
-      null,
-      null
+      "basic_attack",
+      "mermaid_blessing_of_the_sea"
     ]
   },
   {
     "Id": 4,
     "Name": "Plague Doctor",
-    "MaxHealth": 75.0,
-    "MaxMana": 100.0,
-    "Health": 75.0,
-    "Mana": 0.0,
-    "Damage": 15.0,
-    "Armor": 30.0,
-    "Resistance": 30.0,
-    "Speed": 120.0,
-    "CriticalChance": 0.2,
-    "CriticalMultiplier": 1.5,
+    "BaseMaxHealth": 75.0,
+    "BaseMaxMana": 100.0,
+    "BaseHealth": 75.0,
+    "BaseMana": 0.0,
+    "BaseDamage": 15.0,
+    "BaseArmor": 30.0,
+    "BaseResistance": 30.0,
+    "BaseSpeed": 120.0,
+    "BaseCriticalChance": 0.2,
+    "BaseCriticalMultiplier": 1.5,
     "Abilities": [
-      {
-        "Name": "Reaper's Scythe",
-        "Cooldown": 4,
-        "EffectGroups": [
-          {
-            "Target": "RandomEnemy",
-            "Effects": [
-              {
-                "Schedule": "Permanent",
-                "TargetAttribute": "Health",
-                "Delay": 0,
-                "Duration": 1,
-                "Positive": false,
-                "CanCrit": true,
-                "Type": "Physical",
-                "ValueType": "Value",
-                "Value": 15,
-                "Percentage": 0.0,
-                "DamageMultiplier": 0.0
-              }
-            ]
-          },
-          {
-            "Target": "AllEnemy",
-            "Effects": [
-              {
-                "Schedule": "AfterRound",
-                "TargetAttribute": "Health",
-                "Delay": 0,
-                "Duration": 4,
-                "Positive": false,
-                "CanCrit": false,
-                "Type": "Magical",
-                "ValueType": "Value",
-                "Value": 5,
-                "Percentage": 0.0,
-                "DamageMultiplier": 0.0
-              }
-            ]
-          }
-        ]
-      },
-      null,
-      null,
-      null
+      "basic_attack",
+      "plague_doctor_reapers_scythe"
     ]
   },
   {
     "Id": 5,
     "Name": "Secretive Girl",
-    "MaxHealth": 75.0,
-    "MaxMana": 100.0,
-    "Health": 75.0,
-    "Mana": 0.0,
-    "Damage": 5.0,
-    "Armor": 50.0,
-    "Resistance": 50.0,
-    "Speed": 50.0,
-    "CriticalChance": 0.0,
-    "CriticalMultiplier": 2.0,
+    "BaseMaxHealth": 75.0,
+    "BaseMaxMana": 100.0,
+    "BaseHealth": 75.0,
+    "BaseMana": 0.0,
+    "BaseDamage": 5.0,
+    "BaseArmor": 50.0,
+    "BaseResistance": 50.0,
+    "BaseSpeed": 50.0,
+    "BaseCriticalChance": 0.0,
+    "BaseCriticalMultiplier": 2.0,
     "Abilities": [
-      {
-        "Name": "Transform",
-        "Cooldown": 999,
-        "EffectGroups": [
-          {
-            "Target": "Self",
-            "Effects": [
-              {
-                "Schedule": "Delayed",
-                "TargetAttribute": "Damage",
-                "Delay": 4,
-                "Duration": 1,
-                "Positive": true,
-                "CanCrit": false,
-                "Type": "Pure",
-                "ValueType": "Value",
-                "Value": 50,
-                "Percentage": 0.0,
-                "DamageMultiplier": 0.0
-              },
-              {
-                "Schedule": "Delayed",
-                "TargetAttribute": "MaxHealth",
-                "Delay": 4,
-                "Duration": 1,
-                "Positive": true,
-                "CanCrit": false,
-                "Type": "Pure",
-                "ValueType": "Value",
-                "Value": 150,
-                "Percentage": 0.0,
-                "DamageMultiplier": 0.0
-              },
-              {
-                "Schedule": "Delayed",
-                "TargetAttribute": "Armor",
-                "Delay": 4,
-                "Duration": 1,
-                "Positive": true,
-                "CanCrit": false,
-                "Type": "Pure",
-                "ValueType": "Value",
-                "Value": 25,
-                "Percentage": 0.0,
-                "DamageMultiplier": 0.0
-              },
-              {
-                "Schedule": "Delayed",
-                "TargetAttribute": "Resistance",
-                "Delay": 4,
-                "Duration": 1,
-                "Positive": true,
-                "CanCrit": false,
-                "Type": "Pure",
-                "ValueType": "Value",
-                "Value": 25,
-                "Percentage": 0.0,
-                "DamageMultiplier": 0.0
-              },
-              {
-                "Schedule": "Delayed",
-                "TargetAttribute": "Speed",
-                "Delay": 4,
-                "Duration": 1,
-                "Positive": true,
-                "CanCrit": false,
-                "Type": "Pure",
-                "ValueType": "Value",
-                "Value": 200,
-                "Percentage": 0.0,
-                "DamageMultiplier": 0.0
-              }
-            ]
-          }
-        ]
-      },
-      null,
-      null,
-      null
+      "basic_attack",
+      "secretive_girl_transform"
     ]
   }
 ]

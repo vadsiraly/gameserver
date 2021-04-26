@@ -15,13 +15,13 @@ namespace GameServer
     {
         static void Main(string[] args)
         {
-            var unitManager = new UnitManager();
+            var unitFactory = new UnitFactory();
 
             int attackersWon = 0;
             int defendersWon = 0;
             int tie = 0;
             int inconclusive = 0;
-            int matchCount = 1;
+            int matchCount = 1000;
             var seedGenerator = new Random();
             for (int j = 0; j < matchCount; j++)
             {
@@ -38,22 +38,22 @@ namespace GameServer
                     switch (remainder)
                     {
                         case 0:
-                            attacker.Add(unitManager.Get("Lyra"));
+                            attacker.Add(unitFactory.GetByName("Lyra"));
                             break;
                         case 1:
-                            attacker.Add(unitManager.Get("Toxin"));
+                            attacker.Add(unitFactory.GetByName("Toxin"));
                             break;
                         case 2:
-                            attacker.Add(unitManager.Get("Gulp"));
+                            attacker.Add(unitFactory.GetByName("Gulp"));
                             break;
                         case 3:
-                            attacker.Add(unitManager.Get("Mermaid"));
+                            attacker.Add(unitFactory.GetByName("Mermaid"));
                             break;
                         case 4:
-                            attacker.Add(unitManager.Get("Plague Doctor"));
+                            attacker.Add(unitFactory.GetByName("Plague Doctor"));
                             break;
                         case 5:
-                            attacker.Add(unitManager.Get("Secretive Girl"));
+                            attacker.Add(unitFactory.GetByName("Secretive Girl"));
                             break;
                         default:
                             break;
@@ -66,22 +66,22 @@ namespace GameServer
                     switch (remainder)
                     {
                         case 0:
-                            defender.Add(unitManager.Get("Lyra"));
+                            defender.Add(unitFactory.GetByName("Lyra"));
                             break;
                         case 1:
-                            defender.Add(unitManager.Get("Toxin"));
+                            defender.Add(unitFactory.GetByName("Toxin"));
                             break;
                         case 2:
-                            defender.Add(unitManager.Get("Gulp"));
+                            defender.Add(unitFactory.GetByName("Gulp"));
                             break;
                         case 3:
-                            defender.Add(unitManager.Get("Mermaid"));
+                            defender.Add(unitFactory.GetByName("Mermaid"));
                             break;
                         case 4:
-                            defender.Add(unitManager.Get("Plague Doctor"));
+                            defender.Add(unitFactory.GetByName("Plague Doctor"));
                             break;
                         case 5:
-                            defender.Add(unitManager.Get("Secretive Girl"));
+                            defender.Add(unitFactory.GetByName("Secretive Girl"));
                             break;
                         default:
                             break;
@@ -107,6 +107,7 @@ namespace GameServer
                     inconclusive++;
                 }
 
+                /*
                 Console.WriteLine("Result:");
                 Console.WriteLine($"Rounds: {battle.Rounds}");
                 Console.WriteLine("Attackers:");
@@ -118,7 +119,7 @@ namespace GameServer
                 foreach (var unit in defender.Units)
                 {
                     Console.WriteLine($"{unit.Name}\n\tDamage done: {Math.Abs(unit.DamageDone)}\n\tHealing done: {unit.HealingDone}");
-                }
+                }*/
             }
 
             Console.WriteLine($"Attackers won {attackersWon}/{matchCount}");

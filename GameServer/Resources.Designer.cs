@@ -61,12 +61,24 @@ namespace GameServer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {}.
+        /// </summary>
+        internal static string Abilities {
+            get {
+                return ResourceManager.GetString("Abilities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [
         ///  {
         ///    &quot;Id&quot;: 0,
         ///    &quot;Name&quot;: &quot;Lyra&quot;,
+        ///    &quot;MaxHealth&quot;: 150.0,
+        ///    &quot;MaxMana&quot;: 100.0,
         ///    &quot;Health&quot;: 150.0,
-        ///    &quot;Mana&quot;: 100.0,
+        ///    &quot;Mana&quot;: 0.0,
+        ///    &quot;Damage&quot;: 10.0,
         ///    &quot;Armor&quot;: 0.0,
         ///    &quot;Resistance&quot;: 15.0,
         ///    &quot;Speed&quot;: 100.0,
@@ -75,22 +87,13 @@ namespace GameServer {
         ///    &quot;Abilities&quot;: [
         ///      {
         ///        &quot;Name&quot;: &quot;Phantom Strike&quot;,
-        ///        &quot;Damage&quot;: {
-        ///          &quot;Type&quot;: 0,
-        ///          &quot;Amount&quot;: 10.0
-        ///        }
-        ///      },
-        ///      null,
-        ///      null,
-        ///      null
-        ///    ]
-        ///  },
-        ///  {
-        ///    &quot;Id&quot;: 0,
-        ///    &quot;Name&quot;: &quot;Toxin&quot;,
-        ///    &quot;Health&quot;: 110.0,
-        ///    &quot;Mana&quot;: 100.0,
-        ///    &quot;Armor&quot;:  [rest of string was truncated]&quot;;.
+        ///        &quot;Cooldown&quot;: 1,
+        ///        &quot;EffectGroups&quot;: [
+        ///          {
+        ///            &quot;Target&quot;: &quot;RandomEnemy&quot;,
+        ///            &quot;Effects&quot;: [
+        ///              {
+        ///                &quot;Schedule [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Units {
             get {

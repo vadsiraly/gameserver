@@ -45,9 +45,8 @@ namespace GameServer.Model.BaseTypes
             var allDefendersDead = false;
             while (!allAttackersDead && !allDefendersDead && Rounds < RoundLimit)
             {
-                Console.WriteLine($"\n----------------------------------------\nStarting Round {Rounds+1}...\n----------------------------------------");
-                ps.Print(Attacker, Defender);
-                Console.ReadKey();
+
+                ps.WrapPrint(() => { }, Attacker, Defender, $"Starting Round {Rounds + 1}");
 
                 foreach (var current in AllUnits)
                 {
@@ -58,18 +57,18 @@ namespace GameServer.Model.BaseTypes
                 {
                     if (Attacker.Units.Contains(current))
                     {
-                        ps.WrapPrint(() => { current.BasicAttack.Use(current, Defender, current.BasicAttack, random); }, Attacker, Defender, $"{current.Name} uses {current.BasicAttack.Name}");          
-                        if (current.Abilities[0].ActiveCooldown == 0)
+                        ps.WrapPrint(() => { current.Abilities[0].Use(current, Defender, current.Abilities[0], random); }, Attacker, Defender, $"{current.Name} uses {current.Abilities[0].Name}");          
+                        if (current.Abilities[1].ActiveCooldown == 0)
                         {
-                            ps.WrapPrint(() => { current.Abilities[0].Use(current, Defender, current.Abilities[0], random); }, Attacker, Defender, $"{current.Name} uses {current.Abilities[0].Name}");
+                            ps.WrapPrint(() => { current.Abilities[1].Use(current, Defender, current.Abilities[1], random); }, Attacker, Defender, $"{current.Name} uses {current.Abilities[1].Name}");
                         }
                     }
                     else
                     {
-                        ps.WrapPrint(() => { current.BasicAttack.Use(current, Attacker, current.BasicAttack, random); }, Attacker, Defender, $"{current.Name} uses {current.BasicAttack.Name}");
-                        if (current.Abilities[0].ActiveCooldown == 0)
+                        ps.WrapPrint(() => { current.Abilities[0].Use(current, Attacker, current.Abilities[0], random); }, Attacker, Defender, $"{current.Name} uses {current.Abilities[0].Name}");
+                        if (current.Abilities[1].ActiveCooldown == 0)
                         {
-                            ps.WrapPrint(() => { current.Abilities[0].Use(current, Attacker, current.Abilities[0], random); }, Attacker, Defender, $"{current.Name} uses {current.Abilities[0].Name}");
+                            ps.WrapPrint(() => { current.Abilities[1].Use(current, Attacker, current.Abilities[1], random); }, Attacker, Defender, $"{current.Name} uses {current.Abilities[1].Name}");
                         }
                     }
                 }
@@ -79,9 +78,7 @@ namespace GameServer.Model.BaseTypes
                     current.EndRound(random);
                 }
 
-                Console.WriteLine($"\n----------------------------------------\nEnding Round {Rounds + 1}...\n----------------------------------------");
-                new PrintService().Print(Attacker, Defender);
-                Console.ReadKey();
+                ps.WrapPrint(() => { }, Attacker, Defender, $"Ending Round {Rounds + 1}");
 
                 allAttackersDead = Attacker.Units.All(x => x.IsDead);
                 allDefendersDead = Defender.Units.All(x => x.IsDead);
@@ -102,8 +99,6 @@ namespace GameServer.Model.BaseTypes
                 ++Rounds;
             }
 
-            Console.WriteLine($"\n----------------------------------------\nEND RESULT\n----------------------------------------");
-            new PrintService().Print(Attacker, Defender);
             return Outcome.Inconclusive;
         }
     }

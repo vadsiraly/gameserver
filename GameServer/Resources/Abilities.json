@@ -1,0 +1,285 @@
+﻿[
+  {
+    "Id": "0",
+    "Reference": "basic_attack",
+    "Name": "Basic Attack",
+    "Cooldown": 1,
+    "EffectGroups": [
+      {
+        "Target": "RandomEnemy",
+        "Effects": [
+          {
+            "Schedule": "Permanent",
+            "TargetAttribute": "Health",
+            "Delay": 0,
+            "Duration": 1,
+            "Positive": false,
+            "CanCrit": true,
+            "DamageType": "Physical",
+            "ValueType": "Value",
+            "Value": 15,
+            "Percentage": 1.0,
+            "DamageMultiplier": 1.0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Id": "1",
+    "Reference": "gulp_devour_weapons",
+    "Name": "Devour weapons",
+    "Cooldown": 1,
+    "EffectGroups": [
+      {
+        "Target": "RandomEnemy",
+        "Effects": [
+          {
+            "Schedule": "Persistent",
+            "TargetAttribute": "Damage",
+            "Delay": 0,
+            "Duration": 1,
+            "Positive": false,
+            "CanCrit": false,
+            "DamageType": "Pure",
+            "ValueType": "Percentage",
+            "Value": 0,
+            "Percentage": 0.25,
+            "DamageMultiplier": 0.0
+          },
+          {
+            "Schedule": "Permanent",
+            "TargetAttribute": "Health",
+            "Delay": 0,
+            "Duration": 1,
+            "Positive": false,
+            "CanCrit": true,
+            "DamageType": "Physical",
+            "ValueType": "Value",
+            "Value": 10,
+            "Percentage": 0.0,
+            "DamageMultiplier": 0.0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Id": "2",
+    "Reference": "toxin_toxic_spit",
+    "Name": "Toxic Spit",
+    "Cooldown": 1,
+    "EffectGroups": [
+      {
+        "Target": "RandomEnemy",
+        "Effects": [
+          {
+            "Schedule": "Permanent",
+            "TargetAttribute": "Health",
+            "Delay": 0,
+            "Duration": 1,
+            "Positive": false,
+            "CanCrit": true,
+            "DamageType": "Magical",
+            "ValueType": "Value",
+            "Value": 15,
+            "Percentage": 1.0,
+            "DamageMultiplier": 1.0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Id": "3",
+    "Reference": "lyra_phantom_strike",
+    "Name": "Phantom Strike",
+    "Cooldown": 1,
+    "EffectGroups": [
+      {
+        "Target": "RandomEnemy",
+        "Effects": [
+          {
+            "Schedule": "Permanent",
+            "TargetAttribute": "Health",
+            "Delay": 0,
+            "Duration": 1,
+            "Positive": false,
+            "CanCrit": true,
+            "DamageType": "Physical",
+            "ValueType": "Value",
+            "Value": 10,
+            "Percentage": 1.0,
+            "DamageMultiplier": 1.0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Id": "4",
+    "Reference": "mermaid_blessing_of_the_sea",
+    "Name": "Blessing of the Sea",
+    "Cooldown": 1,
+    "EffectGroups": [
+      {
+        "Target": "RandomFriendly",
+        "Effects": [
+          {
+            "Schedule": "Permanent",
+            "TargetAttribute": "Health",
+            "Delay": 0,
+            "Duration": 1,
+            "Positive": true,
+            "CanCrit": true,
+            "DamageType": "Pure",
+            "ValueType": "Value",
+            "Value": 10,
+            "Percentage": 0.0,
+            "DamageMultiplier": 0.0
+          }
+        ]
+      },
+      {
+        "Target": "RandomFriendly",
+        "Effects": [
+          {
+            "Schedule": "Persistent",
+            "TargetAttribute": "Armor",
+            "Delay": 0,
+            "Duration": 2,
+            "Positive": true,
+            "CanCrit": false,
+            "DamageType": "Pure",
+            "ValueType": "Value",
+            "Value": 5,
+            "Percentage": 0.0,
+            "DamageMultiplier": 0.0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Id": "5",
+    "Reference": "plague_doctor_reapers_scythe",
+    "Name": "Reaper's Scythe",
+    "Cooldown": 4,
+    "EffectGroups": [
+      {
+        "Target": "RandomEnemy",
+        "Effects": [
+          {
+            "Schedule": "Permanent",
+            "TargetAttribute": "Health",
+            "Delay": 0,
+            "Duration": 1,
+            "Positive": false,
+            "CanCrit": true,
+            "DamageType": "Physical",
+            "ValueType": "Value",
+            "Value": 15,
+            "Percentage": 0.0,
+            "DamageMultiplier": 0.0
+          }
+        ]
+      },
+      {
+        "Target": "AllEnemy",
+        "Effects": [
+          {
+            "Schedule": "AfterRound",
+            "TargetAttribute": "Health",
+            "Delay": 0,
+            "Duration": 4,
+            "Positive": false,
+            "CanCrit": false,
+            "DamageType": "Magical",
+            "ValueType": "Value",
+            "Value": 5,
+            "Percentage": 0.0,
+            "DamageMultiplier": 0.0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Id": "6",
+    "Reference": "secretive_girl_transform",
+    "Name": "Transform",
+    "Cooldown": 999,
+    "EffectGroups": [
+      {
+        "Target": "Self",
+        "Effects": [
+          {
+            "Schedule": "Delayed",
+            "TargetAttribute": "Damage",
+            "Delay": 4,
+            "Duration": 1,
+            "Positive": true,
+            "CanCrit": false,
+            "DamageType": "Pure",
+            "ValueType": "Value",
+            "Value": 50,
+            "Percentage": 0.0,
+            "DamageMultiplier": 0.0
+          },
+          {
+            "Schedule": "Delayed",
+            "TargetAttribute": "MaxHealth",
+            "Delay": 4,
+            "Duration": 1,
+            "Positive": true,
+            "CanCrit": false,
+            "DamageType": "Pure",
+            "ValueType": "Value",
+            "Value": 150,
+            "Percentage": 0.0,
+            "DamageMultiplier": 0.0
+          },
+          {
+            "Schedule": "Delayed",
+            "TargetAttribute": "Armor",
+            "Delay": 4,
+            "Duration": 1,
+            "Positive": true,
+            "CanCrit": false,
+            "DamageType": "Pure",
+            "ValueType": "Value",
+            "Value": 25,
+            "Percentage": 0.0,
+            "DamageMultiplier": 0.0
+          },
+          {
+            "Schedule": "Delayed",
+            "TargetAttribute": "Resistance",
+            "Delay": 4,
+            "Duration": 1,
+            "Positive": true,
+            "CanCrit": false,
+            "DamageType": "Pure",
+            "ValueType": "Value",
+            "Value": 25,
+            "Percentage": 0.0,
+            "DamageMultiplier": 0.0
+          },
+          {
+            "Schedule": "Delayed",
+            "TargetAttribute": "Speed",
+            "Delay": 4,
+            "Duration": 1,
+            "Positive": true,
+            "CanCrit": false,
+            "DamageType": "Pure",
+            "ValueType": "Value",
+            "Value": 200,
+            "Percentage": 0.0,
+            "DamageMultiplier": 0.0
+          }
+        ]
+      }
+    ]
+  }
+]

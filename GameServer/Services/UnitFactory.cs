@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 
 namespace GameServer.Services
 {
-    public class UnitManager
+    public class UnitFactory
     {
         private readonly List<Unit> _units;
 
-        public UnitManager()
+        public UnitFactory()
         {
             _units = JsonConvert.DeserializeObject<List<Unit>>(Resources.Units);
         }
 
-        public Unit Get(string name)
+        public Unit GetByName(string name)
         {
             return CloningService.Clone(_units.Single(x => x.Name == name));
         }
