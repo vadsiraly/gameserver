@@ -241,6 +241,19 @@
           },
           {
             "Schedule": "Delayed",
+            "TargetAttribute": "Health",
+            "Delay": 4,
+            "Duration": 1,
+            "Positive": true,
+            "CanCrit": false,
+            "DamageType": "Pure",
+            "ValueType": "Value",
+            "Value": 150,
+            "Percentage": 0.0,
+            "DamageMultiplier": 0.0
+          },
+          {
+            "Schedule": "Delayed",
             "TargetAttribute": "Armor",
             "Delay": 4,
             "Duration": 1,

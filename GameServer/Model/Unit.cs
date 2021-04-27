@@ -155,6 +155,7 @@ namespace GameServer.Model.BaseTypes
             var delayedEffect = Effects.Where(x => x.Effect.Schedule == EffectSchedule.Delayed).ToList();
             foreach(var effect in delayedEffect)
             {
+                effect.Effect.Delay--;
                 if (effect.Effect.Delay == 0)
                 {
                     ApplyEffect(effect, random);
