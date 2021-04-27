@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GameServer.Model.BaseTypes
@@ -118,6 +119,9 @@ namespace GameServer.Model.BaseTypes
         public double Speed => ApplyPersistentEffects(BaseSpeed, EffectTargetAttribute.Speed);
         public double CriticalChance => ApplyPersistentEffects(BaseCriticalChance, EffectTargetAttribute.CriticalChance);
         public double CriticalMultiplier => ApplyPersistentEffects(BaseCriticalMultiplier, EffectTargetAttribute.CriticalMultiplier);
+        
+        [JsonIgnore]
+        public Ability BasicAttack => Abilities[0];
         public List<Ability> Abilities { get; set; } = new List<Ability>();
 
         // effects
@@ -153,13 +157,12 @@ namespace GameServer.Model.BaseTypes
             {
                 if (effect.Effect.Delay == 0)
                 {
-                    ApplyEffect(effect);
+                    ApplyEffect(effect, random);
 
                     Effects.Remove(effect);
                     AppliedEffects.Add(effect);
                 }
             }
-
         }
 
         public void DecreaseCooldowns()
@@ -178,7 +181,7 @@ namespace GameServer.Model.BaseTypes
             var persistentEffects = Effects.Where(x => x.Effect.Schedule == EffectSchedule.Persistent).ToList();
             foreach(var effect in persistentEffects)
             {
-                ApplyEffect(effect);
+                ApplyEffect(effect, random);
 
                 effect.Effect.Duration -= 1;
                 if (effect.Effect.Duration == 0)
@@ -194,7 +197,7 @@ namespace GameServer.Model.BaseTypes
             var beforeRoundEffects = Effects.Where(x => x.Effect.Schedule == EffectSchedule.BeforeRound).ToList();
             foreach(var effect in beforeRoundEffects)
             {
-                ApplyEffect(effect);
+                ApplyEffect(effect, random);
 
                 effect.Effect.Duration -= 1;
                 if (effect.Effect.Duration == 0)
@@ -210,7 +213,7 @@ namespace GameServer.Model.BaseTypes
             var afterRoundEffects = Effects.Where(x => x.Effect.Schedule == EffectSchedule.AfterRound).ToList();
             foreach (var effect in afterRoundEffects)
             {
-                ApplyEffect(effect);
+                ApplyEffect(effect, random);
 
                 effect.Effect.Duration -= 1;
                 if (effect.Effect.Duration == 0)
@@ -231,10 +234,10 @@ namespace GameServer.Model.BaseTypes
                     switch (effect.Effect.ValueType)
                     {
                         case EffectValueType.Value:
-                            value += FinalizeAmount(effect.Effect);
+                            value += FinalizeValue(effect.Source, effect.Effect, null, out bool _);
                             break;
                         case EffectValueType.Percentage:
-                            value *= effect.Effect.Percentage;
+                            value += FinalizePercentage(effect.Effect);
                             break;
                         default:
                             break;
@@ -245,72 +248,85 @@ namespace GameServer.Model.BaseTypes
             return value;
         }
 
-        private double ApplyDamage((Unit Source, Ability SourceAbility, Effect Effect) effect, double value)
+        private double ApplyDamage((Unit Source, Ability SourceAbility, Effect Effect) effect, double originalValue, Random random)
         {
-            var result = value;
+            var value = originalValue;
             switch (effect.Effect.ValueType)
             {
                 case EffectValueType.Value:
                     {
-                        var actualDamage = FinalizeAmount(effect.Effect);
-                        result += actualDamage;
+                        var actualDamage = FinalizeValue(effect.Source, effect.Effect, random, out bool isCritical);
+                        value += actualDamage;
+                        Console.WriteLine($"{effect.Source.Name}'s {effect.SourceAbility.Name} {(actualDamage > 0 ? "heals" : "hits")} {Name} for {actualDamage:N2} {(effect.Effect.DamageType == DamageType.Pure ? "" : $"({(Math.Abs(effect.Effect.Value) - Math.Abs(actualDamage)):N2} {(effect.Effect.DamageType == DamageType.Magical ? "resisted" : "blocked")})")} {(isCritical ? " Crit!" :"")}");
+                        Thread.Sleep(500);
                     }
                     break;
                 case EffectValueType.Percentage:
                     {
-                        var actualDamage = result * effect.Effect.Percentage;
-                        result = actualDamage;
+                        var actualDamage = value * FinalizePercentage(effect.Effect);
+                        value += actualDamage;
                     }
                     break;
                 default:
                     break;
             }
 
-            return result;
+            return value;
         }
 
-        private void ApplyEffect((Unit Source, Ability SourceAbility, Effect Effect) effect)
+        private void ApplyEffect((Unit Source, Ability SourceAbility, Effect Effect) effect, Random random)
         {
             switch (effect.Effect.TargetAttribute)
             {
                 case EffectTargetAttribute.MaxHealth:
-                    BaseMaxHealth = ApplyDamage(effect, BaseMaxHealth);
+                    BaseMaxHealth = ApplyDamage(effect, BaseMaxHealth, random);
                     break;
                 case EffectTargetAttribute.MaxMana:
-                    BaseMaxMana = ApplyDamage(effect, BaseMaxMana);
+                    BaseMaxMana = ApplyDamage(effect, BaseMaxMana, random);
                     break;
                 case EffectTargetAttribute.Health:
-                    BaseHealth = ApplyDamage(effect, BaseHealth);
+                    BaseHealth = ApplyDamage(effect, BaseHealth, random);
                     break;
                 case EffectTargetAttribute.Mana:
-                    BaseMana = ApplyDamage(effect, BaseMana);
+                    BaseMana = ApplyDamage(effect, BaseMana, random);
                     break;
                 case EffectTargetAttribute.Armor:
-                    BaseArmor = ApplyDamage(effect, BaseArmor);
+                    BaseArmor = ApplyDamage(effect, BaseArmor, random);
                     break;
                 case EffectTargetAttribute.Resistance:
-                    BaseResistance = ApplyDamage(effect, BaseResistance);
+                    BaseResistance = ApplyDamage(effect, BaseResistance, random);
                     break;
                 case EffectTargetAttribute.Damage:
-                    BaseDamage = ApplyDamage(effect, BaseDamage);
+                    BaseDamage = ApplyDamage(effect, BaseDamage, random);
                     break;
                 case EffectTargetAttribute.CriticalChance:
-                    BaseCriticalChance = ApplyDamage(effect, BaseCriticalChance);
+                    BaseCriticalChance = ApplyDamage(effect, BaseCriticalChance, random);
                     break;
                 case EffectTargetAttribute.CriticalMultiplier:
-                    BaseCriticalMultiplier = ApplyDamage(effect, BaseCriticalMultiplier);
+                    BaseCriticalMultiplier = ApplyDamage(effect, BaseCriticalMultiplier, random);
                     break;
                 case EffectTargetAttribute.Speed:
-                    BaseSpeed = ApplyDamage(effect, BaseSpeed);
+                    BaseSpeed = ApplyDamage(effect, BaseSpeed, random);
                     break;
                 default:
                     break;
             }
         }
 
-        private double FinalizeAmount(Effect effect)
+        private double FinalizeValue(Unit Source, Effect effect, Random random, out bool isCritical)
         {
+            isCritical = false;
             var amount = effect.Value * (effect.Positive ? 1 : -1);
+            if (effect.CanCrit && random != null)
+            {
+                var roll = random.NextDouble();
+                if (roll < Source.CriticalChance)
+                {
+                    amount = amount * Source.CriticalMultiplier;
+                    isCritical = true;
+                }
+            }
+
             switch (effect.TargetAttribute)
             {
                 case EffectTargetAttribute.Health:
@@ -319,22 +335,16 @@ namespace GameServer.Model.BaseTypes
                         return amount;
                     }
 
-                    var reducedDamage = amount;
                     switch (effect.DamageType)
                     {
                         case DamageType.Physical:
-                            reducedDamage = amount * (1 - Armor / 100);
-                            break;
+                            return amount * (1 - Armor / 100);
                         case DamageType.Magical:
-                            reducedDamage = amount * (1 - Resistance / 100);
-                            break;
+                            return amount * (1 - Resistance / 100);
                         case DamageType.Pure:
-                            break;
                         default:
-                            break;
+                            return amount;
                     }
-
-                    return reducedDamage;
 
                 case EffectTargetAttribute.MaxHealth:
                 case EffectTargetAttribute.MaxMana:
@@ -350,6 +360,42 @@ namespace GameServer.Model.BaseTypes
             }
         }
 
+        private double FinalizePercentage(Effect effect)
+        {
+            var percentage = effect.Percentage * (effect.Positive ? 1 : -1);
+            switch (effect.TargetAttribute)
+            {
+                case EffectTargetAttribute.Health:
+                    if (percentage >= 0)
+                    {
+                        return percentage;
+                    }
+
+                    switch (effect.DamageType)
+                    {
+                        case DamageType.Physical:
+                            return percentage * (1 - Armor / 100);
+                        case DamageType.Magical:
+                            return percentage * (1 - Resistance / 100);
+                        case DamageType.Pure:
+                        default:
+                            return percentage;
+                    }
+
+                case EffectTargetAttribute.MaxHealth:
+                case EffectTargetAttribute.MaxMana:
+                case EffectTargetAttribute.Mana:
+                case EffectTargetAttribute.Armor:
+                case EffectTargetAttribute.Resistance:
+                case EffectTargetAttribute.Damage:
+                case EffectTargetAttribute.CriticalChance:
+                case EffectTargetAttribute.CriticalMultiplier:
+                case EffectTargetAttribute.Speed:
+                default:
+                    return percentage;
+            }
+        }
+
         public void AddEffect(Unit source, Ability sourceAbility, List<Effect> effects, Random random)
         {
             foreach (var effect in effects)
@@ -359,7 +405,7 @@ namespace GameServer.Model.BaseTypes
                     case EffectSchedule.Permanent:
                         var appliedEffect = (source, sourceAbility, effect.Clone());
                         AppliedEffects.Add(appliedEffect);
-                        ApplyEffect(appliedEffect);
+                        ApplyEffect(appliedEffect, random);
                         break;
                     case EffectSchedule.Persistent:
                         Effects.Add((source, sourceAbility, effect.Clone()));

@@ -17,16 +17,11 @@ namespace GameServer.Model.BaseTypes
 
     public class Battle
     {
-        public Team Attacker { get; set; }
-        public Team Defender { get; set; }
-        public int Rounds { get; set; } = 0;
-        public List<Unit> AllUnits
-        {
-            get
-            {
-                return Attacker.Units.Union(Defender.Units).ToList();
-            }
-        }
+        public Team Attacker { get; private set; }
+        public Team Defender { get; private set; }
+        public int Rounds { get; private set; } = 0;
+        public IEnumerable<Unit> AllUnits { get; private set; }
+        public IEnumerable<Unit> AliveUnits => AllUnits.Where(x => !x.IsDead);
 
         public int RoundLimit { get; set; } = 200;
 
@@ -34,6 +29,7 @@ namespace GameServer.Model.BaseTypes
         {
             Attacker = attacker;
             Defender = defender;
+            AllUnits = Attacker.Units.Union(Defender.Units);
         }
 
         public Outcome Fight(int seed)
@@ -53,22 +49,23 @@ namespace GameServer.Model.BaseTypes
                     current.BeginRound(random);
                 }
 
-                foreach (var current in AllUnits.Where(x => !x.IsDead).OrderBy(x => x.Speed).ToArray().Shuffle())
+                foreach (var current in AliveUnits.OrderBy(x => x.Speed))
                 {
-                    if (Attacker.Units.Contains(current))
+                    if (IsAttacker(current))
                     {
-                        ps.WrapPrint(() => { current.Abilities[0].Use(current, Defender, current.Abilities[0], random); }, Attacker, Defender, $"{current.Name} uses {current.Abilities[0].Name}");          
+                        ps.WrapPrint(() => { current.BasicAttack.Use(current, Defender, random); }, Attacker, Defender, $"{current.Name} uses {current.BasicAttack.Name}");          
                         if (current.Abilities[1].ActiveCooldown == 0)
                         {
-                            ps.WrapPrint(() => { current.Abilities[1].Use(current, Defender, current.Abilities[1], random); }, Attacker, Defender, $"{current.Name} uses {current.Abilities[1].Name}");
+                            ps.WrapPrint(() => { current.Abilities[1].Use(current, Defender, random); }, Attacker, Defender, $"{current.Name} uses {current.Abilities[1].Name}");
                         }
                     }
-                    else
+
+                    else if (IsDefender(current))
                     {
-                        ps.WrapPrint(() => { current.Abilities[0].Use(current, Attacker, current.Abilities[0], random); }, Attacker, Defender, $"{current.Name} uses {current.Abilities[0].Name}");
+                        ps.WrapPrint(() => { current.BasicAttack.Use(current, Attacker, random); }, Attacker, Defender, $"{current.Name} uses {current.BasicAttack.Name}");
                         if (current.Abilities[1].ActiveCooldown == 0)
                         {
-                            ps.WrapPrint(() => { current.Abilities[1].Use(current, Attacker, current.Abilities[1], random); }, Attacker, Defender, $"{current.Name} uses {current.Abilities[1].Name}");
+                            ps.WrapPrint(() => { current.Abilities[1].Use(current, Attacker, random); }, Attacker, Defender, $"{current.Name} uses {current.Abilities[1].Name}");
                         }
                     }
                 }
@@ -100,6 +97,16 @@ namespace GameServer.Model.BaseTypes
             }
 
             return Outcome.Inconclusive;
+        }
+
+        private bool IsAttacker(Unit u)
+        {
+            return Attacker.Units.Contains(u);
+        }
+
+        private bool IsDefender(Unit u)
+        {
+            return Defender.Units.Contains(u);
         }
     }
 }

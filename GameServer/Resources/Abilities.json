@@ -44,7 +44,7 @@
             "DamageType": "Pure",
             "ValueType": "Percentage",
             "Value": 0,
-            "Percentage": 0.25,
+            "Percentage": 0.5,
             "DamageMultiplier": 0.0
           },
           {

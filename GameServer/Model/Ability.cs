@@ -17,31 +17,31 @@ namespace GameServer.Model.BaseTypes
         public int ActiveCooldown { get; set; } = 0;
         public List<EffectGroup> EffectGroups { get; set; }
 
-        public void Use(Unit source, Team target, Ability sourceAbility, Random random)
+        public void Use(Unit source, Team target, Random random)
         {
             foreach (var effectGroup in EffectGroups)
             {
                 switch (effectGroup.Target)
                 {
                     case EffectGroupTarget.Self:
-                        source.AddEffect(source, sourceAbility, effectGroup.Effects, random);
+                        source.AddEffect(source, this, effectGroup.Effects, random);
                         break;
                     case EffectGroupTarget.RandomFriendly:
-                        source.Team.GetRandomAliveUnit(random)?.AddEffect(source, sourceAbility, effectGroup.Effects, random);
+                        source.Team.GetRandomAliveUnit(random)?.AddEffect(source, this, effectGroup.Effects, random);
                         break;
                     case EffectGroupTarget.RandomEnemy:
-                        target.GetRandomAliveUnit(random)?.AddEffect(source, sourceAbility, effectGroup.Effects, random);
+                        target.GetRandomAliveUnit(random)?.AddEffect(source, this, effectGroup.Effects, random);
                         break;
                     case EffectGroupTarget.AllEnemy:
                         foreach (var enemy in target.Units)
                         {
-                            enemy.AddEffect(source, sourceAbility, effectGroup.Effects, random);
+                            enemy.AddEffect(source, this, effectGroup.Effects, random);
                         }
                         break;
                     case EffectGroupTarget.AllFriendly:
                         foreach (var friendly in source.Team.Units)
                         {
-                            friendly.AddEffect(source, sourceAbility, effectGroup.Effects, random);
+                            friendly.AddEffect(source, this, effectGroup.Effects, random);
                         }
                         break;
                     default:
