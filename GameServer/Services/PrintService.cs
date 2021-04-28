@@ -1,5 +1,5 @@
 ﻿using GameServer.Model;
-using GameServer.Model.BaseTypes;
+using GameServer.Model.Abilities.Effects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,8 +22,8 @@ namespace GameServer.Services
 
         public void WrapPrint(Action action, Team attacker, Team defender, string text, bool stop = true)
         {
-            action();
-            return;
+            //action();
+            //return;
 
             Console.WriteLine($"\n----------------------------------------\nBefore {text}\n----------------------------------------");
             Print(attacker, defender);
@@ -47,8 +47,8 @@ namespace GameServer.Services
             PrintRow(ConsoleColor.Red, team.Units.Select(x => $"{Math.Abs(x.DamageDone)}").ToArray());
             PrintRow(ConsoleColor.Green, team.Units.Select(x => $"{x.HealingDone}").ToArray());
             PrintRow(ConsoleColor.Yellow, team.Units.Select(x =>
-                x.Effects.Count(x => x.Effect.Schedule == EffectSchedule.Persistent) > 0 ?
-                $"{x.Effects.Where(x => x.Effect.Schedule == EffectSchedule.Persistent).Select(x => x.SourceAbility.Name).Aggregate((c, n) => c + "," + n)}" :
+                x.Effects.Count(x => x.Effect.Schedule == EffectSchedule.Continuous) > 0 ?
+                $"{x.Effects.Where(x => x.Effect.Schedule == EffectSchedule.Continuous).Select(x => x.SourceAbility.Name).Aggregate((c, n) => c + "," + n)}" :
                 "No persistent effects"
             ).ToArray());
             PrintRow(ConsoleColor.Yellow, team.Units.Select(x =>

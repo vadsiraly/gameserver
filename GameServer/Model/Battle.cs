@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameServer.Model.BaseTypes
+namespace GameServer.Model
 {
     public enum Outcome
     {

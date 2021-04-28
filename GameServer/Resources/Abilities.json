@@ -18,8 +18,8 @@
             "DamageType": "Physical",
             "ValueType": "Value",
             "Value": 15,
-            "Percentage": 1.0,
-            "DamageMultiplier": 1.0
+            "Percentage": 0,
+            "DamageMultiplier": 0
           }
         ]
       }
@@ -35,7 +35,7 @@
         "Target": "RandomEnemy",
         "Effects": [
           {
-            "Schedule": "Persistent",
+            "Schedule": "Continuous",
             "TargetAttribute": "Damage",
             "Delay": 0,
             "Duration": 1,
@@ -45,7 +45,7 @@
             "ValueType": "Percentage",
             "Value": 0,
             "Percentage": 0.5,
-            "DamageMultiplier": 0.0
+            "DamageMultiplier": 0
           },
           {
             "Schedule": "Permanent",
@@ -57,8 +57,8 @@
             "DamageType": "Physical",
             "ValueType": "Value",
             "Value": 10,
-            "Percentage": 0.0,
-            "DamageMultiplier": 0.0
+            "Percentage": 0,
+            "DamageMultiplier": 0
           }
         ]
       }
@@ -83,8 +83,8 @@
             "DamageType": "Magical",
             "ValueType": "Value",
             "Value": 15,
-            "Percentage": 1.0,
-            "DamageMultiplier": 1.0
+            "Percentage": 0,
+            "DamageMultiplier": 0
           }
         ]
       }
@@ -109,8 +109,8 @@
             "DamageType": "Physical",
             "ValueType": "Value",
             "Value": 10,
-            "Percentage": 1.0,
-            "DamageMultiplier": 1.0
+            "Percentage": 0,
+            "DamageMultiplier": 0
           }
         ]
       }
@@ -135,8 +135,8 @@
             "DamageType": "Pure",
             "ValueType": "Value",
             "Value": 10,
-            "Percentage": 0.0,
-            "DamageMultiplier": 0.0
+            "Percentage": 0,
+            "DamageMultiplier": 0
           }
         ]
       },
@@ -144,7 +144,7 @@
         "Target": "RandomFriendly",
         "Effects": [
           {
-            "Schedule": "Persistent",
+            "Schedule": "Continuous",
             "TargetAttribute": "Armor",
             "Delay": 0,
             "Duration": 2,
@@ -153,8 +153,8 @@
             "DamageType": "Pure",
             "ValueType": "Value",
             "Value": 5,
-            "Percentage": 0.0,
-            "DamageMultiplier": 0.0
+            "Percentage": 0,
+            "DamageMultiplier": 0
           }
         ]
       }
@@ -179,8 +179,8 @@
             "DamageType": "Physical",
             "ValueType": "Value",
             "Value": 15,
-            "Percentage": 0.0,
-            "DamageMultiplier": 0.0
+            "Percentage": 0,
+            "DamageMultiplier": 0
           }
         ]
       },
@@ -197,8 +197,8 @@
             "DamageType": "Magical",
             "ValueType": "Value",
             "Value": 5,
-            "Percentage": 0.0,
-            "DamageMultiplier": 0.0
+            "Percentage": 0,
+            "DamageMultiplier": 0
           }
         ]
       }
@@ -223,8 +223,8 @@
             "DamageType": "Pure",
             "ValueType": "Value",
             "Value": 50,
-            "Percentage": 0.0,
-            "DamageMultiplier": 0.0
+            "Percentage": 0,
+            "DamageMultiplier": 0
           },
           {
             "Schedule": "Delayed",
@@ -236,8 +236,8 @@
             "DamageType": "Pure",
             "ValueType": "Value",
             "Value": 150,
-            "Percentage": 0.0,
-            "DamageMultiplier": 0.0
+            "Percentage": 0,
+            "DamageMultiplier": 0
           },
           {
             "Schedule": "Delayed",
@@ -249,8 +249,8 @@
             "DamageType": "Pure",
             "ValueType": "Value",
             "Value": 150,
-            "Percentage": 0.0,
-            "DamageMultiplier": 0.0
+            "Percentage": 0,
+            "DamageMultiplier": 0
           },
           {
             "Schedule": "Delayed",
@@ -262,8 +262,8 @@
             "DamageType": "Pure",
             "ValueType": "Value",
             "Value": 25,
-            "Percentage": 0.0,
-            "DamageMultiplier": 0.0
+            "Percentage": 0,
+            "DamageMultiplier": 0
           },
           {
             "Schedule": "Delayed",
@@ -275,8 +275,8 @@
             "DamageType": "Pure",
             "ValueType": "Value",
             "Value": 25,
-            "Percentage": 0.0,
-            "DamageMultiplier": 0.0
+            "Percentage": 0,
+            "DamageMultiplier": 0
           },
           {
             "Schedule": "Delayed",
@@ -288,8 +288,8 @@
             "DamageType": "Pure",
             "ValueType": "Value",
             "Value": 200,
-            "Percentage": 0.0,
-            "DamageMultiplier": 0.0
+            "Percentage": 0,
+            "DamageMultiplier": 0
           }
         ]
       }

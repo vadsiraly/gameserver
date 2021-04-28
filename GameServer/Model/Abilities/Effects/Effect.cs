@@ -1,16 +1,15 @@
-﻿using GameServer.Model.BaseTypes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameServer.Model
+namespace GameServer.Model.Abilities.Effects
 {
     public enum EffectSchedule
     {
         Permanent,
-        Persistent,
+        Continuous,
         BeforeRound,
         AfterRound,
         Delayed
@@ -18,16 +17,16 @@ namespace GameServer.Model
 
     public enum EffectTargetAttribute
     {
-        MaxHealth = 1,
-        MaxMana = 2,
-        Health = 4,
-        Mana = 8,
-        Armor = 16,
-        Resistance = 32,
-        Damage = 64,
-        CriticalChance = 128,
-        CriticalMultiplier = 256,
-        Speed = 512
+        MaxHealth,
+        MaxMana,
+        Health,
+        Mana,
+        Armor,
+        Resistance,
+        Damage,
+        CriticalChance,
+        CriticalMultiplier,
+        Speed
     }
 
     public enum EffectValueType

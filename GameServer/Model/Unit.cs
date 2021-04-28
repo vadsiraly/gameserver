@@ -1,4 +1,6 @@
-﻿using GameServer.Services;
+﻿using GameServer.Model.Abilities;
+using GameServer.Model.Abilities.Effects;
+using GameServer.Services;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GameServer.Model.BaseTypes
+namespace GameServer.Model
 {
     public class Unit
     {
@@ -179,7 +181,7 @@ namespace GameServer.Model.BaseTypes
 
         public void ProcessPersistentEffects(Random random)
         {
-            var persistentEffects = Effects.Where(x => x.Effect.Schedule == EffectSchedule.Persistent).ToList();
+            var persistentEffects = Effects.Where(x => x.Effect.Schedule == EffectSchedule.Continuous).ToList();
             foreach(var effect in persistentEffects)
             {
                 ApplyEffect(effect, random);
@@ -227,7 +229,7 @@ namespace GameServer.Model.BaseTypes
 
         private double ApplyPersistentEffects(double value, EffectTargetAttribute attribute)
         {
-            var persistentEffects = Effects.Where(x => x.Effect.Schedule == EffectSchedule.Persistent);
+            var persistentEffects = Effects.Where(x => x.Effect.Schedule == EffectSchedule.Continuous);
             foreach (var effect in persistentEffects)
             {
                 if (effect.Effect.TargetAttribute == attribute)
@@ -258,8 +260,8 @@ namespace GameServer.Model.BaseTypes
                     {
                         var actualDamage = FinalizeValue(effect.Source, effect.Effect, random, out bool isCritical);
                         value += actualDamage;
-                        Console.WriteLine($"{effect.Source.Name}'s {effect.SourceAbility.Name} {(actualDamage > 0 ? "heals" : "hits")} {Name} for {actualDamage:N2} {(effect.Effect.DamageType == DamageType.Pure ? "" : $"({(Math.Abs(effect.Effect.Value) - Math.Abs(actualDamage)):N2} {(effect.Effect.DamageType == DamageType.Magical ? "resisted" : "blocked")})")} {(isCritical ? " Crit!" :"")}");
-                        Thread.Sleep(500);
+                        //Console.WriteLine($"{effect.Source.Name}'s {effect.SourceAbility.Name} {(actualDamage > 0 ? "heals" : "hits")} {Name} for {actualDamage:N2} {(effect.Effect.DamageType == DamageType.Pure ? "" : $"({(Math.Abs(effect.Effect.Value) - Math.Abs(actualDamage)):N2} {(effect.Effect.DamageType == DamageType.Magical ? "resisted" : "blocked")})")} {(isCritical ? " Crit!" :"")}");
+                        //Thread.Sleep(500);
                     }
                     break;
                 case EffectValueType.Percentage:
@@ -408,7 +410,7 @@ namespace GameServer.Model.BaseTypes
                         AppliedEffects.Add(appliedEffect);
                         ApplyEffect(appliedEffect, random);
                         break;
-                    case EffectSchedule.Persistent:
+                    case EffectSchedule.Continuous:
                         Effects.Add((source, sourceAbility, effect.Clone()));
                         break;
                     case EffectSchedule.BeforeRound:

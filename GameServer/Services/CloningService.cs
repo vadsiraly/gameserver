@@ -1,4 +1,4 @@
-﻿using GameServer.Model.BaseTypes;
+﻿using GameServer.Model;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

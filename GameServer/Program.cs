@@ -1,5 +1,4 @@
 ﻿using GameServer.Model;
-using GameServer.Model.BaseTypes;
 using GameServer.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
