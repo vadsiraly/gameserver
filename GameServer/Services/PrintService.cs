@@ -15,9 +15,7 @@ namespace GameServer.Services
         public void Print(Team attacker, Team defender)
         {
             Console.WriteLine("Attackers");
-            PrintTeam(attacker);
             Console.WriteLine("Defenders");
-            PrintTeam(defender);
         }
 
         public void WrapPrint(Action action, Team attacker, Team defender, string text, bool stop = true)
@@ -37,30 +35,6 @@ namespace GameServer.Services
 
             if (stop)
                 Console.ReadKey();
-        }
-
-        private void PrintTeam(Team team)
-        {
-            PrintRow(ConsoleColor.Gray, team.Units.Select(x => x.Name + (x.IsDead ? " (dead)" : "")).ToArray());
-            PrintRow(ConsoleColor.Green, team.Units.Select(x => ProgressBar(x.Health, x.MaxHealth)).ToArray());
-            PrintRow(ConsoleColor.Blue, team.Units.Select(x => ProgressBar(x.Mana, x.MaxMana)).ToArray());
-            PrintRow(ConsoleColor.Red, team.Units.Select(x => $"{Math.Abs(x.DamageDone)}").ToArray());
-            PrintRow(ConsoleColor.Green, team.Units.Select(x => $"{x.HealingDone}").ToArray());
-            PrintRow(ConsoleColor.Yellow, team.Units.Select(x =>
-                x.Effects.Count(x => x.Effect.Schedule == EffectSchedule.Continuous) > 0 ?
-                $"{x.Effects.Where(x => x.Effect.Schedule == EffectSchedule.Continuous).Select(x => x.SourceAbility.Name).Aggregate((c, n) => c + "," + n)}" :
-                "No persistent effects"
-            ).ToArray());
-            PrintRow(ConsoleColor.Yellow, team.Units.Select(x =>
-                x.Effects.Count(x => x.Effect.Schedule == EffectSchedule.AfterRound) > 0 ?
-                $"{x.Effects.Where(x => x.Effect.Schedule == EffectSchedule.AfterRound).Select(x => x.SourceAbility.Name).Aggregate((c, n) => c + "," + n)}" :
-                "No after round effects"
-            ).ToArray());
-            PrintRow(ConsoleColor.DarkMagenta, team.Units.Select(x =>
-                x.Effects.Count(x => x.Effect.Schedule == EffectSchedule.Delayed) > 0 ?
-                $"{x.Effects.Where(x => x.Effect.Schedule == EffectSchedule.Delayed).Select(x => x.SourceAbility.Name).Aggregate((c, n) => c + "," + n)}" :
-                "No delayed effects"
-            ).ToArray());
         }
 
         private string ProgressBar(double value, double max)
