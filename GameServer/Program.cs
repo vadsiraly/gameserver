@@ -20,7 +20,7 @@ namespace GameServer
             int defendersWon = 0;
             int tie = 0;
             int inconclusive = 0;
-            int matchCount = 1000;
+            int matchCount = 1;
             var seedGenerator = new Random();
             for (int j = 0; j < matchCount; j++)
             {

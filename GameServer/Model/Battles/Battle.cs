@@ -20,8 +20,8 @@ namespace GameServer.Model.Battles
     {
         public event EventHandler OnBattleBegin;
         public event EventHandler OnBattleEnd;
-        public event EventHandler OnRoundBegin;
-        public event EventHandler OnRoundEnd;
+        public event EventHandler<RoundEventArgs> OnRoundBegin;
+        public event EventHandler<RoundEventArgs> OnRoundEnd;
 
         public Team Attacker { get; private set; }
         public Team Defender { get; private set; }
@@ -35,7 +35,27 @@ namespace GameServer.Model.Battles
         {
             Attacker = attacker;
             Defender = defender;
+
+            RegisterTeam(Attacker);
+            RegisterTeam(Defender);
+
             AllUnits = Attacker.Units.Union(Defender.Units);
+
+            OnRoundBegin += Battle_OnRoundBegin;
+        }
+
+        private void Battle_OnRoundBegin(object sender, RoundEventArgs e)
+        {
+            Console.WriteLine($"======== ROUND {e.Round} ========");
+        }
+
+        public void RegisterTeam(Team team)
+        {
+            foreach(var unit in team.Units)
+            {
+                OnRoundBegin += unit.RoundBegin;
+                OnRoundEnd += unit.RoundEnd;
+            }
         }
 
         public Outcome Fight(Random random)
@@ -44,9 +64,9 @@ namespace GameServer.Model.Battles
 
             OnBattleBegin?.Invoke(this, new EventArgs());
 
-            while (Outcome == Outcome.Inconclusive && Rounds++ < RoundLimit)
+            while (Outcome == Outcome.Inconclusive && ++Rounds <= RoundLimit)
             { 
-                OnRoundBegin?.Invoke(this, new EventArgs());
+                OnRoundBegin?.Invoke(this, new RoundEventArgs(Rounds));
 
                 foreach (var current in AliveUnits.OrderBy(x => x.Speed))
                 {
@@ -71,7 +91,7 @@ namespace GameServer.Model.Battles
                     }
                 }
 
-                OnRoundEnd?.Invoke(this, new EventArgs());
+                OnRoundEnd?.Invoke(this, new RoundEventArgs(Rounds));
             }
 
             OnBattleEnd?.Invoke(this, new EventArgs());

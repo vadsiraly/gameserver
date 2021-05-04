@@ -16,11 +16,25 @@ namespace GameServer.Model.Units.ConcreteUnits.Gulp
         private double mana;
         private double speed;
 
+        private Dictionary<Status, int> statuses = new Dictionary<Status, int>();
+
+        private double armor;
+        private double resistance;
+
+        private double criticalHitChance;
+        private double criticalHitMultiplier;
+
         public Gulp(Random random)
         {
             Health = 50;
             Mana = 100;
             Speed = 80;
+
+            Armor = 100;
+            Resistance = 100;
+
+            CriticalHitChance = 0.2;
+            CriticalHitMultiplier = 2;
 
             BasicAttack = new BasicAttack(this, random);
             Abilities.Add(new DevourWeapon(this, random));
@@ -31,28 +45,14 @@ namespace GameServer.Model.Units.ConcreteUnits.Gulp
         public override double Mana { get => mana; protected set => mana = value; }
         public override double Speed { get => speed; protected set => speed = value; }
 
+        public override Dictionary<Status, int> Statuses { get => statuses; protected set => statuses = value; } 
+
+        public override double Armor { get => armor; protected set => armor = value; }
+        public override double Resistance { get => resistance; protected set => resistance = value; }
+
+        public override double CriticalHitChance { get => criticalHitChance; protected set => criticalHitChance = value; }
+        public override double CriticalHitMultiplier { get => criticalHitMultiplier; protected set => criticalHitMultiplier = value; }
+
         public override IAbility BasicAttack { get; protected set; }
-        public override List<IAbility> Abilities { get; protected set; } = new List<IAbility>();
-
-        public override List<Effect> Buffs { get; protected set; }
-        public override List<Effect> Debuffs { get; protected set; }
-
-        public override void Attack(List<Unit> targets)
-        {
-            BeforeAttack(new AttackEventArgs(this, targets, BasicAttack));
-
-            BasicAttack.Use(targets);
-
-            AfterAttack(new AttackEventArgs(this, targets, BasicAttack));
-        }
-
-        public override void UseAbility(List<Unit> targets, IAbility ability)
-        {
-            BeforeAbilityUsed(new AttackEventArgs(this, targets, ability));
-
-
-
-            AfterAbilityUsed(new AttackEventArgs(this, targets, ability));
-        }
     }
 }

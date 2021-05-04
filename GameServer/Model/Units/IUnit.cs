@@ -41,9 +41,17 @@ namespace GameServer.Model.Units
         List<Effect> Buffs { get; }
         List<Effect> Debuffs { get; }
 
-        void AddEffect(Unit caster, Effect effect);
+        void AddBuff(Effect effect);
+        void AddDebuff(Effect effect);
+        void RemoveBuff(Effect effect);
+        void RemoveDebuff(Effect effect);
+
+        void AddStatus(Status status);
+        void RemoveStatus(Status status);
+
         void Attack(List<Unit> targets);
+
         void UseAbility(List<Unit> targets, IAbility ability);
-        void TakeDamage(Unit attacker, double amount);
+        void TakeDamage(Unit attacker, AbilityDamage damage);
     }
 }

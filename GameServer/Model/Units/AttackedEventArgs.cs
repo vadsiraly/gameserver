@@ -9,13 +9,13 @@ namespace GameServer.Model.Units
 {
     public class AttackedEventArgs
     {
-        public AttackedEventArgs(Unit attacker, double damage)
+        public AttackedEventArgs(Unit attacker, AbilityDamage damage)
         {
             Attacker = attacker;
             Damage = damage;
         }
 
         public Unit Attacker { get; private set; }
-        public double Damage { get; private set; }
+        public AbilityDamage Damage { get; private set; }
     }
 }

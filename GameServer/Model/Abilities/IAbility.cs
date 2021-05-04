@@ -9,25 +9,25 @@ using System.Threading.Tasks;
 
 namespace GameServer.Model.Abilities
 {
-    public enum DamageType
-    {
-        Physical,
-        Magical,
-        Pure,
-        Composite
-    }
-
     public interface IAbility
     {
         Unit Owner { get; }
         int Id { get; }
         string Reference { get; }
         string Name { get; }
+
         int ManaCost { get; }
         int Cooldown { get; }
-        int Damage { get; }
+        bool Available { get; }
+        double Damage { get; }
+
         DamageType DamageType { get; }
-        List<Effect> Effects { get; }
+        bool CanCriticalHit { get; }
+
+        List<Effect> Buffs { get; }
+        List<Effect> Debuffs { get; }
+
+        void Tick();
 
         void Use(List<Unit> targets);
     }
