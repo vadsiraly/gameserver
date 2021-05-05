@@ -8,52 +8,23 @@ using System.Threading.Tasks;
 
 namespace GameServer.Model.Abilities.ConcreteAbilities
 {
-    public class BasicAttack : IAbility
+    public class BasicAttack : Ability
     {
-        private Random _random;
-        public BasicAttack(Unit owner, Random random)
+        public BasicAttack(Unit owner, Random random) : base(owner, random)
         {
-            Owner = owner;
-            _random = random;
-        }
+            Id = 0;
 
-        public Unit Owner { get; private set; }
+            Reference = "basic_attack";
+            Name = "Basic Attack";
 
-        public int Id => 0;
+            IsActive = true;
 
-        public string Reference => "basic_attack";
+            ManaCost = 0;
+            Cooldown = 0;
 
-        public string Name => "Basic Attack";
-
-        public int ManaCost => 0;
-        public int Cooldown => 0;
-        public bool Available => true;
-        public double Damage => 15;
-        public DamageType DamageType => DamageType.Physical;
-
-        public List<Effect> Buffs => null;
-        public List<Effect> Debuffs => null;
-
-        public bool CanCriticalHit => true;
-
-        public void Tick()
-        {
-        }
-
-        public void Use(List<Unit> targets)
-        {
-            var criticalDamage = 0d;
-            if (CanCriticalHit && _random.NextDouble() < Owner.CriticalHitChance)
-            {
-                criticalDamage = Damage * Owner.CriticalHitMultiplier - Damage;
-            }
-
-            var damage = new AbilityDamage(new Damage(Damage, DamageType), new Damage(criticalDamage, DamageType), null, null);
-
-            foreach(var target in targets)
-            {
-                target.TakeDamage(Owner, damage);
-            }
+            Damage = 15;
+            DamageType = DamageType.Physical;
+            CanCriticalHit = true;
         }
     }
 }

@@ -25,10 +25,5 @@ namespace GameServer.Model.Abilities
 
         public DamageType Type { get; private set; }
         public double Value { get; private set; }
-
-        public bool Equals(int other)
-        {
-            return this.Value == other;
-        }
     }
 }

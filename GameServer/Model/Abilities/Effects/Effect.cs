@@ -16,20 +16,29 @@ namespace GameServer.Model.Abilities.Effects
         Stunned,
         Vulnerable,
         Dazed,
-        Blind
+        Blinded
     }
 
     public abstract class Effect
     {
+        protected Random _random;
+
+        public Effect(Unit owner, Random random)
+        {
+            Owner = owner;
+            _random = random;
+        }
+
         public Unit Owner { get; protected set; }
-        public abstract string Name { get; }
-        public abstract int Duration { get; protected set; }
+        public string Name { get; protected set; }
+        public int Duration { get; protected set; }
+        public double Chance { get; protected set; }
 
-        public abstract void ApplyEffect(IUnit target);
+        public abstract void ApplyEffect(Unit target);
 
-        public abstract void RemoveEffect(IUnit target);
+        public abstract void RemoveEffect(Unit target);
 
-        public void Tick(IUnit target)
+        public void Tick(Unit target)
         {
             if (--Duration <= 0)
             {

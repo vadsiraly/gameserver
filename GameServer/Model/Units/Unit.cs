@@ -12,10 +12,17 @@ using System.Threading.Tasks;
 
 namespace GameServer.Model.Units
 {
-    public abstract class Unit : IUnit
+    public abstract class Unit
     {
-        public event EventHandler<AttackEventArgs> BeforeAttackEvent;
-        public event EventHandler<AttackEventArgs> AfterAttackEvent;
+        protected Random _random;
+
+        public Unit(Random random)
+        {
+            _random = random;
+        }
+
+        public event EventHandler<AttackEventArgs> BeforeBasicAttackEvent;
+        public event EventHandler<AttackEventArgs> AfterBasicAttackEvent;
         public event EventHandler<AttackEventArgs> BeforeAbilityUsedEvent;
         public event EventHandler<AttackEventArgs> AfterAbilityUsedEvent;
         public event EventHandler<AttackedEventArgs> BeforeAttackedEvent;
@@ -28,31 +35,31 @@ namespace GameServer.Model.Units
         public bool IsDead => Health <= 0;
         public Team Team { get; protected set; }
 
-        public abstract string Name { get; }
-        public abstract double Health { get; protected set; }
-        public abstract double Mana { get; protected set; }
-        public abstract double Speed { get; protected set; }
+        public string Name { get; protected set; }
+        public double Health { get; protected set; }
+        public double Mana { get; protected set; }
+        public double Speed { get; protected set; }
 
-        public abstract Dictionary<Status, int> Statuses { get; protected set; }
+        public Dictionary<Status, int> Statuses { get; protected set; } = new Dictionary<Status, int>();
 
-        public abstract double Armor { get; protected set; }
-        public abstract double Resistance { get; protected set; }
+        public double Armor { get; protected set; }
+        public double Resistance { get; protected set; }
 
-        public abstract double CriticalHitChance { get; protected set; }
-        public abstract double CriticalHitMultiplier { get; protected set; }
+        public double CriticalHitChance { get; protected set; }
+        public double CriticalHitMultiplier { get; protected set; }
 
-        public abstract IAbility BasicAttack { get; protected set; }
-        public List<IAbility> Abilities { get; protected set; } = new List<IAbility>();
+        public Ability BasicAttack { get; protected set; }
+        public List<Ability> Abilities { get; protected set; } = new List<Ability>();
         public List<Effect> Buffs { get; protected set; } = new List<Effect>();
         public List<Effect> Debuffs { get; protected set; } = new List<Effect>();
 
         public virtual void BeforeAttack(AttackEventArgs e)
         {
-            BeforeAttackEvent?.Invoke(this, e);
+            BeforeBasicAttackEvent?.Invoke(this, e);
         }
         public virtual void AfterAttack(AttackEventArgs e)
         {
-            AfterAttackEvent?.Invoke(this, e);
+            AfterBasicAttackEvent?.Invoke(this, e);
         }
 
         public virtual void BeforeAttacked(AttackedEventArgs e)
@@ -147,9 +154,9 @@ namespace GameServer.Model.Units
 
         public void Attack(List<Unit> targets)
         {
-            if (Abilities.Any(x => x.Available))
+            if (Abilities.Any(x => x.IsActive && x.Available))
             {
-                foreach (var ability in Abilities.Where(x => x.Available))
+                foreach (var ability in Abilities.Where(x => x.IsActive && x.Available))
                 {
                     UseAbility(targets, ability);
                     break;
@@ -160,13 +167,20 @@ namespace GameServer.Model.Units
                 if (!Statuses.ContainsKey(Status.Disarmed))
                 {
                     BeforeAttack(new AttackEventArgs(this, targets, BasicAttack));
-                    BasicAttack.Use(targets);
-                    AfterAttack(new AttackEventArgs(this, targets, BasicAttack));
+                    if (!Statuses.ContainsKey(Status.Blinded) || _random.NextDouble() > EffectConstants.STATUS_BLINDED_MISS_CHANCE)
+                    {
+                        BasicAttack.Use(targets);
+                        AfterAttack(new AttackEventArgs(this, targets, BasicAttack));
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{Name}'s basic attack missed on {targets.Select(x => x.Name).Aggregate((c,n) => c + "," + n)} (BLINDED)");
+                    }
                 }
             }
         }
 
-        public void UseAbility(List<Unit> targets, IAbility ability)
+        public void UseAbility(List<Unit> targets, Ability ability)
         {
             BeforeAbilityUsed(new AttackEventArgs(this, targets, ability));
 
@@ -186,7 +200,7 @@ namespace GameServer.Model.Units
                 Statuses.Add(status, 1);
             }
 
-            Console.WriteLine($"Status added: {status}");
+            Console.WriteLine($"{Name} became {status}");
         }
 
         public void RemoveStatus(Status status)
@@ -202,22 +216,22 @@ namespace GameServer.Model.Units
                     Statuses[status]--;
                 }
 
-                Console.WriteLine($"Status removed: {status}");
+                Console.WriteLine($"{Name} is no longer {status}");
             }
         }
 
-        public void TakeDamage(Unit attacker, AbilityDamage damage)
+        public void TakeDamage(Unit attacker, AbilityDamage abilityDamage)
         {
-            BeforeAttacked(new AttackedEventArgs(attacker, damage));
+            BeforeAttacked(new AttackedEventArgs(attacker, abilityDamage));
 
-            if (damage != null)
+            if (abilityDamage.AbilityResult == AbilityResult.Hit)
             {
-                var actualDamage = ReduceDamage(damage.DamageList);
+                var actualDamage = ReduceDamage(abilityDamage.DamageList);
                 Health -= actualDamage;
-                Console.WriteLine($"Damage dealt: {actualDamage}");
+                Console.WriteLine($"{attacker.Name} dealt {actualDamage} damage to {Name}{(abilityDamage.CriticalPart.Value > 0 ? " (CRIT)" : "")}");
             }
 
-            AfterAttacked(new AttackedEventArgs(attacker, damage));
+            AfterAttacked(new AttackedEventArgs(attacker, abilityDamage));
         }
 
         public void SetTeam(Team t)

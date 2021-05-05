@@ -6,20 +6,28 @@ using System.Threading.Tasks;
 
 namespace GameServer.Model.Abilities
 {
+    public enum AbilityResult
+    {
+        Hit,
+        Miss
+    }
+
     public class AbilityDamage
     {
-        public AbilityDamage(Damage damage, Damage crit, Damage bonus, Damage bonusNoCrit)
+        public AbilityDamage(Damage damage, Damage crit, Damage bonus, Damage bonusNoCrit, AbilityResult abilityResult)
         {
             DamagePart = damage;
             CriticalPart = crit;
             BonusDamagePart = bonus;
             BonusDamageNoCritPart = bonusNoCrit;
+            AbilityResult = abilityResult;
         }
 
-        public Damage DamagePart { get; private set; }
-        public Damage CriticalPart { get; private set; }
-        public Damage BonusDamagePart { get; private set; }
-        public Damage BonusDamageNoCritPart { get; private set; }
+        public AbilityResult AbilityResult { get; set; }
+        public Damage DamagePart { get; set; }
+        public Damage CriticalPart { get; set; }
+        public Damage BonusDamagePart { get; set; }
+        public Damage BonusDamageNoCritPart { get; set; }
 
         public List<Damage> DamageList
         {

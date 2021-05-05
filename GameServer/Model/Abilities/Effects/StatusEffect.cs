@@ -9,27 +9,28 @@ namespace GameServer.Model.Abilities.Effects
 {
     public class StatusEffect : Effect
     {
-        private int duration;
-
-        public StatusEffect(string name, int duration, Status status)
+        public StatusEffect(Unit owner, string name, int duration, Status status, double chance, Random random) : base(owner, random)
         {
+            _random = random;
+
             Name = name;
             Duration = duration;
             Status = status;
+            Chance = chance;
         }
-
-        public override string Name { get; }
-        public override int Duration { get => duration; protected set => duration = value; }
 
         public Status Status { get; }
 
-        public override void ApplyEffect(IUnit target)
+        public override void ApplyEffect(Unit target)
         {
-            target.AddDebuff(this);
-            target.AddStatus(Status);
+            if (_random.NextDouble() < Chance)
+            {
+                target.AddDebuff(this);
+                target.AddStatus(Status);
+            }
         }
 
-        public override void RemoveEffect(IUnit target)
+        public override void RemoveEffect(Unit target)
         {
             target.RemoveStatus(Status);
         }
