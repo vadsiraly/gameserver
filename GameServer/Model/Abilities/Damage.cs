@@ -23,6 +23,11 @@ namespace GameServer.Model.Abilities
             Type = type;
         }
 
+        public static Damage Undefined
+        {
+            get => new Damage(0, DamageType.Undefined);
+        }
+
         public DamageType Type { get; private set; }
         public double Value { get; private set; }
     }

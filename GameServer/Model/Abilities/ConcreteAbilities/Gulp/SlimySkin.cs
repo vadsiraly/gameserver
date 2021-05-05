@@ -27,10 +27,11 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.Gulp
             CanCriticalHit = true;
 
             EffectChance = 0.2;
-
             Debuffs.Add(new StatusEffect(Owner, "Slimy Skin", 2, Status.Blinded, EffectChance, random));
 
             owner.AfterAttackedEvent += Owner_AfterAttackedEvent;
+
+            Description = $"When {Name} is attacked, it has a chance to cover the attacker in slime, causing them to become blinded making them miss their basic attacks 40% of the time.";
         }
 
         private void Owner_AfterAttackedEvent(object sender, AttackedEventArgs e)

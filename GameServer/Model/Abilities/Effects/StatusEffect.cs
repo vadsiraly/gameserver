@@ -11,8 +11,6 @@ namespace GameServer.Model.Abilities.Effects
     {
         public StatusEffect(Unit owner, string name, int duration, Status status, double chance, Random random) : base(owner, random)
         {
-            _random = random;
-
             Name = name;
             Duration = duration;
             Status = status;
@@ -20,6 +18,7 @@ namespace GameServer.Model.Abilities.Effects
         }
 
         public Status Status { get; }
+        public int Duration { get; private set; }
 
         public override void ApplyEffect(Unit target)
         {
@@ -33,6 +32,14 @@ namespace GameServer.Model.Abilities.Effects
         public override void RemoveEffect(Unit target)
         {
             target.RemoveStatus(Status);
+        }
+
+        public override void Tick(Unit target)
+        {
+            if (--Duration <= 0)
+            {
+                RemoveEffect(target);
+            }
         }
     }
 }

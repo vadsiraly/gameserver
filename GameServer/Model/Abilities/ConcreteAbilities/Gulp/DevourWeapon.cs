@@ -27,6 +27,8 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.Gulp
 
             EffectChance = 0.2;
             Debuffs.Add(new StatusEffect(Owner, "Devour weapons", 4, Status.Disarmed, EffectChance, random));
+
+            Description = $"Deals {Damage} {DamageType} damage to the target. Has {EffectChance * 100}% chance to devour the target's weapons, disarming them for 4 rounds.";
         }
     }
 }

@@ -19,6 +19,9 @@ namespace GameServer.Model.Units
         public Unit(Random random)
         {
             _random = random;
+
+            MaxHealth = 0;
+            MaxMana = 0;
         }
 
         public event EventHandler<AttackEventArgs> BeforeBasicAttackEvent;
@@ -36,8 +39,81 @@ namespace GameServer.Model.Units
         public Team Team { get; protected set; }
 
         public string Name { get; protected set; }
-        public double Health { get; protected set; }
-        public double Mana { get; protected set; }
+
+        private double _maxHealth;
+        public double MaxHealth 
+        {
+            get => _maxHealth; 
+            protected set
+            {
+                var difference = value - _maxHealth;
+                _maxHealth = value;
+
+                if(difference > 0)
+                {
+                    Health += difference;
+                }
+                else
+                {
+                    Health = Health;
+                }
+            } 
+        }
+
+        private double _maxMana;
+        public double MaxMana
+        {
+            get => _maxMana;
+            protected set
+            {
+                var difference = value - _maxMana;
+                _maxMana = value;
+                Mana = Mana;
+            }
+        }
+
+        private double _health;
+        public double Health 
+        {
+            get => _health; 
+            protected set
+            {
+                if (value > MaxHealth)
+                {
+                    _health = MaxHealth;
+                }
+                else if (value < 0)
+                {
+                    _health = 0;
+                }
+                else
+                {
+                    _health = value;
+                }
+            } 
+        }
+
+        private double _mana;
+        public double Mana
+        {
+            get => _mana;
+            protected set
+            {
+                if (value > MaxMana)
+                {
+                    _mana = MaxMana;
+                }
+                else if (value < 0)
+                {
+                    _mana = 0;
+                }
+                else
+                {
+                    _mana = value;
+                }
+            }
+        }
+
         public double Speed { get; protected set; }
 
         public Dictionary<Status, int> Statuses { get; protected set; } = new Dictionary<Status, int>();
@@ -53,11 +129,11 @@ namespace GameServer.Model.Units
         public List<Effect> Buffs { get; protected set; } = new List<Effect>();
         public List<Effect> Debuffs { get; protected set; } = new List<Effect>();
 
-        public virtual void BeforeAttack(AttackEventArgs e)
+        public virtual void BeforeBasicAttack(AttackEventArgs e)
         {
             BeforeBasicAttackEvent?.Invoke(this, e);
         }
-        public virtual void AfterAttack(AttackEventArgs e)
+        public virtual void AfterBasicAttack(AttackEventArgs e)
         {
             AfterBasicAttackEvent?.Invoke(this, e);
         }
@@ -166,11 +242,11 @@ namespace GameServer.Model.Units
             {
                 if (!Statuses.ContainsKey(Status.Disarmed))
                 {
-                    BeforeAttack(new AttackEventArgs(this, targets, BasicAttack));
+                    BeforeBasicAttack(new AttackEventArgs(this, targets, BasicAttack));
                     if (!Statuses.ContainsKey(Status.Blinded) || _random.NextDouble() > EffectConstants.STATUS_BLINDED_MISS_CHANCE)
                     {
                         BasicAttack.Use(targets);
-                        AfterAttack(new AttackEventArgs(this, targets, BasicAttack));
+                        AfterBasicAttack(new AttackEventArgs(this, targets, BasicAttack));
                     }
                     else
                     {
@@ -220,18 +296,23 @@ namespace GameServer.Model.Units
             }
         }
 
-        public void TakeDamage(Unit attacker, AbilityDamage abilityDamage)
+        public double TakeDamage(Unit attacker, AbilityDamage abilityDamage)
         {
             BeforeAttacked(new AttackedEventArgs(attacker, abilityDamage));
 
-            if (abilityDamage.AbilityResult == AbilityResult.Hit)
-            {
-                var actualDamage = ReduceDamage(abilityDamage.DamageList);
-                Health -= actualDamage;
-                Console.WriteLine($"{attacker.Name} dealt {actualDamage} damage to {Name}{(abilityDamage.CriticalPart.Value > 0 ? " (CRIT)" : "")}");
-            }
+            var actualDamage = ReduceDamage(abilityDamage.DamageList);
+            Health -= actualDamage;
+            Console.WriteLine($"{attacker.Name} dealt {actualDamage} damage to {Name}{(abilityDamage.CriticalPart.Value > 0 ? " (CRIT)" : "")}");
 
             AfterAttacked(new AttackedEventArgs(attacker, abilityDamage));
+
+            return actualDamage;
+        }
+
+        public void Heal(Unit healer, AbilityHealing abilityHealing)
+        {
+            Health += abilityHealing.Healing;
+            Console.WriteLine($"{healer.Name} restored {abilityHealing.Healing} health to {Name}{(abilityHealing.CriticalPart > 0 ? " (CRIT)" : "")}");
         }
 
         public void SetTeam(Team t)

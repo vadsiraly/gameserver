@@ -14,30 +14,27 @@ namespace GameServer.Model.Abilities
 
     public class AbilityDamage
     {
-        public AbilityDamage(Damage damage, Damage crit, Damage bonus, Damage bonusNoCrit, AbilityResult abilityResult)
+        public AbilityDamage(Damage damage)
         {
             DamagePart = damage;
-            CriticalPart = crit;
-            BonusDamagePart = bonus;
-            BonusDamageNoCritPart = bonusNoCrit;
-            AbilityResult = abilityResult;
         }
 
-        public AbilityResult AbilityResult { get; set; }
-        public Damage DamagePart { get; set; }
-        public Damage CriticalPart { get; set; }
-        public Damage BonusDamagePart { get; set; }
-        public Damage BonusDamageNoCritPart { get; set; }
+        public Damage DamagePart { get; set; } = Damage.Undefined;
+        public Damage CriticalPart { get; set; } = Damage.Undefined;
+        public List<Damage> BonusDamagePart { get; set; } = new List<Damage>();
 
         public List<Damage> DamageList
         {
             get
             {
                 var result = new List<Damage>();
-                result.Add(DamagePart ?? new Damage(0, DamageType.Physical));
-                result.Add(CriticalPart ?? new Damage(0, DamageType.Physical));
-                result.Add(BonusDamagePart ?? new Damage(0, DamageType.Physical));
-                result.Add(BonusDamageNoCritPart ?? new Damage(0, DamageType.Physical));
+                result.Add(DamagePart ?? Damage.Undefined);
+                result.Add(CriticalPart ?? Damage.Undefined);
+
+                foreach(var part in BonusDamagePart) 
+                {
+                    result.Add(part ?? Damage.Undefined);
+                }
 
                 return result.GroupBy(x => x.Type).Select(x => new Damage(x.Sum(y => y.Value), x.Key)).ToList();
             }

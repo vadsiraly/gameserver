@@ -13,6 +13,9 @@ namespace GameServer.Model.Abilities
         protected Random _random;
         protected int _activeCooldown = 0;
 
+        public event EventHandler<AbilityUseEventArgs> BeforeAbilityUseEvent;
+        public event EventHandler<AbilityUseEventArgs> AfterAbilityUseEvent;
+
         public Ability(Unit owner, Random random)
         {
             Owner = owner;
@@ -23,6 +26,7 @@ namespace GameServer.Model.Abilities
         public int Id { get; protected set; }
         public string Reference { get; protected set; }
         public string Name { get; protected set; }
+        public string Description { get; protected set; }
 
         public bool IsActive { get; protected set; }
 
@@ -51,13 +55,17 @@ namespace GameServer.Model.Abilities
         {
             if (!IsActive) return;
 
+            var damage = new AbilityDamage(new Damage(Damage, DamageType));
+
             var criticalDamage = 0d;
             if (CanCriticalHit && _random.NextDouble() < Owner.CriticalHitChance)
             {
                 criticalDamage = Damage * Owner.CriticalHitMultiplier - Damage;
             }
 
-            var damage = new AbilityDamage(new Damage(Damage, DamageType), new Damage(criticalDamage, DamageType), null, null, AbilityResult.Hit);
+            damage.CriticalPart = new Damage(criticalDamage, DamageType);
+
+            BeforeAbilityUse(new AbilityUseEventArgs(Owner, targets, damage));
 
             foreach (var target in targets)
             {
@@ -75,6 +83,18 @@ namespace GameServer.Model.Abilities
             }
 
             _activeCooldown = Cooldown;
+
+            AfterAbilityUse(new AbilityUseEventArgs(Owner, targets, damage));
+        }
+
+        public virtual void BeforeAbilityUse(AbilityUseEventArgs e)
+        {
+            BeforeAbilityUseEvent?.Invoke(this, e);
+        }
+
+        public virtual void AfterAbilityUse(AbilityUseEventArgs e)
+        {
+            AfterAbilityUseEvent?.Invoke(this, e);
         }
     }
 }

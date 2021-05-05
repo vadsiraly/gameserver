@@ -8,15 +8,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameServer.Model.Units.ConcreteUnits.Gulp
+namespace GameServer.Model.Units.ConcreteUnits
 {
     public class Gulp : Unit
     {
         public Gulp(Random random) : base(random)
         {
             Name = $"Gulp{random.Next(0, 1000)}";
-            Health = 50;
-            Mana = 100;
+
+            MaxHealth = 75;
+            MaxMana = 100;
+            Mana = 0;
+
             Speed = 80;
 
             Armor = 100;

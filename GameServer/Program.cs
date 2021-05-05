@@ -1,6 +1,6 @@
 ﻿using GameServer.Model;
 using GameServer.Model.Battles;
-using GameServer.Model.Units.ConcreteUnits.Gulp;
+using GameServer.Model.Units.ConcreteUnits;
 using GameServer.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -29,19 +29,31 @@ namespace GameServer
                 var random = new Random(seed);
 
                 var attacker = new Team();
-                attacker.Add(new Gulp(random));
-                attacker.Add(new Gulp(random));
-                attacker.Add(new Gulp(random));
-                attacker.Add(new Gulp(random));
-                attacker.Add(new Gulp(random));
-                attacker.Add(new Gulp(random));
+                while (attacker.Units.Count < 6)
+                {
+                    switch(random.Next(1,3) % 2)
+                    {
+                        case 0:
+                            attacker.Add(new Gulp(random));
+                            break;
+                        case 1:
+                            attacker.Add(new Lyra(random));
+                            break;
+                    }
+                }
                 var defender = new Team();
-                defender.Add(new Gulp(random));
-                defender.Add(new Gulp(random));
-                defender.Add(new Gulp(random));
-                defender.Add(new Gulp(random));
-                defender.Add(new Gulp(random));
-                defender.Add(new Gulp(random));
+                while (defender.Units.Count < 6)
+                {
+                    switch (random.Next(1, 3) % 2)
+                    {
+                        case 0:
+                            defender.Add(new Gulp(random));
+                            break;
+                        case 1:
+                            defender.Add(new Lyra(random));
+                            break;
+                    }
+                }
 
                 var battle = new Battle(attacker, defender);
                 var outcome = battle.Fight(random);
