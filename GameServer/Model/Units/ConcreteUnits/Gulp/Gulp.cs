@@ -28,7 +28,7 @@ namespace GameServer.Model.Units.ConcreteUnits
             CriticalHitChance = 0.2;
             CriticalHitMultiplier = 2;
 
-            BasicAttack = new BasicAttack(this, random);
+            BasicAttack = new BasicAttack(this, 15, DamageType.Physical, random);
             Abilities.Add(new DevourWeapon(this, random));
             Abilities.Add(new SlimySkin(this, random));
         }

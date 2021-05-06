@@ -10,20 +10,16 @@ namespace GameServer.Model.Abilities.ConcreteAbilities
 {
     public class BasicAttack : Ability
     {
-        public BasicAttack(Unit owner, Random random) : base(owner, random)
+        public BasicAttack(Unit owner, double damage, DamageType damageType, Random random) : base(owner, random)
         {
             Id = 0;
 
             Reference = "basic_attack";
             Name = "Basic Attack";
 
-            IsActive = true;
+            Damage = damage;
+            DamageType = damageType;
 
-            ManaCost = 0;
-            Cooldown = 0;
-
-            Damage = 15;
-            DamageType = DamageType.Physical;
             CanCriticalHit = true;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using GameServer.Model.Abilities;
+using GameServer.Model.Abilities.ConcreteAbilities;
 using GameServer.Model.Abilities.Effects;
 using GameServer.Model.Battles;
 using GameServer.Services;
@@ -38,13 +39,13 @@ namespace GameServer.Model.Units
         public bool IsDead => Health <= 0;
         public Team Team { get; protected set; }
 
-        public string Name { get; protected set; }
+        public string Name { get; internal set; }
 
         private double _maxHealth;
         public double MaxHealth 
         {
             get => _maxHealth; 
-            protected set
+            internal set
             {
                 var difference = value - _maxHealth;
                 _maxHealth = value;
@@ -64,7 +65,7 @@ namespace GameServer.Model.Units
         public double MaxMana
         {
             get => _maxMana;
-            protected set
+            internal set
             {
                 var difference = value - _maxMana;
                 _maxMana = value;
@@ -82,7 +83,7 @@ namespace GameServer.Model.Units
                 {
                     _health = MaxHealth;
                 }
-                else if (value < 0)
+                else if (value <= 0)
                 {
                     _health = 0;
                 }
@@ -114,17 +115,17 @@ namespace GameServer.Model.Units
             }
         }
 
-        public double Speed { get; protected set; }
+        public double Speed { get; internal set; }
+
+        public double Armor { get; internal set; }
+        public double Resistance { get; internal set; }
+
+        public double CriticalHitChance { get; internal set; }
+        public double CriticalHitMultiplier { get; internal set; }
 
         public Dictionary<Status, int> Statuses { get; protected set; } = new Dictionary<Status, int>();
 
-        public double Armor { get; protected set; }
-        public double Resistance { get; protected set; }
-
-        public double CriticalHitChance { get; protected set; }
-        public double CriticalHitMultiplier { get; protected set; }
-
-        public Ability BasicAttack { get; protected set; }
+        public Ability BasicAttack { get; internal set; }
         public List<Ability> Abilities { get; protected set; } = new List<Ability>();
         public List<Effect> Buffs { get; protected set; } = new List<Effect>();
         public List<Effect> Debuffs { get; protected set; } = new List<Effect>();
@@ -302,7 +303,11 @@ namespace GameServer.Model.Units
 
             var actualDamage = ReduceDamage(abilityDamage.DamageList);
             Health -= actualDamage;
-            Console.WriteLine($"{source.Owner.Name}'s {source.Name} dealt {actualDamage} damage to {Name}{(abilityDamage.CriticalPart.Value > 0 ? " (CRIT)" : "")}");
+            Console.WriteLine($"{source.Owner.Name}'s {source.Name} dealt {actualDamage:F2} damage to {Name}{(abilityDamage.CriticalPart.Value > 0 ? " (CRIT)" : "")} ({Health:F2}/{MaxHealth})");
+            if (IsDead)
+            {
+                Console.WriteLine($"{Name} has died.");
+            }
 
             AfterAttacked(new AttackedEventArgs(source.Owner, abilityDamage));
 
@@ -312,7 +317,7 @@ namespace GameServer.Model.Units
         public void Heal(Ability source, AbilityHealing abilityHealing)
         {
             Health += abilityHealing.Healing;
-            Console.WriteLine($"{source.Owner.Name}'s {source.Name} restored {abilityHealing.Healing} health to {Name}{(abilityHealing.CriticalPart > 0 ? " (CRIT)" : "")}");
+            Console.WriteLine($"{source.Owner.Name}'s {source.Name} restored {abilityHealing.Healing:F2} health to {Name}{(abilityHealing.CriticalPart > 0 ? " (CRIT)" : "")} ({Health:F2}/{MaxHealth})");
         }
 
         public void SetTeam(Team t)

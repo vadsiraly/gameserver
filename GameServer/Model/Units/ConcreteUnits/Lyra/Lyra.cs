@@ -1,4 +1,5 @@
-﻿using GameServer.Model.Abilities.ConcreteAbilities;
+﻿using GameServer.Model.Abilities;
+using GameServer.Model.Abilities.ConcreteAbilities;
 using GameServer.Model.Abilities.ConcreteAbilities.Lyra;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace GameServer.Model.Units.ConcreteUnits
             MaxHealth = 100;
             MaxMana = 100;
             Mana = 0;
-            Speed = 80;
+            Speed = 90;
 
             Armor = 60;
             Resistance = 25;
@@ -25,7 +26,7 @@ namespace GameServer.Model.Units.ConcreteUnits
             CriticalHitChance = 0.15;
             CriticalHitMultiplier = 1.5;
 
-            BasicAttack = new BasicAttack(this, random);
+            BasicAttack = new BasicAttack(this, 25, DamageType.Composite, random);
             Abilities.Add(new PhantomStrike(this, random));
             Abilities.Add(new DivineAssistance(this, random));
         }

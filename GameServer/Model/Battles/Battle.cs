@@ -70,6 +70,8 @@ namespace GameServer.Model.Battles
 
                 foreach (var current in AliveUnits.OrderBy(x => x.Speed))
                 {
+                    if (current.IsDead) continue;
+
                     if (IsAttacker(current))
                     {
                         var aliveDefenders = Defender.Units.Where(x => !x.IsDead).ToList();

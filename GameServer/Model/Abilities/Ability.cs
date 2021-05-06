@@ -23,19 +23,19 @@ namespace GameServer.Model.Abilities
         }
 
         public Unit Owner { get; protected set; }
-        public int Id { get; protected set; }
-        public string Reference { get; protected set; }
-        public string Name { get; protected set; }
-        public string Description { get; protected set; }
+        public int Id { get; protected set; } = -1;
+        public string Reference { get; protected set; } = string.Empty;
+        public string Name { get; protected set; } = string.Empty;
+        public string Description { get; protected set; } = string.Empty;
 
-        public bool IsActive { get; protected set; }
+        public bool IsActive { get; protected set; } = true;
 
-        public int ManaCost { get; protected set; }
-        public int Cooldown { get; protected set; }
-        public double Damage { get; protected set; }
+        public int ManaCost { get; protected set; } = 0;
+        public int Cooldown { get; protected set; } = 0;
+        public double Damage { get; protected set; } = 0;
 
-        public DamageType DamageType { get; protected set; }
-        public bool CanCriticalHit { get; protected set; }
+        public DamageType DamageType { get; protected set; } = DamageType.Undefined;
+        public bool CanCriticalHit { get; protected set; } = true;
 
         public List<Effect> Buffs { get; protected set; } = new List<Effect>();
         public List<Effect> Debuffs { get; protected set; } = new List<Effect>();

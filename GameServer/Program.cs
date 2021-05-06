@@ -31,7 +31,7 @@ namespace GameServer
                 var attacker = new Team();
                 while (attacker.Units.Count < 6)
                 {
-                    switch(random.Next(1,3) % 2)
+                    switch(random.Next(1,4) % 3)
                     {
                         case 0:
                             attacker.Add(new Gulp(random));
@@ -39,18 +39,24 @@ namespace GameServer
                         case 1:
                             attacker.Add(new Lyra(random));
                             break;
+                        case 2:
+                            attacker.Add(new SecretiveGirl(random));
+                            break;
                     }
                 }
                 var defender = new Team();
                 while (defender.Units.Count < 6)
                 {
-                    switch (random.Next(1, 3) % 2)
+                    switch (random.Next(1, 4) % 3)
                     {
                         case 0:
                             defender.Add(new Gulp(random));
                             break;
                         case 1:
                             defender.Add(new Lyra(random));
+                            break;
+                        case 2:
+                            defender.Add(new SecretiveGirl(random));
                             break;
                     }
                 }
