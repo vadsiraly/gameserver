@@ -9,7 +9,7 @@ namespace GameServer.Model.Abilities.Effects
 {
     public class StatusEffect : Effect
     {
-        public StatusEffect(Unit owner, string name, int duration, Status status, double chance, Random random) : base(owner, random)
+        public StatusEffect(Ability source, string name, int duration, Status status, double chance, Random random) : base(source, random)
         {
             Name = name;
             Duration = duration;
@@ -24,14 +24,14 @@ namespace GameServer.Model.Abilities.Effects
         {
             if (_random.NextDouble() < Chance)
             {
-                target.AddDebuff(this);
-                target.AddStatus(Status);
+                target.AddDebuff(Source, this);
+                target.AddStatus(Source, Status);
             }
         }
 
         public override void RemoveEffect(Unit target)
         {
-            target.RemoveStatus(Status);
+            target.RemoveStatus(Source, Status);
         }
 
         public override void Tick(Unit target)

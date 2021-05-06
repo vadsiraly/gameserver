@@ -23,13 +23,13 @@ namespace GameServer.Model.Abilities.Effects
     {
         protected Random _random;
 
-        public Effect(Unit owner, Random random)
+        public Effect(Ability source, Random random)
         {
-            Owner = owner;
+            Source = source;
             _random = random;
         }
 
-        public Unit Owner { get; protected set; }
+        public Ability Source { get; protected set; }
         public string Name { get; protected set; }
         public double Chance { get; protected set; }
 

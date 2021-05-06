@@ -49,7 +49,7 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.Lyra
             var actualDamage = 0d;
             foreach (var target in targets)
             {
-                actualDamage = target.TakeDamage(Owner, damage);
+                actualDamage = target.TakeDamage(this, damage);
 
                 foreach (var buff in Buffs)
                 {
@@ -63,7 +63,7 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.Lyra
             }
 
             var selfHeal = new AbilityHealing(actualDamage * DamageSelfHealPercentage, 0, 0, 0);
-            Owner.Heal(Owner, selfHeal);
+            Owner.Heal(this, selfHeal);
 
             _activeCooldown = Cooldown;
 

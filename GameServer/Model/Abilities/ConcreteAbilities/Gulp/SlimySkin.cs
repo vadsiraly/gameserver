@@ -27,7 +27,7 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.Gulp
             CanCriticalHit = true;
 
             EffectChance = 0.2;
-            Debuffs.Add(new StatusEffect(Owner, "Slimy Skin", 2, Status.Blinded, EffectChance, random));
+            Debuffs.Add(new StatusEffect(this, "Slimy Skin", 2, Status.Blinded, EffectChance, random));
 
             owner.AfterAttackedEvent += Owner_AfterAttackedEvent;
 

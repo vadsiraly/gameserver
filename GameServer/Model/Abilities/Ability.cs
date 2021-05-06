@@ -69,7 +69,7 @@ namespace GameServer.Model.Abilities
 
             foreach (var target in targets)
             {
-                target.TakeDamage(Owner, damage);
+                target.TakeDamage(this, damage);
 
                 foreach (var buff in Buffs)
                 {

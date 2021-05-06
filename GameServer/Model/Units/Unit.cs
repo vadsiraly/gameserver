@@ -192,7 +192,7 @@ namespace GameServer.Model.Units
             }
         }
 
-        public void AddBuff(Effect effect)
+        public void AddBuff(Ability source, Effect effect)
         {
             BeforeEffectAdded(new EffectEventArgs(this, effect));
 
@@ -201,7 +201,7 @@ namespace GameServer.Model.Units
             AfterEffectAdded(new EffectEventArgs(this, effect));
         }
 
-        public void RemoveBuff(Effect effect)
+        public void RemoveBuff(Ability source, Effect effect)
         {
             BeforeEffectRemoved(new EffectEventArgs(this, effect));
 
@@ -210,7 +210,7 @@ namespace GameServer.Model.Units
             AfterEffectRemoved(new EffectEventArgs(this, effect));
         }
 
-        public void AddDebuff(Effect effect)
+        public void AddDebuff(Ability source, Effect effect)
         {
             BeforeEffectAdded(new EffectEventArgs(this, effect));
 
@@ -219,7 +219,7 @@ namespace GameServer.Model.Units
             AfterEffectAdded(new EffectEventArgs(this, effect));
         }
 
-        public void RemoveDebuff(Effect effect)
+        public void RemoveDebuff(Ability source, Effect effect)
         {
             BeforeEffectRemoved(new EffectEventArgs(this, effect));
 
@@ -265,7 +265,7 @@ namespace GameServer.Model.Units
             AfterAbilityUsed(new AttackEventArgs(this, targets, ability));
         }
 
-        public void AddStatus(Status status)
+        public void AddStatus(Ability source, Status status)
         {
             if (Statuses.ContainsKey(status))
             {
@@ -276,10 +276,10 @@ namespace GameServer.Model.Units
                 Statuses.Add(status, 1);
             }
 
-            Console.WriteLine($"{Name} became {status}");
+            Console.WriteLine($"{Name} became {status} by {source.Owner.Name}'s {source.Name}");
         }
 
-        public void RemoveStatus(Status status)
+        public void RemoveStatus(Ability source, Status status)
         {
             if (Statuses.ContainsKey(status))
             {
@@ -292,27 +292,27 @@ namespace GameServer.Model.Units
                     Statuses[status]--;
                 }
 
-                Console.WriteLine($"{Name} is no longer {status}");
+                Console.WriteLine($"{source.Owner.Name}'s {source.Name} wore off, {Name} is no longer {status}");
             }
         }
 
-        public double TakeDamage(Unit attacker, AbilityDamage abilityDamage)
+        public double TakeDamage(Ability source, AbilityDamage abilityDamage)
         {
-            BeforeAttacked(new AttackedEventArgs(attacker, abilityDamage));
+            BeforeAttacked(new AttackedEventArgs(source.Owner, abilityDamage));
 
             var actualDamage = ReduceDamage(abilityDamage.DamageList);
             Health -= actualDamage;
-            Console.WriteLine($"{attacker.Name} dealt {actualDamage} damage to {Name}{(abilityDamage.CriticalPart.Value > 0 ? " (CRIT)" : "")}");
+            Console.WriteLine($"{source.Owner.Name}'s {source.Name} dealt {actualDamage} damage to {Name}{(abilityDamage.CriticalPart.Value > 0 ? " (CRIT)" : "")}");
 
-            AfterAttacked(new AttackedEventArgs(attacker, abilityDamage));
+            AfterAttacked(new AttackedEventArgs(source.Owner, abilityDamage));
 
             return actualDamage;
         }
 
-        public void Heal(Unit healer, AbilityHealing abilityHealing)
+        public void Heal(Ability source, AbilityHealing abilityHealing)
         {
             Health += abilityHealing.Healing;
-            Console.WriteLine($"{healer.Name} restored {abilityHealing.Healing} health to {Name}{(abilityHealing.CriticalPart > 0 ? " (CRIT)" : "")}");
+            Console.WriteLine($"{source.Owner.Name}'s {source.Name} restored {abilityHealing.Healing} health to {Name}{(abilityHealing.CriticalPart > 0 ? " (CRIT)" : "")}");
         }
 
         public void SetTeam(Team t)
