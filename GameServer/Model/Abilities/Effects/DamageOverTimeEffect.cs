@@ -7,36 +7,39 @@ using System.Threading.Tasks;
 
 namespace GameServer.Model.Abilities.Effects
 {
-    public class StatusEffect : Effect
+    public class DamageOverTimeEffect : Effect
     {
-        public StatusEffect(Ability source, string name, int duration, Status status, double chance, Random random) : base(source, random)
+        public DamageOverTimeEffect(Ability source, string name, int duration, double damage, DamageType damageType, int maxStack, Random random) : base(source, random)
         {
             Name = name;
             Duration = duration;
-            Status = status;
-            Chance = chance;
+            Damage = damage;
+            DamageType = damageType;
+            MaxStack = maxStack;
         }
 
-        public Status Status { get; }
+        public double Damage { get; }
+        public DamageType DamageType { get; }
         public int Duration { get; private set; }
-        public double Chance { get; private set; }
+        public int MaxStack { get; private set; }
 
         public override void ApplyEffect(Unit target)
         {
-            if (_random.NextDouble() < Chance)
+            if (target.Buffs.Count(x => x.Name == Name && x.Source.Owner.Name == Source.Owner.Name) < MaxStack)
             {
                 target.AddDebuff(Source, this);
-                target.AddStatus(Source, Status);
             }
         }
 
         public override void RemoveEffect(Unit target)
         {
-            target.RemoveStatus(Source, Status);
         }
 
         public override void Tick(Unit target)
         {
+            var abilityDamage = new AbilityDamage(new Damage(Damage, DamageType));
+            target.TakeEffectDamage(Source, abilityDamage);
+
             if (--Duration <= 0)
             {
                 RemoveEffect(target);

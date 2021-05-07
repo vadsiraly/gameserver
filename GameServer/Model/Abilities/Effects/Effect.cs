@@ -31,7 +31,6 @@ namespace GameServer.Model.Abilities.Effects
 
         public Ability Source { get; protected set; }
         public string Name { get; protected set; }
-        public double Chance { get; protected set; }
 
         public abstract void ApplyEffect(Unit target);
 

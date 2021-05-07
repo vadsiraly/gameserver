@@ -1,6 +1,7 @@
 ﻿using GameServer.Model;
 using GameServer.Model.Battles;
 using GameServer.Model.Units.ConcreteUnits;
+using GameServer.Model.Units.ConcreteUnits.PlagueDoctor;
 using GameServer.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -31,7 +32,7 @@ namespace GameServer
                 var attacker = new Team();
                 while (attacker.Units.Count < 6)
                 {
-                    switch(random.Next(1,4) % 3)
+                    switch(random.Next(1,5) % 4)
                     {
                         case 0:
                             attacker.Add(new Gulp(random));
@@ -42,12 +43,15 @@ namespace GameServer
                         case 2:
                             attacker.Add(new SecretiveGirl(random));
                             break;
+                        case 3:
+                            attacker.Add(new PlagueDoctor(random));
+                            break;
                     }
                 }
                 var defender = new Team();
                 while (defender.Units.Count < 6)
                 {
-                    switch (random.Next(1, 4) % 3)
+                    switch (random.Next(1, 5) % 4)
                     {
                         case 0:
                             defender.Add(new Gulp(random));
@@ -58,8 +62,14 @@ namespace GameServer
                         case 2:
                             defender.Add(new SecretiveGirl(random));
                             break;
+                        case 3:
+                            defender.Add(new PlagueDoctor(random));
+                            break;
                     }
                 }
+
+                Console.WriteLine($"Attackers:\n\t{attacker.Units.Select(x => x.Name).Aggregate((c, n) => c + "\n" + "\t" + n)}");
+                Console.WriteLine($"Defenders:\n\t{defender.Units.Select(x => x.Name).Aggregate((c, n) => c + "\n" + "\t" + n)}");
 
                 var battle = new Battle(attacker, defender);
                 var outcome = battle.Fight(random);

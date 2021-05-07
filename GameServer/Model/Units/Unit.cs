@@ -35,6 +35,7 @@ namespace GameServer.Model.Units
         public event EventHandler<EffectEventArgs> AfterEffectAddedEvent;
         public event EventHandler<EffectEventArgs> BeforeEffectRemovedEvent;
         public event EventHandler<EffectEventArgs> AfterEffectRemovedEvent;
+        public event EventHandler<EventArgs> OnDeathEvent;
 
         public bool IsDead => Health <= 0;
         public Team Team { get; protected set; }
@@ -86,6 +87,7 @@ namespace GameServer.Model.Units
                 else if (value <= 0)
                 {
                     _health = 0;
+                    Die();
                 }
                 else
                 {
@@ -171,6 +173,10 @@ namespace GameServer.Model.Units
         {
             AfterEffectRemovedEvent?.Invoke(this, e);
         }
+        public virtual void OnDeath(EventArgs e)
+        {
+            OnDeathEvent?.Invoke(this, e);
+        }
 
         public virtual void RoundBegin(object sender, RoundEventArgs e)
         {
@@ -231,6 +237,8 @@ namespace GameServer.Model.Units
 
         public void Attack(List<Unit> targets)
         {
+            if (IsDead) return;
+
             if (Abilities.Any(x => x.IsActive && x.Available))
             {
                 foreach (var ability in Abilities.Where(x => x.IsActive && x.Available))
@@ -314,6 +322,19 @@ namespace GameServer.Model.Units
             return actualDamage;
         }
 
+        public double TakeEffectDamage(Ability source, AbilityDamage abilityDamage)
+        {
+            var actualDamage = ReduceDamage(abilityDamage.DamageList);
+            Health -= actualDamage;
+            Console.WriteLine($"{source.Owner.Name}'s {source.Name} dealt {actualDamage:F2} damage to {Name}{(abilityDamage.CriticalPart.Value > 0 ? " (CRIT)" : "")} ({Health:F2}/{MaxHealth})");
+            if (IsDead)
+            {
+                Console.WriteLine($"{Name} has died.");
+            }
+
+            return actualDamage;
+        }
+
         public void Heal(Ability source, AbilityHealing abilityHealing)
         {
             Health += abilityHealing.Healing;
@@ -387,6 +408,14 @@ namespace GameServer.Model.Units
             }
 
             return actualDamage;
+        }
+
+        public void Die()
+        {
+            OnDeath(new EventArgs());
+
+            Debuffs.Clear();
+            Buffs.Clear();
         }
     }
 }
