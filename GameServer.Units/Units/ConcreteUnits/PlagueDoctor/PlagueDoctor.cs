@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameServer.Model.Units.ConcreteUnits.PlagueDoctor
+namespace GameServer.Model.Units.ConcreteUnits
 {
     public class PlagueDoctor : Unit
     {

@@ -1,8 +1,6 @@
-﻿using GameServer.Model;
-using GameServer.Model.Battles;
+﻿using GameServer.Battles;
+using GameServer.Model;
 using GameServer.Model.Units.ConcreteUnits;
-using GameServer.Model.Units.ConcreteUnits.PlagueDoctor;
-using GameServer.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;

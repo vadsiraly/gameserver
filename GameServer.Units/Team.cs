@@ -11,11 +11,6 @@ namespace GameServer.Model
     {
         public List<Unit> Units { get; set; } = new List<Unit>();
 
-        public Unit GetRandomAliveUnit(Random random)
-        {
-            return Units.GetRandomElement(random, x => !x.IsDead);
-        }
-
         public void Add(Unit u)
         {
             if (Units.Count < 6)

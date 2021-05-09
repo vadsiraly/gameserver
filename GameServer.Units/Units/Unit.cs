@@ -1,9 +1,6 @@
 ﻿using GameServer.Model.Abilities;
 using GameServer.Model.Abilities.ConcreteAbilities;
 using GameServer.Model.Abilities.Effects;
-using GameServer.Model.Battles;
-using GameServer.Services;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;

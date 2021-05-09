@@ -1,12 +1,10 @@
-﻿using GameServer.Model.Units;
-using GameServer.Services;
+﻿using GameServer.Model;
+using GameServer.Model.Units;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace GameServer.Model.Battles
+namespace GameServer.Battles
 {
     public enum Outcome
     {
@@ -60,8 +58,6 @@ namespace GameServer.Model.Battles
 
         public Outcome Fight(Random random)
         {
-            var ps = new PrintService();
-
             OnBattleBegin?.Invoke(this, new EventArgs());
 
             while (Outcome == Outcome.Inconclusive && ++Rounds <= RoundLimit)

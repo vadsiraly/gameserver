@@ -5,24 +5,17 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\Output\$(Configuration)</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\Output\$(Configuration)</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.Collections" Version="4.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +28,11 @@
     <Folder Include="Concepts\QT17\" />
     <Folder Include="Concepts\PlagueDoctor\" />
     <Folder Include="Concepts\Outcast\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GameServer.Battle\GameServer.Battles.csproj" />
+    <ProjectReference Include="..\GameServer.Units\GameServer.Model.csproj" />
   </ItemGroup>
 
 </Project>
