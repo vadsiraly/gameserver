@@ -1,4 +1,5 @@
-﻿using GameServer.Model.Units;
+﻿using GameServer.Model.Abilities.Damages;
+using GameServer.Model.Units;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,19 +21,21 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.Lyra
             ManaCost = 0;
             Cooldown = 1;
 
-            Damage = 0;
-            DamageType = DamageType.Undefined;
+            Damage = new Damage();
             CanCriticalHit = false;
 
-            EffectChance = 0.1;
+            BonusDamagePercentage = 0.1;
             Description = $"Divine Assistance enhances {Name}'s basic attacks. Adding an extra {EffectChance * 10}% pure damage. This bonus is not affected by critical hits.";
 
             Owner.BasicAttack.BeforeAbilityUseEvent += BasicAttack_BeforeAbilityUseEvent;
         }
 
+        public double BonusDamagePercentage { get; private set; }
+
         private void BasicAttack_BeforeAbilityUseEvent(object sender, AbilityUseEventArgs e)
         {
-            e.AbilityDamage.BonusDamagePart.Add(new Damage(e.AbilityDamage.DamagePart.Value * EffectChance, DamageType.Pure));
+            var damage = new Damage(pure: e.CombinedDamage.BaseDamage.Damage.Sum * BonusDamagePercentage);
+            e.CombinedDamage.DamageCollection.Add((this, damage));
         }
     }
 }

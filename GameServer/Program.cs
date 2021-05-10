@@ -1,8 +1,6 @@
 ﻿using GameServer.Battles;
 using GameServer.Model;
 using GameServer.Model.Units.ConcreteUnits;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
 using System.IO;
 using System.Linq;

@@ -1,6 +1,7 @@
 ﻿using GameServer.Model.Abilities;
 using GameServer.Model.Abilities.ConcreteAbilities;
 using GameServer.Model.Abilities.ConcreteAbilities.Gulp;
+using GameServer.Model.Abilities.Damages;
 using GameServer.Model.Abilities.Effects;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace GameServer.Model.Units.ConcreteUnits
             CriticalHitChance = 0.2;
             CriticalHitMultiplier = 2;
 
-            BasicAttack = new BasicAttack(this, 15, DamageType.Physical, random);
+            BasicAttack = new BasicAttack(this, new Damage(physical: 15), random);
             Abilities.Add(new DevourWeapon(this, random));
             Abilities.Add(new SlimySkin(this, random));
         }

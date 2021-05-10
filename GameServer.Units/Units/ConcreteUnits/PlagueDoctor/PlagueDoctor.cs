@@ -1,6 +1,7 @@
 ﻿using GameServer.Model.Abilities;
 using GameServer.Model.Abilities.ConcreteAbilities;
 using GameServer.Model.Abilities.ConcreteAbilities.PlagueDoctor;
+using GameServer.Model.Abilities.Damages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace GameServer.Model.Units.ConcreteUnits
             CriticalHitChance = 0.15;
             CriticalHitMultiplier = 1.5;
 
-            BasicAttack = new BasicAttack(this, 10, DamageType.Magical, random);
+            BasicAttack = new BasicAttack(this, new Damage(physical: 10), random);
             Abilities.Add(new ReapersScythe(this, random));
             Abilities.Add(new SepticInjection(this, random));
         }

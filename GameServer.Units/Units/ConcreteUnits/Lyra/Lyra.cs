@@ -1,6 +1,7 @@
 ﻿using GameServer.Model.Abilities;
 using GameServer.Model.Abilities.ConcreteAbilities;
 using GameServer.Model.Abilities.ConcreteAbilities.Lyra;
+using GameServer.Model.Abilities.Damages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace GameServer.Model.Units.ConcreteUnits
             CriticalHitChance = 0.15;
             CriticalHitMultiplier = 1.5;
 
-            BasicAttack = new BasicAttack(this, 25, DamageType.Composite, random);
+            BasicAttack = new BasicAttack(this, new Damage(composite: 25), random);
             Abilities.Add(new PhantomStrike(this, random));
             Abilities.Add(new DivineAssistance(this, random));
         }

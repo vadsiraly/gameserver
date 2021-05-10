@@ -1,4 +1,5 @@
-﻿using GameServer.Model.Abilities.Effects;
+﻿using GameServer.Model.Abilities.Damages;
+using GameServer.Model.Abilities.Effects;
 using GameServer.Model.Units;
 using System;
 using System.Collections.Generic;
@@ -21,29 +22,26 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.PlagueDoctor
             ManaCost = 0;
             Cooldown = 2;
 
-            Damage = 0;
-            DamageType = DamageType.Undefined;
+            Damage = Damage.Zero;
             CanCriticalHit = false;
 
             EffectChance = 1;
             EffectDuration = 5;
-            EffectDamage = 1;
-            EffectDamageType = DamageType.Magical;
+            EffectDamage = new Damage(magical: 1);
             EffectMaxStack = 99;
 
-            Description = $"{Owner.Name} swings his Scythe and covers each enemy unit with radioactive dust. Every affected unit suffers {EffectDamage} {EffectDamageType} damage at the end of the turn for {EffectDuration} turns. This effect stacks indefinitely.";
+            Description = $"{Owner.Name} swings his Scythe and covers each enemy unit with radioactive dust. Every affected unit suffers {EffectDamage} damage at the end of the turn for {EffectDuration} turns. This effect stacks indefinitely.";
 
-            Debuffs.Add(new DamageOverTimeEffect(this, Name, EffectDuration, EffectDamage, EffectDamageType, EffectMaxStack, _random));
+            Debuffs.Add(new DamageOverTimeEffect(this, Name, EffectDuration, EffectDamage, EffectMaxStack, _random));
         }
 
         public int EffectDuration { get; private set; }
-        public double EffectDamage { get; private set; }
-        public DamageType EffectDamageType { get; private set; }
+        public Damage EffectDamage { get; private set; }
         public int EffectMaxStack { get; private set; }
 
         public override void Use(List<Unit> targets)
         {
-            BeforeAbilityUse(new AbilityUseEventArgs(Owner, targets, new AbilityDamage(Abilities.Damage.Undefined)));
+            BeforeAbilityUse(new AbilityUseEventArgs(Owner, targets, CombinedDamage.Zero));
 
             var enemyTeam = targets.FirstOrDefault()?.Team.Units ?? new List<Unit>();
             foreach (var unit in enemyTeam)
@@ -56,7 +54,7 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.PlagueDoctor
 
             _activeCooldown = Cooldown;
 
-            AfterAbilityUse(new AbilityUseEventArgs(Owner, targets, new AbilityDamage(Abilities.Damage.Undefined)));
+            AfterAbilityUse(new AbilityUseEventArgs(Owner, targets, CombinedDamage.Zero));
         }
     }
 }

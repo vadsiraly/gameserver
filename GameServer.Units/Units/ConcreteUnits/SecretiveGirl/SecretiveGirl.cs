@@ -1,6 +1,7 @@
 ﻿using GameServer.Model.Abilities;
 using GameServer.Model.Abilities.ConcreteAbilities;
 using GameServer.Model.Abilities.ConcreteAbilities.SecretiveGirl;
+using GameServer.Model.Abilities.Damages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace GameServer.Model.Units.ConcreteUnits
             CriticalHitChance = 0;
             CriticalHitMultiplier = 3;
 
-            BasicAttack = new BasicAttack(this, 5, DamageType.Physical, random);
+            BasicAttack = new BasicAttack(this, new Damage(physical: 5), random);
             Abilities.Add(new Transform(this, random));
         }
     }

@@ -1,4 +1,5 @@
 ﻿using GameServer.Model.Abilities;
+using GameServer.Model.Abilities.Damages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,13 @@ namespace GameServer.Model.Units
 {
     public class AttackedEventArgs
     {
-        public AttackedEventArgs(Unit attacker, AbilityDamage damage)
+        public AttackedEventArgs(Unit attacker, CombinedDamage combinedDamage)
         {
             Attacker = attacker;
-            Damage = damage;
+            CombinedDamage = combinedDamage;
         }
 
         public Unit Attacker { get; private set; }
-        public AbilityDamage Damage { get; private set; }
+        public CombinedDamage CombinedDamage { get; private set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GameServer.Model.Abilities.Effects;
+using GameServer.Model.Abilities.Damages;
 using GameServer.Model.Units;
 using System;
 using System.Collections.Generic;
@@ -21,25 +22,22 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.PlagueDoctor
             ManaCost = 0;
             Cooldown = 1;
 
-            Damage = 0;
-            DamageType = DamageType.Undefined;
+            Damage = Damage.Zero;
             CanCriticalHit = false;
 
             EffectChance = 1;
             EffectDuration = 4;
-            EffectDamage = 2;
-            EffectDamageType = DamageType.Magical;
+            EffectDamage = new Damage(magical: 2);
             EffectMaxStack = 5;
 
-            Description = $"{Name} casuses {owner.Name}'s attacks to inflict {EffectDamage} {EffectDamageType} damage at the end of the round for {EffectDuration} rounds. This effect stacks up to {EffectMaxStack}.";
+            Description = $"{Name} casuses {owner.Name}'s attacks to inflict {EffectDamage} damage at the end of the round for {EffectDuration} rounds. This effect stacks up to {EffectMaxStack}.";
 
-            Debuffs.Add(new DamageOverTimeEffect(this, Name, EffectDuration, EffectDamage, EffectDamageType, EffectMaxStack, _random));
+            Debuffs.Add(new DamageOverTimeEffect(this, Name, EffectDuration, EffectDamage, EffectMaxStack, _random));
             Owner.BasicAttack.AfterAbilityUseEvent += BasicAttack_AfterAbilityUseEvent;
         }
 
         public int EffectDuration { get; private set; }
-        public double EffectDamage { get; private set; }
-        public DamageType EffectDamageType { get; private set; }
+        public Damage EffectDamage { get; private set; }
         public int EffectMaxStack { get; private set; }
 
         private void BasicAttack_AfterAbilityUseEvent(object sender, AbilityUseEventArgs e)

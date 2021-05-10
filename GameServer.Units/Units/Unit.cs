@@ -1,5 +1,5 @@
 ﻿using GameServer.Model.Abilities;
-using GameServer.Model.Abilities.ConcreteAbilities;
+using GameServer.Model.Abilities.Damages;
 using GameServer.Model.Abilities.Effects;
 using System;
 using System.Collections.Generic;
@@ -302,34 +302,36 @@ namespace GameServer.Model.Units
             }
         }
 
-        public double TakeDamage(Ability source, AbilityDamage abilityDamage)
+        public CombinedDamage TakeDamage(Ability source, CombinedDamage combinedDamage)
         {
-            BeforeAttacked(new AttackedEventArgs(source.Owner, abilityDamage));
+            BeforeAttacked(new AttackedEventArgs(source.Owner, combinedDamage));
 
-            var actualDamage = ReduceDamage(abilityDamage.DamageList);
-            Health -= actualDamage;
-            Console.WriteLine($"{source.Owner.Name}'s {source.Name} dealt {actualDamage:F2} damage to {Name}{(abilityDamage.CriticalPart.Value > 0 ? " (CRIT)" : "")} ({Health:F2}/{MaxHealth})");
+            var reducedCombinedDamage = ReduceCombinedDamage(combinedDamage);
+            var reducedDamage = reducedCombinedDamage.Aggregate();
+            Health -= reducedDamage.Sum;
+            Console.WriteLine($"{source.Owner.Name}'s {source.Name} dealt {reducedDamage} damage to {Name}{(combinedDamage.DamageCollection.Any(x => x.Damage.IsCritical) ? " (CRIT)" : "")} ({Health:F2}/{MaxHealth})");
             if (IsDead)
             {
                 Console.WriteLine($"{Name} has died.");
             }
 
-            AfterAttacked(new AttackedEventArgs(source.Owner, abilityDamage));
+            AfterAttacked(new AttackedEventArgs(source.Owner, reducedCombinedDamage));
 
-            return actualDamage;
+            return reducedCombinedDamage;
         }
 
-        public double TakeEffectDamage(Ability source, AbilityDamage abilityDamage)
+        public CombinedDamage TakeEffectDamage(Ability source, CombinedDamage combinedDamage)
         {
-            var actualDamage = ReduceDamage(abilityDamage.DamageList);
-            Health -= actualDamage;
-            Console.WriteLine($"{source.Owner.Name}'s {source.Name} dealt {actualDamage:F2} damage to {Name}{(abilityDamage.CriticalPart.Value > 0 ? " (CRIT)" : "")} ({Health:F2}/{MaxHealth})");
+            var reducedCombinedDamage = ReduceCombinedDamage(combinedDamage);
+            var reducedDamage = reducedCombinedDamage.Aggregate();
+            Health -= reducedDamage.Sum;
+            Console.WriteLine($"{source.Owner.Name}'s {source.Name} dealt {reducedDamage} damage to {Name}{(combinedDamage.DamageCollection.Any(x => x.Damage.IsCritical) ? " (CRIT)" : "")} ({Health:F2}/{MaxHealth})");
             if (IsDead)
             {
                 Console.WriteLine($"{Name} has died.");
             }
 
-            return actualDamage;
+            return reducedCombinedDamage;
         }
 
         public void Heal(Ability source, AbilityHealing abilityHealing)
@@ -343,68 +345,15 @@ namespace GameServer.Model.Units
             Team = t;
         }
 
-        public double ReduceDamage(List<Damage> damages)
+        public CombinedDamage ReduceCombinedDamage(CombinedDamage combinedDamage)
         {
-            var actualDamage = 0d;
-            foreach(var damage in damages)
+            var reducedCombinedDamage = new CombinedDamage((combinedDamage.BaseDamage.Source, combinedDamage.BaseDamage.Damage.Mitigate(Armor, Resistance)));
+            foreach (var damage in combinedDamage.DamageCollection)
             {
-                switch (damage.Type)
-                {
-                    case DamageType.Physical:
-                        if (Armor > 0)
-                        {
-                            var multiplier = 100 / (100 + Armor);
-                            actualDamage += damage.Value * multiplier;
-                        }
-                        else
-                        {
-                            var multiplier = 2 - 100 / (100 - Armor);
-                            actualDamage += damage.Value * multiplier;
-                        }
-                        break;
-                    case DamageType.Magical:
-                        if (Resistance > 0)
-                        {
-                            var multiplier = 100 / (100 + Resistance);
-                            actualDamage += damage.Value * multiplier;
-                        }
-                        else
-                        {
-                            var multiplier = 2 - 100 / (100 - Resistance);
-                            actualDamage += damage.Value * multiplier;
-                        }
-                        break;
-                    case DamageType.Composite:
-                        var halfDamage = damage.Value / 2;
-                        if (Armor > 0)
-                        {
-                            var multiplier = 100 / (100 + Armor);
-                            actualDamage += halfDamage / 2 * multiplier;
-                        }
-                        else
-                        {
-                            var multiplier = 2 - 100 / (100 - Armor);
-                            actualDamage += halfDamage * multiplier;
-                        }
-
-                        if (Resistance > 0)
-                        {
-                            var multiplier = 100 / (100 + Resistance);
-                            actualDamage += halfDamage * multiplier;
-                        }
-                        else
-                        {
-                            var multiplier = 2 - 100 / (100 - Resistance);
-                            actualDamage += halfDamage * multiplier;
-                        }
-                        break;
-                    case DamageType.Pure:
-                        actualDamage += damage.Value;
-                        break;
-                }
+                reducedCombinedDamage.DamageCollection.Add((damage.Source, damage.Damage.Mitigate(Armor, Resistance)));
             }
 
-            return actualDamage;
+            return reducedCombinedDamage;
         }
 
         public void Die()

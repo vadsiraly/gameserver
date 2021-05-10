@@ -1,4 +1,5 @@
-﻿using GameServer.Model.Abilities.Effects;
+﻿using GameServer.Model.Abilities.Damages;
+using GameServer.Model.Abilities.Effects;
 using GameServer.Model.Units;
 using System;
 using System.Collections.Generic;
@@ -21,35 +22,34 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.Lyra
             ManaCost = 20;
             Cooldown = 2;
 
-            Damage = 18;
-            DamageType = DamageType.Physical;
+            Damage = new Damage(physical: 18);
             CanCriticalHit = true;
 
             DamageSelfHealPercentage = 0.1;
 
-            Description = $"Deals {Damage} {DamageType} damage to the target. {Name} heals herself by 10% of the damage dealt.";
+            Description = $"Deals {Damage} damage to the target. {Name} heals herself by 10% of the damage dealt.";
         }
 
         public double DamageSelfHealPercentage { get; private set; }
 
         public override void Use(List<Unit> targets)
         {
-            var damage = new AbilityDamage(new Damage(Damage, DamageType));
-
-            var criticalDamage = 0d;
-            if (CanCriticalHit && _random.NextDouble() < Owner.CriticalHitChance)
+            CombinedDamage combinedDamage;
+            if (CanCriticalHit)
             {
-                criticalDamage = Damage * Owner.CriticalHitMultiplier - Damage;
+                combinedDamage = new CombinedDamage((this, Damage.TryCrit(Owner.CriticalHitChance, Owner.CriticalHitMultiplier, _random)));
+            }
+            else
+            {
+                combinedDamage = new CombinedDamage((this, Damage));
             }
 
-            damage.CriticalPart = new Damage(criticalDamage, DamageType);
+            BeforeAbilityUse(new AbilityUseEventArgs(Owner, targets, combinedDamage));
 
-            BeforeAbilityUse(new AbilityUseEventArgs(Owner, targets, damage));
-
-            var actualDamage = 0d;
+            CombinedDamage reducedDamage = CombinedDamage.Zero;
             foreach (var target in targets)
             {
-                actualDamage = target.TakeDamage(this, damage);
+                reducedDamage = target.TakeDamage(this, combinedDamage);
 
                 foreach (var buff in Buffs)
                 {
@@ -62,12 +62,12 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.Lyra
                 }
             }
 
-            var selfHeal = new AbilityHealing(actualDamage * DamageSelfHealPercentage, 0, 0, 0);
+            var selfHeal = new AbilityHealing(reducedDamage.Aggregate().Sum * DamageSelfHealPercentage, 0, 0, 0);
             Owner.Heal(this, selfHeal);
 
             _activeCooldown = Cooldown;
 
-            AfterAbilityUse(new AbilityUseEventArgs(Owner, targets, damage));
+            AfterAbilityUse(new AbilityUseEventArgs(Owner, targets, combinedDamage));
         }
     }
 }

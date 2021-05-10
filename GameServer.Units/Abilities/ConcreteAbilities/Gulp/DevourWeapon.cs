@@ -1,4 +1,5 @@
-﻿using GameServer.Model.Abilities.Effects;
+﻿using GameServer.Model.Abilities.Damages;
+using GameServer.Model.Abilities.Effects;
 using GameServer.Model.Units;
 using System;
 using System.Collections.Generic;
@@ -20,15 +21,14 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.Gulp
 
             ManaCost = 20;
             Cooldown = 6;
-            Damage = 30;
+            Damage = new Damage(physical: 30);
 
-            DamageType = DamageType.Physical;
             CanCriticalHit = true;
 
             EffectChance = 0.2;
             Debuffs.Add(new StatusEffect(this, "Devour weapons", 4, Status.Disarmed, EffectChance, random));
 
-            Description = $"Deals {Damage} {DamageType} damage to the target. Has {EffectChance * 100}% chance to devour the target's weapons, disarming them for 4 rounds.";
+            Description = $"Deals {Damage} damage to the target. Has {EffectChance * 100}% chance to devour the target's weapons, disarming them for 4 rounds.";
         }
     }
 }
