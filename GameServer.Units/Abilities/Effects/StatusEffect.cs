@@ -18,14 +18,13 @@ namespace GameServer.Model.Abilities.Effects
         }
 
         public Status Status { get; }
-        public int Duration { get; private set; }
         public double Chance { get; private set; }
 
         public override void ApplyEffect(Unit target)
         {
             if (_random.NextDouble() < Chance)
             {
-                target.AddDebuff(Source, this);
+                target.AddDebuff(this);
                 target.AddStatus(Source, Status);
             }
         }
@@ -35,7 +34,7 @@ namespace GameServer.Model.Abilities.Effects
             target.RemoveStatus(Source, Status);
         }
 
-        public override void Tick(Unit target)
+        public override void Tick(Unit target, int stack)
         {
             if (--Duration <= 0)
             {

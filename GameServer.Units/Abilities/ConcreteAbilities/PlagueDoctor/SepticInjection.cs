@@ -46,7 +46,7 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.PlagueDoctor
             {
                 foreach (var debuff in Debuffs)
                 {
-                    target.AddDebuff(this, debuff);
+                    target.AddDebuff(debuff);
                 }
             }
         }

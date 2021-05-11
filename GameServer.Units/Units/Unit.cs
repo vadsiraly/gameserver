@@ -126,8 +126,8 @@ namespace GameServer.Model.Units
 
         public Ability BasicAttack { get; internal set; }
         public List<Ability> Abilities { get; protected set; } = new List<Ability>();
-        public List<Effect> Buffs { get; protected set; } = new List<Effect>();
-        public List<Effect> Debuffs { get; protected set; } = new List<Effect>();
+        public List<(Effect Effect, int Stack)> Buffs { get; protected set; } = new List<(Effect Effect, int Stack)>();
+        public List<(Effect Effect, int Stack)> Debuffs { get; protected set; } = new List<(Effect Effect, int Stack)>();
 
         public virtual void BeforeBasicAttack(AttackEventArgs e)
         {
@@ -187,47 +187,83 @@ namespace GameServer.Model.Units
         {
             for (int i = 0; i < Buffs.Count; ++i)
             {
-                Buffs[i].Tick(this);
+                var buff = Buffs[i];
+                buff.Effect.Tick(this, buff.Stack);
             }
 
             for (int i = 0; i < Debuffs.Count; ++i)
             {
-                Debuffs[i].Tick(this);
+                var debuff = Debuffs[i];
+                debuff.Effect.Tick(this, debuff.Stack);
             }
         }
 
-        public void AddBuff(Ability source, Effect effect)
+        public void AddBuff(Effect effect)
         {
             BeforeEffectAdded(new EffectEventArgs(this, effect));
 
-            Buffs.Add(effect);
+            var buff = Buffs.FirstOrDefault(x => x.Effect.Name == effect.Name && x.Effect.Source.Owner.Name == effect.Source.Owner.Name);
+            if (buff == default)
+            {
+                Buffs.Add((effect, 1));
+            }
+            else
+            {
+                if (buff.Stack < effect.MaxStack)
+                {
+                    buff.Stack++;
+                }
+
+                buff.Effect.Duration = effect.Duration;
+            }
 
             AfterEffectAdded(new EffectEventArgs(this, effect));
         }
 
-        public void RemoveBuff(Ability source, Effect effect)
+        public void RemoveBuff(Effect effect)
         {
             BeforeEffectRemoved(new EffectEventArgs(this, effect));
 
-            Buffs.Remove(effect);
+            var buff = Buffs.FirstOrDefault(x => x.Effect.Name == effect.Name && x.Effect.Source.Owner.Name == effect.Source.Owner.Name);
+            if (buff != default)
+            {
+                Buffs.Remove(buff);
+            }
 
             AfterEffectRemoved(new EffectEventArgs(this, effect));
         }
 
-        public void AddDebuff(Ability source, Effect effect)
+        public void AddDebuff(Effect effect)
         {
             BeforeEffectAdded(new EffectEventArgs(this, effect));
 
-            Debuffs.Add(effect);
+            var debuff = Debuffs.FirstOrDefault(x => x.Effect.Name == effect.Name && x.Effect.Source.Owner.Name == effect.Source.Owner.Name);
+            if (debuff == default)
+            {
+                Debuffs.Add((effect, 1));
+            }
+            else
+            {
+                if (debuff.Stack < effect.MaxStack)
+                {
+                    debuff.Stack++;
+                }
+
+                debuff.Effect.Duration = effect.Duration;
+            }
 
             AfterEffectAdded(new EffectEventArgs(this, effect));
         }
 
-        public void RemoveDebuff(Ability source, Effect effect)
+        public void RemoveDebuff(Effect effect)
         {
             BeforeEffectRemoved(new EffectEventArgs(this, effect));
 
-            Debuffs.Remove(effect);
+            var debuff = Debuffs.FirstOrDefault(x => x.Effect.Name == effect.Name && x.Effect.Source.Owner.Name == effect.Source.Owner.Name);
+            if (debuff != default)
+            {
+                Debuffs.Remove(debuff);
+            }
 
             AfterEffectRemoved(new EffectEventArgs(this, effect));
         }

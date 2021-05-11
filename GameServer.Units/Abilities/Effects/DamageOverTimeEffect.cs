@@ -19,25 +19,20 @@ namespace GameServer.Model.Abilities.Effects
         }
 
         public Damage Damage { get; private set; }
-        public int Duration { get; private set; }
-        public int MaxStack { get; private set; }
 
         public override void ApplyEffect(Unit target)
         {
-            if (target.Buffs.Count(x => x.Name == Name && x.Source.Owner.Name == Source.Owner.Name) < MaxStack)
-            {
-                target.AddDebuff(Source, this);
-            }
+            target.AddDebuff(this);
         }
 
         public override void RemoveEffect(Unit target)
         {
+            target.RemoveDebuff(this);
         }
 
-        public override void Tick(Unit target)
+        public override void Tick(Unit target, int stack)
         {
-            var combinedDamage = CombinedDamage.Zero;
-            combinedDamage.DamageCollection.Add((Source, Damage));
+            var combinedDamage = new CombinedDamage((Source, Damage * stack));
             target.TakeEffectDamage(Source, combinedDamage);
 
             if (--Duration <= 0)

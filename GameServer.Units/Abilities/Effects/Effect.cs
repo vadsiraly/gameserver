@@ -31,11 +31,13 @@ namespace GameServer.Model.Abilities.Effects
 
         public Ability Source { get; protected set; }
         public string Name { get; protected set; }
+        public int MaxStack { get; protected set; }
+        public int Duration { get; set; }
 
         public abstract void ApplyEffect(Unit target);
 
         public abstract void RemoveEffect(Unit target);
 
-        public abstract void Tick(Unit target);
+        public abstract void Tick(Unit target, int stack);
     }
 }
