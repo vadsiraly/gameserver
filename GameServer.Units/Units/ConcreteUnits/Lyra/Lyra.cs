@@ -15,6 +15,7 @@ namespace GameServer.Model.Units.ConcreteUnits
         public Lyra(Random random) : base(random)
         {
             Name = $"Lyra{random.Next(0, 1000)}";
+            Reference = $"unit_lyra";
 
             MaxHealth = 100;
             MaxMana = 100;

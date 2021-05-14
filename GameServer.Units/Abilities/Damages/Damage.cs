@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GameServer.Model.Snapshots;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -170,6 +171,24 @@ namespace GameServer.Model.Abilities.Damages
             var crit = IsCritical ? " (CRIT)" : "";
 
             return $"{Sum:F2} {(Sum == 0 ? "" : $"({physical} {magical} {composite} {pure})")}{crit}";
+        }
+
+        public DamageSnapshot Snapshot()
+        {
+            var snapshot = new DamageSnapshot();
+
+            snapshot.Physical = Physical;
+            snapshot.Magical = Magical;
+            snapshot.Composite = Composite;
+            snapshot.Pure = Pure;
+
+            var mitigated = Mitigate();
+            snapshot.PhysicalReduced = mitigated.Physical;
+            snapshot.MagicalReduced = mitigated.Magical;
+            snapshot.CompositeReduced = mitigated.Composite;
+            snapshot.PureReduced = mitigated.Pure;
+
+            return snapshot;
         }
     }
 }

@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace GameServer.Model.Units
 {
-    public class AttackedEventArgs
+    public class DamagedEventArgs
     {
-        public AttackedEventArgs(Unit attacker, CombinedDamage combinedDamage)
+        public DamagedEventArgs(Ability source, CombinedDamage combinedDamage)
         {
-            Attacker = attacker;
+            Source = source;
             CombinedDamage = combinedDamage;
         }
 
-        public Unit Attacker { get; private set; }
+        public Ability Source { get; private set; }
         public CombinedDamage CombinedDamage { get; private set; }
     }
 }

@@ -1,12 +1,11 @@
-﻿using GameServer.Model.Units;
+﻿using GameServer.Model.Snapshots;
+using GameServer.Model.Units;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GameServer.Model
 {
+    [Serializable]
     public class Team
     {
         public List<Unit> Units { get; set; } = new List<Unit>();
@@ -18,6 +17,16 @@ namespace GameServer.Model
                 Units.Add(u);
                 u.SetTeam(this);
             }
+        }
+
+        public TeamSnapshot Snapshot()
+        {
+            var snapshot = new TeamSnapshot();
+            foreach (var unit in Units)
+            {
+                snapshot.Units.Add(unit.Snapshot());
+            }
+            return snapshot;
         }
     }
 }

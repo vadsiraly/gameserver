@@ -16,6 +16,7 @@ namespace GameServer.Model.Units.ConcreteUnits
         public Gulp(Random random) : base(random)
         {
             Name = $"Gulp{random.Next(0, 1000)}";
+            Reference = $"unit_gulp";
 
             MaxHealth = 75;
             MaxMana = 100;

@@ -5,11 +5,17 @@ VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServer", "GameServer\GameServer.csproj", "{0E1BF55A-527E-419B-8749-3599C47B5122}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer.Model", "GameServer.Units\GameServer.Model.csproj", "{45E0BB6E-F91D-40B8-BC20-BD42A4752C06}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServer.Model", "GameServer.Units\GameServer.Model.csproj", "{45E0BB6E-F91D-40B8-BC20-BD42A4752C06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer.Battles", "GameServer.Battle\GameServer.Battles.csproj", "{01A5C657-3000-4F0A-883F-CA8AC0013F06}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServer.Battles", "GameServer.Battle\GameServer.Battles.csproj", "{01A5C657-3000-4F0A-883F-CA8AC0013F06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer.Managers", "GameServer.Managers\GameServer.Managers.csproj", "{EDB49DE3-A2F7-447E-8216-1D8BDB27C933}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServer.Managers", "GameServer.Managers\GameServer.Managers.csproj", "{EDB49DE3-A2F7-447E-8216-1D8BDB27C933}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServer.Recording", "BattleRecorder\GameServer.Recording.csproj", "{F3829876-D09F-40D2-97B2-C66AA2FEB398}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServer.Interfaces", "GameServer.Interfaces\GameServer.Interfaces.csproj", "{D405D48B-50D2-4A2F-9E4F-7960353DDFC7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer.Utilities", "GameServer.Utilities\GameServer.Utilities.csproj", "{3963F98F-606E-484E-BEE6-DB272EED536F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +39,18 @@ Global
 		{EDB49DE3-A2F7-447E-8216-1D8BDB27C933}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDB49DE3-A2F7-447E-8216-1D8BDB27C933}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDB49DE3-A2F7-447E-8216-1D8BDB27C933}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3829876-D09F-40D2-97B2-C66AA2FEB398}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3829876-D09F-40D2-97B2-C66AA2FEB398}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3829876-D09F-40D2-97B2-C66AA2FEB398}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3829876-D09F-40D2-97B2-C66AA2FEB398}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D405D48B-50D2-4A2F-9E4F-7960353DDFC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D405D48B-50D2-4A2F-9E4F-7960353DDFC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D405D48B-50D2-4A2F-9E4F-7960353DDFC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D405D48B-50D2-4A2F-9E4F-7960353DDFC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3963F98F-606E-484E-BEE6-DB272EED536F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3963F98F-606E-484E-BEE6-DB272EED536F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3963F98F-606E-484E-BEE6-DB272EED536F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3963F98F-606E-484E-BEE6-DB272EED536F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,8 +1,13 @@
-﻿using GameServer.Model;
+﻿using GameServer.Battles.Recording;
+using GameServer.Model;
 using GameServer.Model.Units;
+using GameServer.Recording;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace GameServer.Battles
 {
@@ -16,6 +21,8 @@ namespace GameServer.Battles
 
     public class Battle
     {
+        private BattleRecorder _battleRecorder = new BattleRecorder();
+
         public event EventHandler OnBattleBegin;
         public event EventHandler OnBattleEnd;
         public event EventHandler<RoundEventArgs> OnRoundBegin;
@@ -39,11 +46,20 @@ namespace GameServer.Battles
 
             AllUnits = Attacker.Units.Union(Defender.Units);
 
+            _battleRecorder.RecordUnits(AllUnits);
+
             OnRoundBegin += Battle_OnRoundBegin;
+            OnRoundEnd += Battle_OnRoundEnd;
+        }
+
+        private void Battle_OnRoundEnd(object sender, RoundEventArgs e)
+        {
+            _battleRecorder.EndRound();
         }
 
         private void Battle_OnRoundBegin(object sender, RoundEventArgs e)
         {
+            _battleRecorder.StartRound();
             Console.WriteLine($"======== ROUND {e.Round} ========");
         }
 
@@ -93,6 +109,19 @@ namespace GameServer.Battles
             }
 
             OnBattleEnd?.Invoke(this, new EventArgs());
+
+            XmlSerializer xsSubmit = new XmlSerializer(typeof(BattleRecord));
+
+            using (var sww = new StringWriter())
+            {
+                using (XmlWriter writer = XmlWriter.Create(sww))
+                {
+                    xsSubmit.Serialize(writer, _battleRecorder.Finish());
+                    var xml = sww.ToString();
+
+                    File.WriteAllText("battle.txt", xml);
+                }
+            }
 
             return Outcome;
         }

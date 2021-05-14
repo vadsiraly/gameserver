@@ -15,6 +15,7 @@ namespace GameServer.Model.Units.ConcreteUnits
         public PlagueDoctor(Random random) : base(random)
         {
             Name = $"PlagueDoctor{random.Next(0, 1000)}";
+            Reference = $"unit_plague_doctor";
 
             MaxHealth = 80;
             MaxMana = 100;

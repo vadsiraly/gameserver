@@ -15,6 +15,7 @@ namespace GameServer.Model.Units.ConcreteUnits
         public SecretiveGirl(Random random) : base(random)
         {
             Name = $"Secretive Girl{random.Next(0, 1000)}";
+            Reference = $"unit_secretive_girl";
 
             MaxHealth = 40;
             MaxMana = 100;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GameServer.Model.Snapshots;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,6 +42,27 @@ namespace GameServer.Model.Abilities.Damages
             return aggregateDamage;
         }
 
+        public Damage AggregateRaw()
+        {
+            var aggregateDamage = new Damage();
+            foreach (var damageSource in DamageCollection)
+            {
+                aggregateDamage += damageSource.Damage;
+            }
+
+            return aggregateDamage;
+        }
+
         public static CombinedDamage Zero => new CombinedDamage((null, Damage.Zero));
+
+        public CombinedDamageSnapshot Snapshot()
+        {
+            var snapshot = new CombinedDamageSnapshot();
+
+            snapshot.BaseDamage = (BaseDamage.Source.Reference, BaseDamage.Damage.Snapshot());
+            snapshot.DamageCollection = DamageCollection.Select(x => (x.Source.Reference, x.Damage.Snapshot())).ToList();
+
+            return snapshot;
+        }
     }
 }

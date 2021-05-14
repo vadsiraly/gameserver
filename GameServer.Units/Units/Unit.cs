@@ -1,6 +1,7 @@
 ﻿using GameServer.Model.Abilities;
 using GameServer.Model.Abilities.Damages;
 using GameServer.Model.Abilities.Effects;
+using GameServer.Model.Snapshots;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,18 +27,25 @@ namespace GameServer.Model.Units
         public event EventHandler<AttackEventArgs> AfterBasicAttackEvent;
         public event EventHandler<AttackEventArgs> BeforeAbilityUsedEvent;
         public event EventHandler<AttackEventArgs> AfterAbilityUsedEvent;
-        public event EventHandler<AttackedEventArgs> BeforeAttackedEvent;
-        public event EventHandler<AttackedEventArgs> AfterAttackedEvent;
+        public event EventHandler<DamagedEventArgs> BeforeDamagedEvent;
+        public event EventHandler<DamagedEventArgs> AfterDamagedEvent;
+        public event EventHandler<DamagedEventArgs> BeforeEffectDamagedEvent;
+        public event EventHandler<DamagedEventArgs> AfterEffectDamagedEvent;
         public event EventHandler<EffectEventArgs> BeforeEffectAddedEvent;
         public event EventHandler<EffectEventArgs> AfterEffectAddedEvent;
         public event EventHandler<EffectEventArgs> BeforeEffectRemovedEvent;
         public event EventHandler<EffectEventArgs> AfterEffectRemovedEvent;
+        public event EventHandler<StatusEventArgs> BeforeStatusAppliedEvent;
+        public event EventHandler<StatusEventArgs> AfterStatusAppliedEvent;
+        public event EventHandler<StatusEventArgs> BeforeStatusRemovedEvent;
+        public event EventHandler<StatusEventArgs> AfterStatusRemovedEvent;
         public event EventHandler<EventArgs> OnDeathEvent;
 
         public bool IsDead => Health <= 0;
         public Team Team { get; protected set; }
 
         public string Name { get; internal set; }
+        public string Reference { get; protected set; }
 
         private double _maxHealth;
         public double MaxHealth 
@@ -121,7 +129,7 @@ namespace GameServer.Model.Units
         public double CriticalHitChance { get; internal set; }
         public double CriticalHitMultiplier { get; internal set; }
 
-        public Dictionary<Status, int> Statuses { get; protected set; } = new Dictionary<Status, int>();
+        public List<(Ability Source, Status Status)> Statuses { get; protected set; } = new List<(Ability Source, Status Status)>();
 
         public Ability BasicAttack { get; internal set; }
         public List<Ability> Abilities { get; protected set; } = new List<Ability>();
@@ -137,14 +145,23 @@ namespace GameServer.Model.Units
             AfterBasicAttackEvent?.Invoke(this, e);
         }
 
-        public virtual void BeforeAttacked(AttackedEventArgs e)
+        public virtual void BeforeDamaged(DamagedEventArgs e)
         {
-            BeforeAttackedEvent?.Invoke(this, e);
+            BeforeDamagedEvent?.Invoke(this, e);
         }
-        public virtual void AfterAttacked(AttackedEventArgs e)
+        public virtual void AfterDamaged(DamagedEventArgs e)
         {
-            AfterAttackedEvent?.Invoke(this, e);
+            AfterDamagedEvent?.Invoke(this, e);
         }
+        public virtual void BeforeEffectDamaged(DamagedEventArgs e)
+        {
+            BeforeEffectDamagedEvent?.Invoke(this, e);
+        }
+        public virtual void AfterEffectDamaged(DamagedEventArgs e)
+        {
+            AfterEffectDamagedEvent?.Invoke(this, e);
+        }
+
         public virtual void BeforeAbilityUsed(AttackEventArgs e)
         {
             BeforeAbilityUsedEvent?.Invoke(this, e);
@@ -169,6 +186,23 @@ namespace GameServer.Model.Units
         {
             AfterEffectRemovedEvent?.Invoke(this, e);
         }
+        public virtual void BeforeStatusApplied(StatusEventArgs e)
+        {
+            BeforeStatusAppliedEvent?.Invoke(this, e);
+        }
+        public virtual void AfterStatusApplied(StatusEventArgs e)
+        {
+            AfterStatusAppliedEvent?.Invoke(this, e);
+        }
+        public virtual void BeforeStatusRemoved(StatusEventArgs e)
+        {
+            BeforeStatusRemovedEvent?.Invoke(this, e);
+        }
+        public virtual void AfterStatusRemoved(StatusEventArgs e)
+        {
+            AfterStatusRemovedEvent?.Invoke(this, e);
+        }
+
         public virtual void OnDeath(EventArgs e)
         {
             OnDeathEvent?.Invoke(this, e);
@@ -281,10 +315,10 @@ namespace GameServer.Model.Units
             }
             else
             {
-                if (!Statuses.ContainsKey(Status.Disarmed))
+                if (!Statuses.Any(x => x.Status == Status.Disarmed))
                 {
                     BeforeBasicAttack(new AttackEventArgs(this, targets, BasicAttack));
-                    if (!Statuses.ContainsKey(Status.Blinded) || _random.NextDouble() > EffectConstants.STATUS_BLINDED_MISS_CHANCE)
+                    if (!Statuses.Any(x => x.Status == Status.Blinded) || _random.NextDouble() > EffectConstants.STATUS_BLINDED_MISS_CHANCE)
                     {
                         BasicAttack.Use(targets);
                         AfterBasicAttack(new AttackEventArgs(this, targets, BasicAttack));
@@ -308,38 +342,32 @@ namespace GameServer.Model.Units
 
         public void AddStatus(Ability source, Status status)
         {
-            if (Statuses.ContainsKey(status))
-            {
-                Statuses[status]++;
-            }
-            else
-            {
-                Statuses.Add(status, 1);
-            }
+            BeforeStatusApplied(new StatusEventArgs(source, status));
+
+            Statuses.Add((source, status));
 
             Console.WriteLine($"{Name} became {status} by {source.Owner.Name}'s {source.Name}");
+
+            AfterStatusApplied(new StatusEventArgs(source, status));
         }
 
         public void RemoveStatus(Ability source, Status status)
         {
-            if (Statuses.ContainsKey(status))
-            {
-                if (Statuses[status] == 1)
-                {
-                    Statuses.Remove(status);
-                }
-                else
-                {
-                    Statuses[status]--;
-                }
+            BeforeStatusRemoved(new StatusEventArgs(source, status));
 
+            var activeStatus = Statuses.FirstOrDefault(x => x.Source == source && x.Status == status);
+            if (activeStatus != default)
+            {
+                Statuses.Remove(activeStatus);
                 Console.WriteLine($"{source.Owner.Name}'s {source.Name} wore off, {Name} is no longer {status}");
             }
+
+            AfterStatusRemoved(new StatusEventArgs(source, status));
         }
 
         public CombinedDamage TakeDamage(Ability source, CombinedDamage combinedDamage)
         {
-            BeforeAttacked(new AttackedEventArgs(source.Owner, combinedDamage));
+            BeforeDamaged(new DamagedEventArgs(source, combinedDamage));
 
             combinedDamage.Reduce(new DamageReduction(Armor, Resistance));
             var damage = combinedDamage.Aggregate().Sum;
@@ -351,13 +379,15 @@ namespace GameServer.Model.Units
                 Console.WriteLine($"{Name} has died.");
             }
 
-            AfterAttacked(new AttackedEventArgs(source.Owner, combinedDamage));
+            AfterDamaged(new DamagedEventArgs(source, combinedDamage));
 
             return combinedDamage;
         }
 
         public CombinedDamage TakeEffectDamage(Ability source, CombinedDamage combinedDamage)
         {
+            BeforeEffectDamaged(new DamagedEventArgs(source, combinedDamage));
+
             combinedDamage.Reduce(new DamageReduction(Armor, Resistance));
             var damage = combinedDamage.Aggregate().Sum;
             Health -= damage;
@@ -366,6 +396,8 @@ namespace GameServer.Model.Units
             {
                 Console.WriteLine($"{Name} has died.");
             }
+
+            AfterEffectDamaged(new DamagedEventArgs(source, combinedDamage));
 
             return combinedDamage;
         }
@@ -387,6 +419,23 @@ namespace GameServer.Model.Units
 
             Debuffs.Clear();
             Buffs.Clear();
+        }
+        public UnitSnapshot Snapshot()
+        {
+            var snapshot = new UnitSnapshot();
+            snapshot.Name = Name;
+            snapshot.Reference = Reference;
+            snapshot.Health = Health;
+            snapshot.MaxHealth = MaxHealth;
+            snapshot.Mana = Mana;
+            snapshot.MaxMana = MaxMana;
+            snapshot.Speed = Speed;
+            snapshot.Armor = Armor;
+            snapshot.Resistance = Resistance;
+            snapshot.CriticalHitChance = CriticalHitChance;
+            snapshot.CriticalHitMultiplier = CriticalHitMultiplier;
+
+            return snapshot;
         }
     }
 }
