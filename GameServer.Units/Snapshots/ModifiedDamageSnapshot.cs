@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace GameServer.Model.Snapshots
 {
-    public class CombinedDamageSnapshot
+    public class ModifiedDamageSnapshot
     {
         public (string Source, DamageSnapshot Damage) BaseDamage { get; set; }
-        public List<(string Source, DamageSnapshot Damage)> DamageCollection { get; set; }
+        public List<(string Source, DamageSnapshot Damage)> Modifications { get; set; }
     }
 }

@@ -42,7 +42,7 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.SecretiveGirl
 
         public override void Use(List<Unit> targets)
         {
-            BeforeAbilityUse(new AbilityUseEventArgs(Owner, targets, CombinedDamage.Zero));
+            BeforeAbilityUse(new AbilityUseEventArgs(Owner, targets, ModifiedDamage.Zero));
 
             Console.WriteLine($"{Owner.Name} has transformed into a Horrid Monstrosity.");
 
@@ -53,7 +53,7 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.SecretiveGirl
             Owner.CriticalHitChance += CriticalChanceBonus;
             Owner.Name = Owner.Name.Replace("Secretive Girl", "Horrid Monstrosity");
 
-            AfterAbilityUse(new AbilityUseEventArgs(Owner, targets, CombinedDamage.Zero));
+            AfterAbilityUse(new AbilityUseEventArgs(Owner, targets, ModifiedDamage.Zero));
 
             _activeCooldown = Cooldown;
 

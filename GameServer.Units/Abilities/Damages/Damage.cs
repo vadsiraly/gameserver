@@ -9,12 +9,12 @@ namespace GameServer.Model.Abilities.Damages
 {
     public class Damage
     {
-        public double Physical { get; private set; }
-        public double Magical { get; private set; }
-        public double Composite { get; private set; }
-        public double Pure { get; private set; }
+        public double Physical { get; set; }
+        public double Magical { get; set; }
+        public double Composite { get; set; }
+        public double Pure { get; set; }
 
-        public bool IsCritical { get; private set; } = false;
+        public bool IsCritical { get; set; } = false;
 
         public DamageReduction Reduction { get; private set; } = DamageReduction.None;
 
@@ -33,8 +33,7 @@ namespace GameServer.Model.Abilities.Damages
         {
             get
             {
-                var d = Mitigate();
-                return d.Physical + d.Magical + d.Composite + d.Pure;
+                return Physical + Magical + Composite + Pure;
             }
         }
 
@@ -47,64 +46,6 @@ namespace GameServer.Model.Abilities.Damages
             {
                 damage *= criticalMultiplier;
                 IsCritical = true;
-            }
-
-            return damage;
-        }
-
-        public void Reduce(DamageReduction reduction)
-        {
-            Reduction = reduction;
-        }
-
-        private Damage Mitigate()
-        {
-            // Physical
-            var damage = (Damage)this.MemberwiseClone();
-            if (Reduction.Armor > 0)
-            {
-                var multiplier = 100 / (100 + Reduction.Armor);
-                damage.Physical *= multiplier;
-            }
-            else
-            {
-                var multiplier = 2 - 100 / (100 - Reduction.Armor);
-                damage.Physical *= multiplier;
-            }
- 
-            // Magical
-            if (Reduction.Resistance > 0)
-            {
-                var multiplier = 100 / (100 + Reduction.Resistance);
-                damage.Magical *= multiplier;
-            }
-            else
-            {
-                var multiplier = 2 - 100 / (100 - Reduction.Resistance);
-                damage.Magical *= multiplier;
-            }
-
-            // Composite
-            if (Reduction.Armor > 0)
-            {
-                var multiplier = 100 / (100 + Reduction.Armor);
-                damage.Composite = damage.Composite / 2 * multiplier;
-            }
-            else
-            {
-                var multiplier = 2 - 100 / (100 - Reduction.Armor);
-                damage.Composite = damage.Composite / 2 * multiplier;
-            }
-
-            if (Reduction.Resistance > 0)
-            {
-                var multiplier = 100 / (100 + Reduction.Resistance);
-                damage.Composite = damage.Composite / 2 * multiplier;
-            }
-            else
-            {
-                var multiplier = 2 - 100 / (100 - Reduction.Resistance);
-                damage.Composite = damage.Composite / 2 * multiplier;
             }
 
             return damage;
@@ -181,12 +122,6 @@ namespace GameServer.Model.Abilities.Damages
             snapshot.Magical = Magical;
             snapshot.Composite = Composite;
             snapshot.Pure = Pure;
-
-            var mitigated = Mitigate();
-            snapshot.PhysicalReduced = mitigated.Physical;
-            snapshot.MagicalReduced = mitigated.Magical;
-            snapshot.CompositeReduced = mitigated.Composite;
-            snapshot.PureReduced = mitigated.Pure;
 
             return snapshot;
         }

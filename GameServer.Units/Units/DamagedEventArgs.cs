@@ -10,13 +10,13 @@ namespace GameServer.Model.Units
 {
     public class DamagedEventArgs
     {
-        public DamagedEventArgs(Ability source, CombinedDamage combinedDamage)
+        public DamagedEventArgs(Ability source, ModifiedDamage modifiedDamage)
         {
             Source = source;
-            CombinedDamage = combinedDamage;
+            ModifiedDamage = modifiedDamage;
         }
 
         public Ability Source { get; private set; }
-        public CombinedDamage CombinedDamage { get; private set; }
+        public ModifiedDamage ModifiedDamage { get; private set; }
     }
 }

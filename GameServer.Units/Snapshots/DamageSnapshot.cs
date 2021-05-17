@@ -13,11 +13,6 @@ namespace GameServer.Model.Snapshots
         public double Composite { get; set; }
         public double Pure { get; set; }
 
-        public double PhysicalReduced { get; set; }
-        public double MagicalReduced { get; set; }
-        public double CompositeReduced { get; set; }
-        public double PureReduced { get; set; }
-
         public bool IsCritical { get; set; }
     }
 }

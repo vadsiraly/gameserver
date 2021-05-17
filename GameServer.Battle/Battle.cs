@@ -114,7 +114,7 @@ namespace GameServer.Battles
 
             using (var sww = new StringWriter())
             {
-                using (XmlWriter writer = XmlWriter.Create(sww))
+                using (XmlWriter writer = XmlWriter.Create(sww, new XmlWriterSettings { Indent = true }))
                 {
                     xsSubmit.Serialize(writer, _battleRecorder.Finish());
                     var xml = sww.ToString();

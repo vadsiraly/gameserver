@@ -34,22 +34,22 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.Lyra
 
         public override void Use(List<Unit> targets)
         {
-            CombinedDamage combinedDamage;
+            ModifiedDamage modifiedDamage;
             if (CanCriticalHit)
             {
-                combinedDamage = new CombinedDamage((this, Damage.TryCrit(Owner.CriticalHitChance, Owner.CriticalHitMultiplier, _random)));
+                modifiedDamage = new ModifiedDamage((this, Damage.TryCrit(Owner.CriticalHitChance, Owner.CriticalHitMultiplier, _random)));
             }
             else
             {
-                combinedDamage = new CombinedDamage((this, Damage));
+                modifiedDamage = new ModifiedDamage((this, Damage));
             }
 
-            BeforeAbilityUse(new AbilityUseEventArgs(Owner, targets, combinedDamage));
+            BeforeAbilityUse(new AbilityUseEventArgs(Owner, targets, modifiedDamage));
 
-            CombinedDamage reducedDamage = CombinedDamage.Zero;
+            ModifiedDamage reducedDamage = ModifiedDamage.Zero;
             foreach (var target in targets)
             {
-                reducedDamage = target.TakeDamage(this, combinedDamage);
+                reducedDamage = target.TakeDamage(this, modifiedDamage);
 
                 foreach (var buff in Buffs)
                 {
@@ -67,7 +67,7 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.Lyra
 
             _activeCooldown = Cooldown;
 
-            AfterAbilityUse(new AbilityUseEventArgs(Owner, targets, combinedDamage));
+            AfterAbilityUse(new AbilityUseEventArgs(Owner, targets, modifiedDamage));
         }
     }
 }

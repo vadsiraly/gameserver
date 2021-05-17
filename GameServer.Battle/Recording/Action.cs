@@ -22,6 +22,6 @@ namespace GameServer.Battles.Recording
         public UnitSnapshot Caster { get; set; }
         public UnitSnapshot Target { get; set; }
         public string AbilityRef { get; set; }
-        public CombinedDamageSnapshot Damage { get; set; }
+        public ModifiedDamageSnapshot Damage { get; set; }
     }
 }

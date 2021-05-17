@@ -41,7 +41,7 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.PlagueDoctor
 
         public override void Use(List<Unit> targets)
         {
-            BeforeAbilityUse(new AbilityUseEventArgs(Owner, targets, CombinedDamage.Zero));
+            BeforeAbilityUse(new AbilityUseEventArgs(Owner, targets, ModifiedDamage.Zero));
 
             var enemyTeam = targets.FirstOrDefault()?.Team.Units ?? new List<Unit>();
             foreach (var unit in enemyTeam)
@@ -54,7 +54,7 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.PlagueDoctor
 
             _activeCooldown = Cooldown;
 
-            AfterAbilityUse(new AbilityUseEventArgs(Owner, targets, CombinedDamage.Zero));
+            AfterAbilityUse(new AbilityUseEventArgs(Owner, targets, ModifiedDamage.Zero));
         }
     }
 }

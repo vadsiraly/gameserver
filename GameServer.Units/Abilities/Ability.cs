@@ -54,21 +54,21 @@ namespace GameServer.Model.Abilities
         {
             if (!IsActive) return;
 
-            CombinedDamage combinedDamage;
+            ModifiedDamage modifiedDamage;
             if (CanCriticalHit)
             {
-                combinedDamage = new CombinedDamage((this, Damage.TryCrit(Owner.CriticalHitChance, Owner.CriticalHitMultiplier, _random)));
+                modifiedDamage = new ModifiedDamage((this, Damage.TryCrit(Owner.CriticalHitChance, Owner.CriticalHitMultiplier, _random)));
             }
             else
             {
-                combinedDamage = new CombinedDamage((this, Damage));
+                modifiedDamage = new ModifiedDamage((this, Damage));
             }
 
-            BeforeAbilityUse(new AbilityUseEventArgs(Owner, targets, combinedDamage));
+            BeforeAbilityUse(new AbilityUseEventArgs(Owner, targets, modifiedDamage));
 
             foreach (var target in targets)
             {
-                target.TakeDamage(this, combinedDamage);
+                target.TakeDamage(this, modifiedDamage);
 
                 foreach (var buff in Buffs)
                 {
@@ -83,7 +83,7 @@ namespace GameServer.Model.Abilities
 
             _activeCooldown = Cooldown;
 
-            AfterAbilityUse(new AbilityUseEventArgs(Owner, targets, combinedDamage));
+            AfterAbilityUse(new AbilityUseEventArgs(Owner, targets, modifiedDamage));
         }
 
         public virtual void BeforeAbilityUse(AbilityUseEventArgs e)

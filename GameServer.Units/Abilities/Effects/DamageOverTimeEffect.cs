@@ -32,8 +32,8 @@ namespace GameServer.Model.Abilities.Effects
 
         public override void Tick(Unit target, int stack)
         {
-            var combinedDamage = new CombinedDamage((Source, Damage * stack));
-            target.TakeEffectDamage(Source, combinedDamage);
+            var modifiedDamage = new ModifiedDamage((Source, Damage * stack));
+            target.TakeEffectDamage(Source, modifiedDamage);
 
             if (--Duration <= 0)
             {

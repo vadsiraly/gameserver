@@ -365,41 +365,41 @@ namespace GameServer.Model.Units
             AfterStatusRemoved(new StatusEventArgs(source, status));
         }
 
-        public CombinedDamage TakeDamage(Ability source, CombinedDamage combinedDamage)
+        public ModifiedDamage TakeDamage(Ability source, ModifiedDamage modifiedDamage)
         {
-            BeforeDamaged(new DamagedEventArgs(source, combinedDamage));
+            BeforeDamaged(new DamagedEventArgs(source, modifiedDamage));
 
-            combinedDamage.Reduce(new DamageReduction(Armor, Resistance));
-            var damage = combinedDamage.Aggregate().Sum;
+            modifiedDamage.AddReduction(new DamageReduction(Armor, Resistance));
+            var damage = modifiedDamage.Aggregate().Sum;
             Health -= damage;
-            Console.WriteLine($"{source.Owner.Name}'s {source.Name} dealt {damage:F2} damage to {Name}{(combinedDamage.DamageCollection.Any(x => x.Damage.IsCritical) ? " (CRIT)" : "")} ({Health:F2}/{MaxHealth})");
+            Console.WriteLine($"{source.Owner.Name}'s {source.Name} dealt {damage:F2} damage to {Name}{(modifiedDamage.Modifications.Any(x => x.Damage.IsCritical) ? " (CRIT)" : "")} ({Health:F2}/{MaxHealth})");
             if (IsDead)
             {
                 Die();
                 Console.WriteLine($"{Name} has died.");
             }
 
-            AfterDamaged(new DamagedEventArgs(source, combinedDamage));
+            AfterDamaged(new DamagedEventArgs(source, modifiedDamage));
 
-            return combinedDamage;
+            return modifiedDamage;
         }
 
-        public CombinedDamage TakeEffectDamage(Ability source, CombinedDamage combinedDamage)
+        public ModifiedDamage TakeEffectDamage(Ability source, ModifiedDamage modifiedDamage)
         {
-            BeforeEffectDamaged(new DamagedEventArgs(source, combinedDamage));
+            BeforeEffectDamaged(new DamagedEventArgs(source, modifiedDamage));
 
-            combinedDamage.Reduce(new DamageReduction(Armor, Resistance));
-            var damage = combinedDamage.Aggregate().Sum;
+            modifiedDamage.AddReduction(new DamageReduction(Armor, Resistance));
+            var damage = modifiedDamage.Aggregate().Sum;
             Health -= damage;
-            Console.WriteLine($"{source.Owner.Name}'s {source.Name} dealt {damage:F2} damage to {Name}{(combinedDamage.DamageCollection.Any(x => x.Damage.IsCritical) ? " (CRIT)" : "")} ({Health:F2}/{MaxHealth})");
+            Console.WriteLine($"{source.Owner.Name}'s {source.Name} dealt {damage:F2} damage to {Name}{(modifiedDamage.Modifications.Any(x => x.Damage.IsCritical) ? " (CRIT)" : "")} ({Health:F2}/{MaxHealth})");
             if (IsDead)
             {
                 Console.WriteLine($"{Name} has died.");
             }
 
-            AfterEffectDamaged(new DamagedEventArgs(source, combinedDamage));
+            AfterEffectDamaged(new DamagedEventArgs(source, modifiedDamage));
 
-            return combinedDamage;
+            return modifiedDamage;
         }
 
         public void Heal(Ability source, AbilityHealing abilityHealing)

@@ -34,7 +34,7 @@ namespace GameServer.Recording
 
             StartTick();
 
-            AddAction(ActionType.Effect, e.Source.Owner.Snapshot(), target.Snapshot(), e.Source.Reference, e.CombinedDamage.Snapshot());
+            AddAction(ActionType.Effect, e.Source.Owner.Snapshot(), target.Snapshot(), e.Source.Reference, e.ModifiedDamage.Snapshot());
 
             EndTick(e.Source.Owner.Team.Snapshot(), target.Team.Snapshot());
         }
@@ -45,7 +45,7 @@ namespace GameServer.Recording
 
             StartTick();
 
-            AddAction(ActionType.Ability, e.Source.Owner.Snapshot(), target.Snapshot(), e.Source.Reference, e.CombinedDamage.Snapshot());
+            AddAction(ActionType.Ability, e.Source.Owner.Snapshot(), target.Snapshot(), e.Source.Reference, e.ModifiedDamage.Snapshot());
 
             EndTick(e.Source.Owner.Team.Snapshot(), target.Team.Snapshot());
         }
@@ -55,7 +55,7 @@ namespace GameServer.Recording
             CurrentTick = new Tick();
         }
 
-        public void AddAction(ActionType actionType, UnitSnapshot caster, UnitSnapshot target, string sourceRef, CombinedDamageSnapshot damage)
+        public void AddAction(ActionType actionType, UnitSnapshot caster, UnitSnapshot target, string sourceRef, ModifiedDamageSnapshot damage)
         {
             var action = new Action { ActionType = actionType, Caster = caster, Target = target, AbilityRef = sourceRef, Damage = damage };
             CurrentTick.Actions.Add(action);

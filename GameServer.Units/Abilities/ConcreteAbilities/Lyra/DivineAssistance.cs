@@ -34,8 +34,8 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.Lyra
 
         private void BasicAttack_BeforeAbilityUseEvent(object sender, AbilityUseEventArgs e)
         {
-            var damage = new Damage(pure: e.CombinedDamage.BaseDamage.Damage.Sum * BonusDamagePercentage);
-            e.CombinedDamage.DamageCollection.Add((this, damage));
+            var damage = new Damage(pure: e.ModifiedDamage.BaseDamage.Damage.Sum * BonusDamagePercentage);
+            e.ModifiedDamage.Modifications.Add((this, damage));
         }
     }
 }
