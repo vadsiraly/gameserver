@@ -13,7 +13,11 @@ namespace GameServer.Battles.Recording
     public enum ActionType
     {
         Ability,
-        Effect
+        EffectDamage,
+        ApplyEffect,
+        ExpireEffect,
+        ApplyStatus,
+        ExpireStatus
     }
 
     public class Action

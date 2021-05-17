@@ -25,6 +25,12 @@ namespace GameServer.Recording
             {
                 unit.AfterDamagedEvent += Unit_AfterDamagedEvent;
                 unit.AfterEffectDamagedEvent += Unit_AfterEffectDamagedEvent;
+
+                unit.AfterEffectAddedEvent += Unit_AfterEffectAddedEvent;
+                unit.AfterEffectRemovedEvent += Unit_AfterEffectRemovedEvent;
+
+                unit.AfterStatusAppliedEvent += Unit_AfterStatusAppliedEvent;
+                unit.AfterStatusRemovedEvent += Unit_AfterStatusRemovedEvent;
             }
 
             foreach (var unit in defenders.Units)
@@ -37,13 +43,57 @@ namespace GameServer.Recording
             Record.Defenders = defenders.Snapshot();
         }
 
+        private void Unit_AfterStatusRemovedEvent(object sender, StatusEventArgs e)
+        {
+            var target = sender as Unit;
+
+            StartTick();
+
+            AddAction(ActionType.ExpireStatus, e.Source.Owner.Snapshot(), target.Snapshot(), e.Status.ToString(), null);
+
+            EndTick();
+        }
+
+        private void Unit_AfterStatusAppliedEvent(object sender, StatusEventArgs e)
+        {
+            var target = sender as Unit;
+
+            StartTick();
+
+            AddAction(ActionType.ApplyStatus, e.Source.Owner.Snapshot(), target.Snapshot(), e.Status.ToString(), null);
+
+            EndTick();
+        }
+
+        private void Unit_AfterEffectRemovedEvent(object sender, EffectEventArgs e)
+        {
+            var target = sender as Unit;
+
+            StartTick();
+
+            AddAction(ActionType.ExpireEffect, e.Effect.Source.Owner.Snapshot(), target.Snapshot(), e.Effect.Name, null);
+
+            EndTick();
+        }
+
+        private void Unit_AfterEffectAddedEvent(object sender, EffectEventArgs e)
+        {
+            var target = sender as Unit;
+
+            StartTick();
+
+            AddAction(ActionType.ApplyEffect, e.Effect.Source.Owner.Snapshot(), target.Snapshot(), e.Effect.Name, null);
+
+            EndTick();
+        }
+
         private void Unit_AfterEffectDamagedEvent(object sender, DamagedEventArgs e)
         {
             var target = sender as Unit;
 
             StartTick();
 
-            AddAction(ActionType.Effect, e.Source.Owner.Snapshot(), target.Snapshot(), e.Source.Reference, e.ModifiedDamage.Snapshot());
+            AddAction(ActionType.EffectDamage, e.Source.Owner.Snapshot(), target.Snapshot(), e.Source.Reference, e.ModifiedDamage.Snapshot());
 
             EndTick();
         }

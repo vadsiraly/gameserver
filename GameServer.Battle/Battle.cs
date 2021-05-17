@@ -46,7 +46,7 @@ namespace GameServer.Battles
 
             AllUnits = Attacker.Units.Union(Defender.Units);
 
-            _battleRecorder.RecordUnits(attacker, Defender);
+            _battleRecorder.RecordUnits(Attacker, Defender);
 
             OnRoundBegin += Battle_OnRoundBegin;
             OnRoundEnd += Battle_OnRoundEnd;
