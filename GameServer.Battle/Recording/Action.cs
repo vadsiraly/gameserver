@@ -19,8 +19,8 @@ namespace GameServer.Battles.Recording
     public class Action
     {
         public ActionType ActionType { get; set; }
-        public UnitSnapshot Caster { get; set; }
-        public UnitSnapshot Target { get; set; }
+        public string CasterRef { get; set; }
+        public string TargetRef { get; set; }
         public string AbilityRef { get; set; }
         public ModifiedDamageSnapshot Damage { get; set; }
     }

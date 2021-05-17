@@ -13,10 +13,6 @@ namespace GameServer.Model.Abilities.Damages
         public ModifiedDamage((Ability Source, Damage Damage) baseDamage)
         {
             BaseDamage = baseDamage;
-            if (!BaseDamage.Damage.IsZero)
-            {
-                Modifications.Add(BaseDamage);
-            }
         }
 
         public (Ability Source, Damage Damage) BaseDamage { get; private set; }
@@ -37,10 +33,13 @@ namespace GameServer.Model.Abilities.Damages
                 multiplier = 2 - 100 / (100 - reduction.Armor);
             }
 
-            armorReduction.Physical = BaseDamage.Damage.Physical - BaseDamage.Damage.Physical * multiplier;
-            armorReduction.Composite = (BaseDamage.Damage.Composite / 2) - (BaseDamage.Damage.Composite / 2) * multiplier;
+            armorReduction.Physical = BaseDamage.Damage.Physical * multiplier - BaseDamage.Damage.Physical;
+            armorReduction.Composite = (BaseDamage.Damage.Composite / 2) * multiplier - (BaseDamage.Damage.Composite / 2);
 
-            Modifications.Add((new ArmorReduction(null, null), armorReduction));
+            if (!armorReduction.IsZero)
+            {
+                Modifications.Add((new ArmorReduction(null, null), armorReduction));
+            }
 
             // Magical + Composite
             var resistanceReduction = Damage.Zero;
@@ -53,35 +52,27 @@ namespace GameServer.Model.Abilities.Damages
                 multiplier = 2 - 100 / (100 - reduction.Resistance);
             }
 
-            resistanceReduction.Magical = BaseDamage.Damage.Magical - BaseDamage.Damage.Magical * multiplier;
-            armorReduction.Composite = (BaseDamage.Damage.Composite / 2) - (BaseDamage.Damage.Composite / 2) * multiplier;
+            resistanceReduction.Magical = BaseDamage.Damage.Magical * multiplier - BaseDamage.Damage.Magical;
+            resistanceReduction.Composite = (BaseDamage.Damage.Composite / 2) * multiplier - (BaseDamage.Damage.Composite / 2);
 
-            Modifications.Add((new ResistanceReduction(null, null), armorReduction));
+            if (!resistanceReduction.IsZero)
+            {
+                Modifications.Add((new ResistanceReduction(null, null), resistanceReduction));
+            }
         }
 
         public Damage Aggregate()
         {
-            var aggregateDamage = new Damage(reduction: Reduction);
+            var baseDamage = BaseDamage.Damage;
             foreach(var damageSource in Modifications)
             {
-                aggregateDamage += damageSource.Damage;
+                baseDamage += damageSource.Damage;
             }
 
-            return aggregateDamage;
+            return baseDamage;
         }
 
-        public Damage AggregateRaw()
-        {
-            var aggregateDamage = new Damage();
-            foreach (var damageSource in Modifications)
-            {
-                aggregateDamage += damageSource.Damage;
-            }
-
-            return aggregateDamage;
-        }
-
-        public static ModifiedDamage Zero => new ModifiedDamage((null, Damage.Zero));
+        public static ModifiedDamage Zero => new ModifiedDamage((new UnknownAbility(null, null), Damage.Zero));
 
         public ModifiedDamageSnapshot Snapshot()
         {

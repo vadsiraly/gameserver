@@ -19,13 +19,22 @@ namespace GameServer.Recording
         private Tick CurrentTick { get; set; }
         private Round CurrentRound { get; set; }
 
-        public void RecordUnits(IEnumerable<Unit> units)
+        public void RecordUnits(Team attackers, Team defenders)
         {
-            foreach(var unit in units)
+            foreach(var unit in attackers.Units)
             {
                 unit.AfterDamagedEvent += Unit_AfterDamagedEvent;
                 unit.AfterEffectDamagedEvent += Unit_AfterEffectDamagedEvent;
             }
+
+            foreach (var unit in defenders.Units)
+            {
+                unit.AfterDamagedEvent += Unit_AfterDamagedEvent;
+                unit.AfterEffectDamagedEvent += Unit_AfterEffectDamagedEvent;
+            }
+
+            Record.Attackers = attackers.Snapshot();
+            Record.Defenders = defenders.Snapshot();
         }
 
         private void Unit_AfterEffectDamagedEvent(object sender, DamagedEventArgs e)
@@ -36,7 +45,7 @@ namespace GameServer.Recording
 
             AddAction(ActionType.Effect, e.Source.Owner.Snapshot(), target.Snapshot(), e.Source.Reference, e.ModifiedDamage.Snapshot());
 
-            EndTick(e.Source.Owner.Team.Snapshot(), target.Team.Snapshot());
+            EndTick();
         }
 
         private void Unit_AfterDamagedEvent(object sender, DamagedEventArgs e)
@@ -47,7 +56,7 @@ namespace GameServer.Recording
 
             AddAction(ActionType.Ability, e.Source.Owner.Snapshot(), target.Snapshot(), e.Source.Reference, e.ModifiedDamage.Snapshot());
 
-            EndTick(e.Source.Owner.Team.Snapshot(), target.Team.Snapshot());
+            EndTick();
         }
 
         public void StartTick()
@@ -57,14 +66,12 @@ namespace GameServer.Recording
 
         public void AddAction(ActionType actionType, UnitSnapshot caster, UnitSnapshot target, string sourceRef, ModifiedDamageSnapshot damage)
         {
-            var action = new Action { ActionType = actionType, Caster = caster, Target = target, AbilityRef = sourceRef, Damage = damage };
+            var action = new Action { ActionType = actionType, CasterRef = caster.Reference, TargetRef = target.Reference, AbilityRef = sourceRef, Damage = damage };
             CurrentTick.Actions.Add(action);
         }
 
-        public void EndTick(TeamSnapshot attackers, TeamSnapshot defenders)
+        public void EndTick()
         {
-            CurrentTick.Attackers = attackers;
-            CurrentTick.Defenders = defenders;
             CurrentRound.Ticks.Add(CurrentTick);
         }
 

@@ -16,17 +16,14 @@ namespace GameServer.Model.Abilities.Damages
 
         public bool IsCritical { get; set; } = false;
 
-        public DamageReduction Reduction { get; private set; } = DamageReduction.None;
-
         public Damage() : this(0, 0, 0, 0) { }
 
-        public Damage(double physical = 0, double magical = 0, double composite = 0, double pure = 0, DamageReduction reduction = null)
+        public Damage(double physical = 0, double magical = 0, double composite = 0, double pure = 0)
         {
             Physical = physical;
             Magical = magical;
             Composite = composite;
             Pure = pure;
-            Reduction = reduction ?? DamageReduction.None;
         }
 
         public double Sum 
@@ -83,10 +80,10 @@ namespace GameServer.Model.Abilities.Damages
         public static Damage operator *(Damage a, Damage b)
         {
             var damage = (Damage)a.MemberwiseClone();
-            a.Physical *= b.Physical;
-            a.Magical *= b.Magical;
-            a.Composite *= b.Composite;
-            a.Pure *= b.Pure;
+            damage.Physical *= b.Physical;
+            damage.Magical *= b.Magical;
+            damage.Composite *= b.Composite;
+            damage.Pure *= b.Pure;
 
             return damage;
         }
@@ -94,10 +91,10 @@ namespace GameServer.Model.Abilities.Damages
         public static Damage operator *(Damage a, double b)
         {
             var damage = (Damage)a.MemberwiseClone();
-            a.Physical *= b;
-            a.Magical *= b;
-            a.Composite *= b;
-            a.Pure *= b;
+            damage.Physical *= b;
+            damage.Magical *= b;
+            damage.Composite *= b;
+            damage.Pure *= b;
 
             return damage;
         }
@@ -122,6 +119,8 @@ namespace GameServer.Model.Abilities.Damages
             snapshot.Magical = Magical;
             snapshot.Composite = Composite;
             snapshot.Pure = Pure;
+
+            snapshot.IsCritical = IsCritical;
 
             return snapshot;
         }

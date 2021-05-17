@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace GameServer.Model.Abilities.ConcreteAbilities
 {
-    public class UnknownAbility : Ability
+    public class ArmorReduction : Ability
     {
-        public UnknownAbility(Unit owner, Random random) : base(owner, random)
+        public ArmorReduction(Unit owner, Random random) : base(owner, random)
         {
-            Id = 4;
+            Id = 3;
 
-            Reference = "ability_unknown";
-            Name = "Unknown ability";
+            Reference = "target_armor_reduction";
+            Name = "Target Armor Reduction";
 
             Damage = Damages.Damage.Zero;
         }
