@@ -1,4 +1,6 @@
-﻿using GameServer.Model.Abilities.Damages;
+﻿using GameServer.Damages;
+using GameServer.Interfaces;
+using GameServer.Interfaces.Events;
 using GameServer.Model.Abilities.Effects;
 using GameServer.Model.Units;
 using System;
@@ -32,7 +34,7 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.Lyra
 
         public double DamageSelfHealPercentage { get; private set; }
 
-        public override void Use(List<Unit> targets)
+        public override void Use(List<ITargetable> targets)
         {
             ModifiedDamage modifiedDamage;
             if (CanCriticalHit)
@@ -46,10 +48,13 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.Lyra
 
             BeforeAbilityUse(new AbilityUseEventArgs(Owner, targets, modifiedDamage));
 
-            ModifiedDamage reducedDamage = ModifiedDamage.Zero;
+            var reducedDamage = ModifiedDamage.Zero;
             foreach (var target in targets)
             {
                 reducedDamage = target.TakeDamage(this, modifiedDamage);
+
+                var selfHeal = new ModifiedDamage((this, new Damage(pure: reducedDamage.Aggregate().Sum * DamageSelfHealPercentage)));
+                Owner.Heal(this, selfHeal);
 
                 foreach (var buff in Buffs)
                 {
@@ -61,9 +66,6 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.Lyra
                     debuff.ApplyEffect(target);
                 }
             }
-
-            var selfHeal = new AbilityHealing(reducedDamage.Aggregate().Sum * DamageSelfHealPercentage, 0, 0, 0);
-            Owner.Heal(this, selfHeal);
 
             _activeCooldown = Cooldown;
 

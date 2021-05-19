@@ -1,4 +1,6 @@
 ﻿using GameServer.Battles.Recording;
+using GameServer.Interfaces;
+using GameServer.Interfaces.Events;
 using GameServer.Model;
 using GameServer.Model.Units;
 using GameServer.Recording;
@@ -31,8 +33,8 @@ namespace GameServer.Battles
         public Team Attacker { get; private set; }
         public Team Defender { get; private set; }
         public int Rounds { get; private set; } = 0;
-        public IEnumerable<Unit> AllUnits { get; private set; }
-        public IEnumerable<Unit> AliveUnits => AllUnits.Where(x => !x.IsDead);
+        public IEnumerable<IUnit> AllUnits { get; private set; }
+        public IEnumerable<IUnit> AliveUnits => AllUnits.Where(x => !x.IsDead);
 
         public int RoundLimit { get; set; } = 200;
 
@@ -90,7 +92,7 @@ namespace GameServer.Battles
                         if (aliveDefenders.Count > 0)
                         {
                             var defender = aliveDefenders[random.Next(0, aliveDefenders.Count)];
-                            current.Attack(new List<Unit> { defender });
+                            current.Attack(new List<ITargetable> { defender });
                         }
                     }
 
@@ -100,7 +102,7 @@ namespace GameServer.Battles
                         if (aliveAttackers.Count > 0)
                         {
                             var attacker = aliveAttackers[random.Next(0, aliveAttackers.Count)];
-                            current.Attack(new List<Unit> { attacker });
+                            current.Attack(new List<ITargetable> { attacker });
                         }
                     }
                 }
@@ -151,12 +153,12 @@ namespace GameServer.Battles
             }
         }
 
-        private bool IsAttacker(Unit u)
+        private bool IsAttacker(IUnit u)
         {
             return Attacker.Units.Contains(u);
         }
 
-        private bool IsDefender(Unit u)
+        private bool IsDefender(IUnit u)
         {
             return Defender.Units.Contains(u);
         }

@@ -1,8 +1,7 @@
 ﻿using GameServer.Battles.Recording;
 using GameServer.Model;
-using GameServer.Model.Abilities;
-using GameServer.Model.Abilities.Damages;
-using GameServer.Model.Snapshots;
+using GameServer.Interfaces.Events;
+using GameServer.Damages;
 using GameServer.Model.Units;
 using System;
 using System.Collections.Generic;
@@ -10,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Action = GameServer.Battles.Recording.Action;
+using GameServer.Interfaces;
+using GameServer.Interfaces.Snapshots;
 
 namespace GameServer.Recording
 {

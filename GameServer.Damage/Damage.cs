@@ -1,13 +1,10 @@
-﻿using GameServer.Model.Snapshots;
+﻿using GameServer.Interfaces;
+using GameServer.Interfaces.Snapshots;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace GameServer.Model.Abilities.Damages
+namespace GameServer.Damages
 {
-    public class Damage
+    public class Damage : IDamage
     {
         public double Physical { get; set; }
         public double Magical { get; set; }
@@ -17,6 +14,16 @@ namespace GameServer.Model.Abilities.Damages
         public bool IsCritical { get; set; } = false;
 
         public Damage() : this(0, 0, 0, 0) { }
+
+        public Damage(IDamage damage)
+        {
+            Physical = damage.Physical;
+            Magical = damage.Magical;
+            Composite = damage.Composite;
+            Pure = damage.Pure;
+
+            IsCritical = damage.IsCritical;
+        }
 
         public Damage(double physical = 0, double magical = 0, double composite = 0, double pure = 0)
         {
@@ -36,67 +43,37 @@ namespace GameServer.Model.Abilities.Damages
 
         public bool IsZero => Sum == 0;
 
-        public Damage TryCrit(double criticalChance, double criticalMultiplier, Random random)
+        public IDamage TryCrit(double criticalChance, double criticalMultiplier, Random random)
         {
             var damage = (Damage)this.MemberwiseClone();
             if (random.NextDouble() < criticalChance)
             {
-                damage *= criticalMultiplier;
+                damage.Multiply(criticalMultiplier);
                 IsCritical = true;
             }
 
             return damage;
         }
 
-        public void Add(double physical = 0, double magical = 0, double composite = 0, double pure = 0)
-        {
-            Physical += physical;
-            Magical += magical;
-            Composite += composite;
-            Pure += pure;
-        }
-
-        public static Damage Zero
+        public static IDamage Zero
         {
             get => new Damage();
         }
 
-        public void Add(Damage other)
-        {
-            Add(other.Physical, other.Magical, other.Composite, other.Pure);
+        public void Add(IDamage other)
+        { 
+            Physical += other.Physical;
+            Magical += other.Magical;
+            Composite += other.Composite;
+            Pure += other.Pure;
         }
 
-        public static Damage operator+(Damage a, Damage b)
+        public void Multiply(double amount)
         {
-            var damage = (Damage)a.MemberwiseClone();
-            damage.Physical += b.Physical;
-            damage.Magical += b.Magical;
-            damage.Composite += b.Composite;
-            damage.Pure += b.Pure;
-
-            return damage;
-        }
-
-        public static Damage operator *(Damage a, Damage b)
-        {
-            var damage = (Damage)a.MemberwiseClone();
-            damage.Physical *= b.Physical;
-            damage.Magical *= b.Magical;
-            damage.Composite *= b.Composite;
-            damage.Pure *= b.Pure;
-
-            return damage;
-        }
-
-        public static Damage operator *(Damage a, double b)
-        {
-            var damage = (Damage)a.MemberwiseClone();
-            damage.Physical *= b;
-            damage.Magical *= b;
-            damage.Composite *= b;
-            damage.Pure *= b;
-
-            return damage;
+            Physical *= amount;
+            Magical *= amount;
+            Composite *= amount;
+            Pure *= amount;
         }
 
         public override string ToString()

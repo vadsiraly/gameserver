@@ -15,7 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServer.Recording", "Bat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServer.Interfaces", "GameServer.Interfaces\GameServer.Interfaces.csproj", "{D405D48B-50D2-4A2F-9E4F-7960353DDFC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer.Utilities", "GameServer.Utilities\GameServer.Utilities.csproj", "{3963F98F-606E-484E-BEE6-DB272EED536F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServer.Utilities", "GameServer.Utilities\GameServer.Utilities.csproj", "{3963F98F-606E-484E-BEE6-DB272EED536F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer.Damages", "GameServer.Damage\GameServer.Damages.csproj", "{DC2FB5E9-317F-4D18-9F64-8B89459EB973}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer.Common", "GameServer.Common\GameServer.Common.csproj", "{56BDCD21-5E9D-4445-B4C6-84402A2EA4B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +55,14 @@ Global
 		{3963F98F-606E-484E-BEE6-DB272EED536F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3963F98F-606E-484E-BEE6-DB272EED536F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3963F98F-606E-484E-BEE6-DB272EED536F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC2FB5E9-317F-4D18-9F64-8B89459EB973}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC2FB5E9-317F-4D18-9F64-8B89459EB973}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC2FB5E9-317F-4D18-9F64-8B89459EB973}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC2FB5E9-317F-4D18-9F64-8B89459EB973}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56BDCD21-5E9D-4445-B4C6-84402A2EA4B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56BDCD21-5E9D-4445-B4C6-84402A2EA4B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56BDCD21-5E9D-4445-B4C6-84402A2EA4B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56BDCD21-5E9D-4445-B4C6-84402A2EA4B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

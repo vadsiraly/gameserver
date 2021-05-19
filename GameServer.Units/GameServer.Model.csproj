@@ -17,6 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GameServer.Common\GameServer.Common.csproj" />
+    <ProjectReference Include="..\GameServer.Damage\GameServer.Damages.csproj" />
+    <ProjectReference Include="..\GameServer.Interfaces\GameServer.Interfaces.csproj" />
     <ProjectReference Include="..\GameServer.Utilities\GameServer.Utilities.csproj" />
   </ItemGroup>
 

@@ -1,23 +1,21 @@
-﻿using GameServer.Model.Abilities;
-using GameServer.Model.Abilities.Damages;
-using GameServer.Model.Abilities.Effects;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GameServer.Interfaces;
 
-namespace GameServer.Model.Units
+namespace GameServer.Interfaces.Events
 {
     public class StatusEventArgs
     {
-        public StatusEventArgs(Ability source, Status status)
+        public StatusEventArgs(IAbility source, Status status)
         {
             Source = source;
             Status = status;
         }
 
-        public Ability Source { get; private set; }
+        public IAbility Source { get; private set; }
         public Status Status { get; private set; }
     }
 }

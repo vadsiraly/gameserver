@@ -1,4 +1,6 @@
-﻿using GameServer.Model.Abilities.Damages;
+﻿using GameServer.Damages;
+using GameServer.Interfaces;
+using GameServer.Interfaces.Events;
 using GameServer.Model.Abilities.Effects;
 using GameServer.Model.Units;
 using System;
@@ -9,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace GameServer.Model.Abilities
 {
-    public abstract class Ability
+    public abstract class Ability : IAbility, IDamageSource
     {
         protected Random _random;
         protected int _activeCooldown = 0;
@@ -17,13 +19,13 @@ namespace GameServer.Model.Abilities
         public event EventHandler<AbilityUseEventArgs> BeforeAbilityUseEvent;
         public event EventHandler<AbilityUseEventArgs> AfterAbilityUseEvent;
 
-        public Ability(Unit owner, Random random)
+        public Ability(IUnit owner, Random random)
         {
             Owner = owner;
             _random = random;
         }
 
-        public Unit Owner { get; protected set; }
+        public IUnit Owner { get; protected set; }
         public int Id { get; protected set; } = -1;
         public string Reference { get; protected set; } = string.Empty;
         public string Name { get; protected set; } = string.Empty;
@@ -33,11 +35,11 @@ namespace GameServer.Model.Abilities
 
         public int ManaCost { get; protected set; } = 0;
         public int Cooldown { get; protected set; } = 0;
-        public Damage Damage { get; protected set; } = Damage.Zero;
+        public IDamage Damage { get; protected set; } = Damages.Damage.Zero;
         public bool CanCriticalHit { get; protected set; } = true;
 
-        public List<Effect> Buffs { get; protected set; } = new List<Effect>();
-        public List<Effect> Debuffs { get; protected set; } = new List<Effect>();
+        public List<IEffect> Buffs { get; protected set; } = new List<IEffect>();
+        public List<IEffect> Debuffs { get; protected set; } = new List<IEffect>();
         public double EffectChance { get; protected set; } = 1;
 
         public virtual bool Available => _activeCooldown == 0;
@@ -50,7 +52,7 @@ namespace GameServer.Model.Abilities
             }
         }
 
-        public virtual void Use(List<Unit> targets)
+        public virtual void Use(List<ITargetable> targets)
         {
             if (!IsActive) return;
 
@@ -86,12 +88,12 @@ namespace GameServer.Model.Abilities
             AfterAbilityUse(new AbilityUseEventArgs(Owner, targets, modifiedDamage));
         }
 
-        public virtual void BeforeAbilityUse(AbilityUseEventArgs e)
+        protected virtual void BeforeAbilityUse(AbilityUseEventArgs e)
         {
             BeforeAbilityUseEvent?.Invoke(this, e);
         }
 
-        public virtual void AfterAbilityUse(AbilityUseEventArgs e)
+        protected virtual void AfterAbilityUse(AbilityUseEventArgs e)
         {
             AfterAbilityUseEvent?.Invoke(this, e);
         }

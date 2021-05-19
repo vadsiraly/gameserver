@@ -1,36 +1,36 @@
-﻿using GameServer.Model.Abilities.ConcreteAbilities;
-using GameServer.Model.Snapshots;
+﻿using GameServer.Interfaces;
+using GameServer.Interfaces.Snapshots;
+using GameServer.Model.Abilities.ConcreteAbilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameServer.Model.Abilities.Damages
+namespace GameServer.Damages
 {
-    public class ModifiedDamage
+    public class ModifiedDamage : IModifiedDamage
     {
-        public ModifiedDamage((Ability Source, Damage Damage) baseDamage)
+        public ModifiedDamage((IDamageSource Source, IDamage Damage) baseDamage)
         {
             BaseDamage = baseDamage;
         }
 
-        public (Ability Source, Damage Damage) BaseDamage { get; private set; }
-        public List<(Ability Source, Damage Damage)> Modifications { get; private set; } = new List<(Ability Source, Damage Damage)>();
-        public DamageReduction Reduction { get; private set; } = DamageReduction.None;
+        public (IDamageSource Source, IDamage Damage) BaseDamage { get; private set; }
+        public List<(IDamageSource Source, IDamage Damage)> Modifications { get; private set; } = new List<(IDamageSource Source, IDamage Damage)>();
 
-        public void AddReduction(DamageReduction reduction)
+        public void AddReduction(double armor, double resistance)
         {
             // Physical + Composite
             var armorReduction = Damage.Zero;
             double multiplier;
-            if (reduction.Armor > 0)
+            if (armor > 0)
             {
-                multiplier = 100 / (100 + reduction.Armor);
+                multiplier = 100 / (100 + armor);
             }
             else
             {
-                multiplier = 2 - 100 / (100 - reduction.Armor);
+                multiplier = 2 - 100 / (100 - armor);
             }
 
             armorReduction.Physical = BaseDamage.Damage.Physical * multiplier - BaseDamage.Damage.Physical;
@@ -38,18 +38,18 @@ namespace GameServer.Model.Abilities.Damages
 
             if (!armorReduction.IsZero)
             {
-                Modifications.Add((new ArmorReduction(null, null), armorReduction));
+                Modifications.Add((new ArmorReduction(), armorReduction));
             }
 
             // Magical + Composite
             var resistanceReduction = Damage.Zero;
-            if (reduction.Resistance > 0)
+            if (resistance > 0)
             {
-                multiplier = 100 / (100 + reduction.Resistance);
+                multiplier = 100 / (100 + resistance);
             }
             else
             {
-                multiplier = 2 - 100 / (100 - reduction.Resistance);
+                multiplier = 2 - 100 / (100 - resistance);
             }
 
             resistanceReduction.Magical = BaseDamage.Damage.Magical * multiplier - BaseDamage.Damage.Magical;
@@ -57,22 +57,22 @@ namespace GameServer.Model.Abilities.Damages
 
             if (!resistanceReduction.IsZero)
             {
-                Modifications.Add((new ResistanceReduction(null, null), resistanceReduction));
+                Modifications.Add((new ResistanceReduction(), resistanceReduction));
             }
         }
 
-        public Damage Aggregate()
+        public IDamage Aggregate()
         {
-            var baseDamage = BaseDamage.Damage;
+            var baseDamage = new Damage(BaseDamage.Damage);
             foreach(var damageSource in Modifications)
             {
-                baseDamage += damageSource.Damage;
+                baseDamage.Add(damageSource.Damage);
             }
 
             return baseDamage;
         }
 
-        public static ModifiedDamage Zero => new ModifiedDamage((new UnknownAbility(null, null), Damage.Zero));
+        public static IModifiedDamage Zero => new ModifiedDamage((new UnknownSource(), Damage.Zero));
 
         public ModifiedDamageSnapshot Snapshot()
         {

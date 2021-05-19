@@ -1,4 +1,6 @@
-﻿using GameServer.Model.Abilities.Damages;
+﻿using GameServer.Damages;
+using GameServer.Interfaces;
+using GameServer.Interfaces.Events;
 using GameServer.Model.Abilities.Effects;
 using GameServer.Model.Units;
 using System;
@@ -23,7 +25,7 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.Gulp
             ManaCost = 0;
             Cooldown = 0;
 
-            Damage = Damage.Zero;
+            Damage = Damages.Damage.Zero;
             CanCriticalHit = true;
 
             EffectChance = 0.2;

@@ -1,7 +1,7 @@
 ﻿using GameServer.Model.Abilities;
 using GameServer.Model.Abilities.ConcreteAbilities;
 using GameServer.Model.Abilities.ConcreteAbilities.Lyra;
-using GameServer.Model.Abilities.Damages;
+using GameServer.Damages;
 using System;
 using System.Collections.Generic;
 using System.Linq;

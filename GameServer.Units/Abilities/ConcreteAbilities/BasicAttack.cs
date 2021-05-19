@@ -1,4 +1,5 @@
-﻿using GameServer.Model.Abilities.Damages;
+﻿using GameServer.Damages;
+using GameServer.Interfaces;
 using GameServer.Model.Abilities.Effects;
 using GameServer.Model.Units;
 using System;
@@ -11,7 +12,7 @@ namespace GameServer.Model.Abilities.ConcreteAbilities
 {
     public class BasicAttack : Ability
     {
-        public BasicAttack(Unit owner, Damage damage, Random random) : base(owner, random)
+        public BasicAttack(IUnit owner, IDamage damage, Random random) : base(owner, random)
         {
             Id = 0;
 

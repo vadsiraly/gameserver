@@ -1,7 +1,7 @@
 ﻿using GameServer.Model.Abilities;
 using GameServer.Model.Abilities.ConcreteAbilities;
 using GameServer.Model.Abilities.ConcreteAbilities.Gulp;
-using GameServer.Model.Abilities.Damages;
+using GameServer.Damages;
 using GameServer.Model.Abilities.Effects;
 using System;
 using System.Collections.Generic;

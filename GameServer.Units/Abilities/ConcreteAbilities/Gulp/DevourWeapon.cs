@@ -1,4 +1,5 @@
-﻿using GameServer.Model.Abilities.Damages;
+﻿using GameServer.Damages;
+using GameServer.Interfaces;
 using GameServer.Model.Abilities.Effects;
 using GameServer.Model.Units;
 using System;

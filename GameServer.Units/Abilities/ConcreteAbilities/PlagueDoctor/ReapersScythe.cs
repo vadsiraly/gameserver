@@ -1,4 +1,6 @@
-﻿using GameServer.Model.Abilities.Damages;
+﻿using GameServer.Damages;
+using GameServer.Interfaces;
+using GameServer.Interfaces.Events;
 using GameServer.Model.Abilities.Effects;
 using GameServer.Model.Units;
 using System;
@@ -22,7 +24,7 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.PlagueDoctor
             ManaCost = 0;
             Cooldown = 2;
 
-            Damage = Damage.Zero;
+            Damage = Damages.Damage.Zero;
             CanCriticalHit = false;
 
             EffectChance = 1;
@@ -39,11 +41,11 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.PlagueDoctor
         public Damage EffectDamage { get; private set; }
         public int EffectMaxStack { get; private set; }
 
-        public override void Use(List<Unit> targets)
+        public override void Use(List<ITargetable> targets)
         {
             BeforeAbilityUse(new AbilityUseEventArgs(Owner, targets, ModifiedDamage.Zero));
 
-            var enemyTeam = targets.FirstOrDefault()?.Team.Units ?? new List<Unit>();
+            var enemyTeam = targets.FirstOrDefault()?.Team.Units ?? new List<IUnit>();
             foreach (var unit in enemyTeam)
             {
                 foreach (var debuff in Debuffs)

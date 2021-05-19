@@ -1,4 +1,5 @@
-﻿using GameServer.Model.Abilities.Damages;
+﻿using GameServer.Damages;
+using GameServer.Interfaces;
 using GameServer.Model.Units;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace GameServer.Model.Abilities.Effects
 {
     public class DamageOverTimeEffect : Effect
     {
-        public DamageOverTimeEffect(Ability source, string name, int duration, Damage damage, int maxStack, Random random) : base(source, random)
+        public DamageOverTimeEffect(IAbility source, string name, int duration, IDamage damage, int maxStack, Random random) : base(source, random)
         {
             Name = name;
             Duration = duration;
@@ -18,21 +19,21 @@ namespace GameServer.Model.Abilities.Effects
             MaxStack = maxStack;
         }
 
-        public Damage Damage { get; private set; }
+        public IDamage Damage { get; private set; }
 
-        public override void ApplyEffect(Unit target)
+        public override void ApplyEffect(ITargetable target)
         {
             target.AddDebuff(this);
         }
 
-        public override void RemoveEffect(Unit target)
+        public override void RemoveEffect(ITargetable target)
         {
             target.RemoveDebuff(this);
         }
 
-        public override void Tick(Unit target, int stack)
+        public override void Tick(ITargetable target, int stack)
         {
-            var modifiedDamage = new ModifiedDamage((Source, Damage * stack));
+            var modifiedDamage = new ModifiedDamage((Source, Damage));
             target.TakeEffectDamage(Source, modifiedDamage);
 
             if (--Duration <= 0)

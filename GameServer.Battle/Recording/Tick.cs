@@ -1,5 +1,4 @@
 ﻿using GameServer.Model;
-using GameServer.Model.Snapshots;
 using GameServer.Model.Units;
 using System;
 using System.Collections.Generic;

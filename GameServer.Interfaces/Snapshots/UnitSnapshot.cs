@@ -1,11 +1,11 @@
-﻿using GameServer.Model.Units;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GameServer.Interfaces;
 
-namespace GameServer.Model.Snapshots
+namespace GameServer.Interfaces.Snapshots
 {
     public class UnitSnapshot
     {

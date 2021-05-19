@@ -1,7 +1,8 @@
-﻿using GameServer.Model.Snapshots;
-using GameServer.Model.Units;
+﻿using GameServer.Model.Units;
 using System;
 using System.Collections.Generic;
+using GameServer.Interfaces;
+using GameServer.Interfaces.Snapshots;
 
 namespace GameServer.Battles.Recording
 {

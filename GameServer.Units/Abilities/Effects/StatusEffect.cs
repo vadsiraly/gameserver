@@ -1,4 +1,5 @@
-﻿using GameServer.Model.Units;
+﻿using GameServer.Interfaces;
+using GameServer.Model.Units;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace GameServer.Model.Abilities.Effects
         public Status Status { get; }
         public double Chance { get; private set; }
 
-        public override void ApplyEffect(Unit target)
+        public override void ApplyEffect(ITargetable target)
         {
             if (_random.NextDouble() < Chance)
             {
@@ -29,12 +30,12 @@ namespace GameServer.Model.Abilities.Effects
             }
         }
 
-        public override void RemoveEffect(Unit target)
+        public override void RemoveEffect(ITargetable target)
         {
             target.RemoveStatus(Source, Status);
         }
 
-        public override void Tick(Unit target, int stack)
+        public override void Tick(ITargetable target, int stack)
         {
             if (--Duration <= 0)
             {

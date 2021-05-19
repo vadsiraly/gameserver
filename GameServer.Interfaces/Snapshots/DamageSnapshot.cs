@@ -1,10 +1,11 @@
-﻿using System;
+﻿using GameServer.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameServer.Model.Snapshots
+namespace GameServer.Interfaces.Snapshots
 {
     public class DamageSnapshot
     {

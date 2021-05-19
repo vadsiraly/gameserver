@@ -1,4 +1,4 @@
-﻿using GameServer.Model.Units;
+﻿using GameServer.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,16 +7,18 @@ using System.Threading.Tasks;
 
 namespace GameServer.Model.Abilities.ConcreteAbilities
 {
-    public class ResistanceReduction : Ability
+    public class ResistanceReduction : IDamageSource
     {
-        public ResistanceReduction(Unit owner, Random random) : base(owner, random)
+        public int Id { get; }
+        public string Reference { get; }
+        public string Name { get; }
+
+        public ResistanceReduction()
         {
             Id = 3;
 
             Reference = "target_resistance_reduction";
             Name = "Target Resistance Reduction";
-
-            Damage = Damages.Damage.Zero;
         }
     }
 }

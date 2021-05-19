@@ -1,7 +1,9 @@
-﻿using GameServer.Model.Abilities;
-using GameServer.Model.Abilities.Damages;
+﻿using GameServer.Damages;
+using GameServer.Interfaces;
+using GameServer.Interfaces.Events;
+using GameServer.Interfaces.Snapshots;
+using GameServer.Model.Abilities;
 using GameServer.Model.Abilities.Effects;
-using GameServer.Model.Snapshots;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace GameServer.Model.Units
 {
-    public abstract class Unit
+    public abstract class Unit : IUnit, ITargetable
     {
         protected Random _random;
 
@@ -42,16 +44,16 @@ namespace GameServer.Model.Units
         public event EventHandler<EventArgs> OnDeathEvent;
 
         public bool IsDead => Health <= 0;
-        public Team Team { get; protected set; }
+        public ITeam Team { get; set; }
 
-        public string Name { get; internal set; }
-        public string Reference { get; protected set; }
+        public string Name { get; set; }
+        public string Reference { get; set; }
 
         private double _maxHealth;
         public double MaxHealth 
         {
-            get => _maxHealth; 
-            internal set
+            get => _maxHealth;
+            set
             {
                 var difference = value - _maxHealth;
                 _maxHealth = value;
@@ -71,7 +73,7 @@ namespace GameServer.Model.Units
         public double MaxMana
         {
             get => _maxMana;
-            internal set
+            set
             {
                 var difference = value - _maxMana;
                 _maxMana = value;
@@ -83,7 +85,7 @@ namespace GameServer.Model.Units
         public double Health 
         {
             get => _health; 
-            protected set
+            set
             {
                 if (value > MaxHealth)
                 {
@@ -104,7 +106,7 @@ namespace GameServer.Model.Units
         public double Mana
         {
             get => _mana;
-            protected set
+            set
             {
                 if (value > MaxMana)
                 {
@@ -121,89 +123,89 @@ namespace GameServer.Model.Units
             }
         }
 
-        public double Speed { get; internal set; }
+        public double Speed { get; set; }
 
-        public double Armor { get; internal set; }
-        public double Resistance { get; internal set; }
+        public double Armor { get; set; }
+        public double Resistance { get; set; }
 
-        public double CriticalHitChance { get; internal set; }
-        public double CriticalHitMultiplier { get; internal set; }
+        public double CriticalHitChance { get; set; }
+        public double CriticalHitMultiplier { get; set; }
 
-        public List<(Ability Source, Status Status)> Statuses { get; protected set; } = new List<(Ability Source, Status Status)>();
+        public List<(IAbility Source, Status Status)> Statuses { get; set; } = new List<(IAbility Source, Status Status)>();
 
-        public Ability BasicAttack { get; internal set; }
-        public List<Ability> Abilities { get; protected set; } = new List<Ability>();
-        public List<(Effect Effect, int Stack)> Buffs { get; protected set; } = new List<(Effect Effect, int Stack)>();
-        public List<(Effect Effect, int Stack)> Debuffs { get; protected set; } = new List<(Effect Effect, int Stack)>();
+        public IAbility BasicAttack { get; set; }
+        public List<IAbility> Abilities { get; set; } = new List<IAbility>();
+        public List<(IEffect Effect, int Stack)> Buffs { get; set; } = new List<(IEffect Effect, int Stack)>();
+        public List<(IEffect Effect, int Stack)> Debuffs { get; set; } = new List<(IEffect Effect, int Stack)>();
 
-        public virtual void BeforeBasicAttack(AttackEventArgs e)
+        protected virtual void BeforeBasicAttack(AttackEventArgs e)
         {
             BeforeBasicAttackEvent?.Invoke(this, e);
         }
-        public virtual void AfterBasicAttack(AttackEventArgs e)
+        protected virtual void AfterBasicAttack(AttackEventArgs e)
         {
             AfterBasicAttackEvent?.Invoke(this, e);
         }
 
-        public virtual void BeforeDamaged(DamagedEventArgs e)
+        protected virtual void BeforeDamaged(DamagedEventArgs e)
         {
             BeforeDamagedEvent?.Invoke(this, e);
         }
-        public virtual void AfterDamaged(DamagedEventArgs e)
+        protected virtual void AfterDamaged(DamagedEventArgs e)
         {
             AfterDamagedEvent?.Invoke(this, e);
         }
-        public virtual void BeforeEffectDamaged(DamagedEventArgs e)
+        protected virtual void BeforeEffectDamaged(DamagedEventArgs e)
         {
             BeforeEffectDamagedEvent?.Invoke(this, e);
         }
-        public virtual void AfterEffectDamaged(DamagedEventArgs e)
+        protected virtual void AfterEffectDamaged(DamagedEventArgs e)
         {
             AfterEffectDamagedEvent?.Invoke(this, e);
         }
 
-        public virtual void BeforeAbilityUsed(AttackEventArgs e)
+        protected virtual void BeforeAbilityUsed(AttackEventArgs e)
         {
             BeforeAbilityUsedEvent?.Invoke(this, e);
         }
-        public virtual void AfterAbilityUsed(AttackEventArgs e)
+        protected virtual void AfterAbilityUsed(AttackEventArgs e)
         {
             AfterAbilityUsedEvent?.Invoke(this, e);
         }
-        public virtual void BeforeEffectAdded(EffectEventArgs e)
+        protected virtual void BeforeEffectAdded(EffectEventArgs e)
         {
             BeforeEffectAddedEvent?.Invoke(this, e);
         }
-        public virtual void AfterEffectAdded(EffectEventArgs e)
+        protected virtual void AfterEffectAdded(EffectEventArgs e)
         {
             AfterEffectAddedEvent?.Invoke(this, e);
         }
-        public virtual void BeforeEffectRemoved(EffectEventArgs e)
+        protected virtual void BeforeEffectRemoved(EffectEventArgs e)
         {
             BeforeEffectRemovedEvent?.Invoke(this, e);
         }
-        public virtual void AfterEffectRemoved(EffectEventArgs e)
+        protected virtual void AfterEffectRemoved(EffectEventArgs e)
         {
             AfterEffectRemovedEvent?.Invoke(this, e);
         }
-        public virtual void BeforeStatusApplied(StatusEventArgs e)
+        protected virtual void BeforeStatusApplied(StatusEventArgs e)
         {
             BeforeStatusAppliedEvent?.Invoke(this, e);
         }
-        public virtual void AfterStatusApplied(StatusEventArgs e)
+        protected virtual void AfterStatusApplied(StatusEventArgs e)
         {
             AfterStatusAppliedEvent?.Invoke(this, e);
         }
-        public virtual void BeforeStatusRemoved(StatusEventArgs e)
+        protected virtual void BeforeStatusRemoved(StatusEventArgs e)
         {
             BeforeStatusRemovedEvent?.Invoke(this, e);
         }
-        public virtual void AfterStatusRemoved(StatusEventArgs e)
+        protected virtual void AfterStatusRemoved(StatusEventArgs e)
         {
             AfterStatusRemovedEvent?.Invoke(this, e);
         }
 
-        public virtual void OnDeath(EventArgs e)
+        protected virtual void OnDeath(EventArgs e)
         {
             OnDeathEvent?.Invoke(this, e);
         }
@@ -231,7 +233,7 @@ namespace GameServer.Model.Units
             }
         }
 
-        public void AddBuff(Effect effect)
+        public void AddBuff(IEffect effect)
         {
             BeforeEffectAdded(new EffectEventArgs(this, effect));
 
@@ -253,7 +255,7 @@ namespace GameServer.Model.Units
             AfterEffectAdded(new EffectEventArgs(this, effect));
         }
 
-        public void RemoveBuff(Effect effect)
+        public void RemoveBuff(IEffect effect)
         {
             BeforeEffectRemoved(new EffectEventArgs(this, effect));
 
@@ -266,7 +268,7 @@ namespace GameServer.Model.Units
             AfterEffectRemoved(new EffectEventArgs(this, effect));
         }
 
-        public void AddDebuff(Effect effect)
+        public void AddDebuff(IEffect effect)
         {
             BeforeEffectAdded(new EffectEventArgs(this, effect));
 
@@ -288,7 +290,7 @@ namespace GameServer.Model.Units
             AfterEffectAdded(new EffectEventArgs(this, effect));
         }
 
-        public void RemoveDebuff(Effect effect)
+        public void RemoveDebuff(IEffect effect)
         {
             BeforeEffectRemoved(new EffectEventArgs(this, effect));
 
@@ -301,7 +303,7 @@ namespace GameServer.Model.Units
             AfterEffectRemoved(new EffectEventArgs(this, effect));
         }
 
-        public void Attack(List<Unit> targets)
+        public void Attack(List<ITargetable> targets)
         {
             if (IsDead) return;
 
@@ -331,7 +333,7 @@ namespace GameServer.Model.Units
             }
         }
 
-        public void UseAbility(List<Unit> targets, Ability ability)
+        public void UseAbility(List<ITargetable> targets, IAbility ability)
         {
             BeforeAbilityUsed(new AttackEventArgs(this, targets, ability));
 
@@ -340,7 +342,7 @@ namespace GameServer.Model.Units
             AfterAbilityUsed(new AttackEventArgs(this, targets, ability));
         }
 
-        public void AddStatus(Ability source, Status status)
+        public void AddStatus(IAbility source, Status status)
         {
             BeforeStatusApplied(new StatusEventArgs(source, status));
 
@@ -351,7 +353,7 @@ namespace GameServer.Model.Units
             AfterStatusApplied(new StatusEventArgs(source, status));
         }
 
-        public void RemoveStatus(Ability source, Status status)
+        public void RemoveStatus(IAbility source, Status status)
         {
             BeforeStatusRemoved(new StatusEventArgs(source, status));
 
@@ -365,11 +367,31 @@ namespace GameServer.Model.Units
             AfterStatusRemoved(new StatusEventArgs(source, status));
         }
 
-        public ModifiedDamage TakeDamage(Ability source, ModifiedDamage modifiedDamage)
+        public IModifiedDamage TakeDamage(IAbility source, IModifiedDamage modifiedDamage)
         {
             BeforeDamaged(new DamagedEventArgs(source, modifiedDamage));
 
-            modifiedDamage.AddReduction(new DamageReduction(Armor, Resistance));
+            TakeDamageImpl(source, modifiedDamage);
+
+            AfterDamaged(new DamagedEventArgs(source, modifiedDamage));
+
+            return modifiedDamage;
+        }
+
+        public IModifiedDamage TakeEffectDamage(IAbility source, IModifiedDamage modifiedDamage)
+        {
+            BeforeEffectDamaged(new DamagedEventArgs(source, modifiedDamage));
+
+            TakeDamageImpl(source, modifiedDamage);
+
+            AfterEffectDamaged(new DamagedEventArgs(source, modifiedDamage));
+
+            return modifiedDamage;
+        }
+
+        private IModifiedDamage TakeDamageImpl(IAbility source, IModifiedDamage modifiedDamage)
+        {
+            modifiedDamage.AddReduction(Armor, Resistance);
             var damage = modifiedDamage.Aggregate().Sum;
             Health -= damage;
             Console.WriteLine($"{source.Owner.Name}'s {source.Name} dealt {damage:F2} damage to {Name}{(modifiedDamage.Modifications.Any(x => x.Damage.IsCritical) ? " (CRIT)" : "")} ({Health:F2}/{MaxHealth})");
@@ -379,36 +401,19 @@ namespace GameServer.Model.Units
                 Console.WriteLine($"{Name} has died.");
             }
 
-            AfterDamaged(new DamagedEventArgs(source, modifiedDamage));
+            return modifiedDamage;
+        }
+
+        public IModifiedDamage Heal(IAbility source, IModifiedDamage modifiedDamage)
+        {
+            var healing = modifiedDamage.Aggregate().Sum;
+            Health += healing;
+            Console.WriteLine($"{source.Owner.Name}'s {source.Name} restored {healing:F2} health to {Name}{(modifiedDamage.Modifications.Any(x => x.Damage.IsCritical) ? " (CRIT)" : "")} ({Health:F2}/{MaxHealth})");
 
             return modifiedDamage;
         }
 
-        public ModifiedDamage TakeEffectDamage(Ability source, ModifiedDamage modifiedDamage)
-        {
-            BeforeEffectDamaged(new DamagedEventArgs(source, modifiedDamage));
-
-            modifiedDamage.AddReduction(new DamageReduction(Armor, Resistance));
-            var damage = modifiedDamage.Aggregate().Sum;
-            Health -= damage;
-            Console.WriteLine($"{source.Owner.Name}'s {source.Name} dealt {damage:F2} damage to {Name}{(modifiedDamage.Modifications.Any(x => x.Damage.IsCritical) ? " (CRIT)" : "")} ({Health:F2}/{MaxHealth})");
-            if (IsDead)
-            {
-                Console.WriteLine($"{Name} has died.");
-            }
-
-            AfterEffectDamaged(new DamagedEventArgs(source, modifiedDamage));
-
-            return modifiedDamage;
-        }
-
-        public void Heal(Ability source, AbilityHealing abilityHealing)
-        {
-            Health += abilityHealing.Healing;
-            Console.WriteLine($"{source.Owner.Name}'s {source.Name} restored {abilityHealing.Healing:F2} health to {Name}{(abilityHealing.CriticalPart > 0 ? " (CRIT)" : "")} ({Health:F2}/{MaxHealth})");
-        }
-
-        public void SetTeam(Team t)
+        public void SetTeam(ITeam t)
         {
             Team = t;
         }
@@ -420,6 +425,7 @@ namespace GameServer.Model.Units
             Debuffs.Clear();
             Buffs.Clear();
         }
+
         public UnitSnapshot Snapshot()
         {
             var snapshot = new UnitSnapshot();

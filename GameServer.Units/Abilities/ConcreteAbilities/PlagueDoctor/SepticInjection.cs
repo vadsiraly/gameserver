@@ -1,11 +1,12 @@
 ﻿using GameServer.Model.Abilities.Effects;
-using GameServer.Model.Abilities.Damages;
+using GameServer.Damages;
 using GameServer.Model.Units;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GameServer.Interfaces.Events;
 
 namespace GameServer.Model.Abilities.ConcreteAbilities.PlagueDoctor
 {
@@ -22,7 +23,7 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.PlagueDoctor
             ManaCost = 0;
             Cooldown = 1;
 
-            Damage = Damage.Zero;
+            Damage = Damages.Damage.Zero;
             CanCriticalHit = false;
 
             EffectChance = 1;

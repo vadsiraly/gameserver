@@ -1,4 +1,6 @@
-﻿using GameServer.Model.Abilities.Damages;
+﻿using GameServer.Damages;
+using GameServer.Interfaces;
+using GameServer.Interfaces.Events;
 using GameServer.Model.Units;
 using System;
 using System.Collections.Generic;
@@ -22,7 +24,7 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.SecretiveGirl
             Cooldown = 999;
             _activeCooldown = 4;
 
-            Damage = Damage.Zero;
+            Damage = Damages.Damage.Zero;
             CanCriticalHit = false;
 
             HealthBonus = 150;
@@ -40,7 +42,7 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.SecretiveGirl
         public double ResistanceBonus { get; private set; }
         public double CriticalChanceBonus { get; private set; }
 
-        public override void Use(List<Unit> targets)
+        public override void Use(List<ITargetable> targets)
         {
             BeforeAbilityUse(new AbilityUseEventArgs(Owner, targets, ModifiedDamage.Zero));
 

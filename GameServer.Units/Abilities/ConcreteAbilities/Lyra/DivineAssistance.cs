@@ -1,5 +1,6 @@
-﻿using GameServer.Model.Abilities.Damages;
+﻿using GameServer.Damages;
 using GameServer.Model.Units;
+using GameServer.Interfaces.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace GameServer.Model.Abilities.ConcreteAbilities.Lyra
             ManaCost = 0;
             Cooldown = 1;
 
-            Damage = new Damage();
+            Damage = Damages.Damage.Zero;
             CanCriticalHit = false;
 
             BonusDamagePercentage = 0.1;
